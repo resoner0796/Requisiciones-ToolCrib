@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToolCrib Requisitions</title>
-    <!-- 1. Cargar Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 2. Configuración de Tailwind y Fuentes -->
-    <script>
+    <!-- 1. Cargar Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. Configuración de Tailwind y Fuentes --><script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -33,14 +31,13 @@
             }
         }
     </script>
-    <!-- 3. Estilos CSS personalizados -->
-    <style>
+    <!-- 3. Estilos CSS personalizados --><style>
         /* Estilo para los inputs */
         input[type="text"],
         input[type="password"],
         input[type="number"],
         select {
-            @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500;
+            @apply w-full px-3 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50; /* Cambiado de bg-white a bg-gray-50 y añadido border-gray-200 */
         }
         /* Estilo para los botones principales */
         .btn {
@@ -73,33 +70,23 @@
 </head>
 <body class="bg-gray-100 font-sans antialiased">
 
-    <!-- Contenedor Principal -->
-    <div id="app-container" class="min-h-screen flex flex-col">
+    <!-- Contenedor Principal --><div id="app-container" class="min-h-screen flex flex-col">
 
-        <!-- Barra de Navegación / Encabezado -->
-        <header class="bg-primary-800 text-white shadow-md sticky top-0 z-10">
+        <!-- Barra de Navegación / Encabezado --><header class="bg-primary-800 text-white shadow-md sticky top-0 z-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     
-                    <!-- Logo / Título (Icono de llave) -->
-                    <div class="flex-shrink-0 flex items-center">
-                        <svg class="h-8 w-8 text-primary-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.87-5.87m0 0L5.87 5.87m5.55 5.55L4.136 4.136a2.652 2.652 0 0 0-3.75 3.75l7.27 7.27m5.55-5.55 5.87 5.87m-5.87-5.87L15.17 11.42l5.87 5.87m-5.87-5.87-5.87 5.87" />
-                        </svg>
-                        <span class="ml-3 text-2xl font-bold">ToolCrib Admin</span>
+                    <!-- Título --><div class="flex-shrink-0 flex items-center">
+                        <span class="text-2xl font-bold">ToolCrib Admin</span>
                     </div>
 
-                    <!-- Info de Usuario y Login -->
-                    <div class="flex items-center space-x-4">
-                        <!-- Botón de Login (Engrane) -->
-                        <button id="btn-login-icon" class="text-primary-200 hover:text-white transition-colors">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-1.007 1.11-.907L12 3.28c.55.1 1.02.565 1.11.907l.095.45c.306.115.61.25.908.4l.43.195c.523.238.982.697 1.119 1.241l.12.51c.264.18.517.388.756.621l.45.419c.47.438.724 1.065.596 1.673l-.12.582c.03.176.05.357.05.541s-.02.365-.05.541l.12.582c.128.608-.126 1.235-.596 1.673l-.45.419c-.24.233-.492.441-.756.621l-.12.51c-.137.544-.596 1.003-1.119 1.241l-.43.195c-.298.15-.602.284-.908.4l-.095.45c-.09.542-.56 1.007-1.11.907L12 20.72c-.55-.1-1.02-.565-1.11-.907l-.095-.45c-.306-.115-.61-.25-.908-.4l-.43-.195c-.523-.238-.982.697-1.119-1.241l-.12-.51c-.264-.18-.517-.388-.756-.621l-.45-.419c-.47-.438-.724-1.065-.596-1.673l.12-.582c-.03-.176-.05-.357-.05-.541s.02-.365.05-.541l-.12-.582c-.128-.608.126-1.235.596-1.673l.45-.419c.24-.233.492.441.756.621l.12-.51c.137-.544.596-1.003 1.119 1.241l.43.195c.298-.15.602-.284.908.4l.095-.45Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <!-- Botones de Login/Logout --><div class="flex items-center space-x-4">
+                        <!-- Botón de Login (Engrane) - SVG corregido --><button id="btn-login-icon" class="text-primary-200 hover:text-white transition-colors">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.077 4.956c.772-1.402 2.584-1.402 3.356 0l1.45 2.636 3.197.551c1.619.28 2.227 2.378.932 3.526l-2.35 2.146.594 3.018c.313 1.586-1.307 2.852-2.731 2.176l-2.673-1.348-2.673 1.348c-1.424.676-3.044-.59-2.731-2.176l.594-3.018-2.35-2.146c-1.295-1.148-.687-3.246.932-3.526l3.197-.551 1.45-2.636Z" clip-rule="evenodd" />
                             </svg>
                         </button>
-                        <!-- Botón de Logout (Oculto) -->
-                        <button id="btn-logout" class="btn btn-secondary hidden text-sm py-1 px-3">
+                        <!-- Botón de Logout (Oculto) --><button id="btn-logout" class="btn btn-secondary hidden text-sm py-1 px-3">
                             Cerrar Sesión
                         </button>
                     </div>
@@ -107,11 +94,9 @@
             </div>
         </header>
 
-        <!-- Contenido Principal -->
-        <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Contenido Principal --><main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-            <!-- Navegación de Pestañas -->
-            <div class="mb-6">
+            <!-- Navegación de Pestañas --><div class="mb-6">
                 <nav class="flex space-x-2" aria-label="Tabs">
                     <button data-screen="home-screen" class="nav-tab active">Inicio</button>
                     <button data-screen="consultar-screen" class="nav-tab">Consultar Requisiciones</button>
@@ -119,8 +104,7 @@
                 </nav>
             </div>
 
-            <!-- Pantalla: Inicio -->
-            <div id="home-screen" class="screen-content bg-white p-6 sm:p-8 rounded-lg shadow">
+            <!-- Pantalla: Inicio --><div id="home-screen" class="screen-content bg-white p-6 sm:p-8 rounded-lg shadow">
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">Bienvenido al Sistema de Requisiciones</h1>
                 <p class="text-lg text-gray-600 mb-6">Seleccione una opción para comenzar.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -135,8 +119,7 @@
                 </div>
             </div>
 
-            <!-- Pantalla: Consultar Requisiciones -->
-            <div id="consultar-screen" class="screen-content hidden bg-white p-6 sm:p-8 rounded-lg shadow">
+            <!-- Pantalla: Consultar Requisiciones --><div id="consultar-screen" class="screen-content hidden bg-white p-6 sm:p-8 rounded-lg shadow">
                 <h1 class="text-3xl font-bold text-gray-900 mb-6">Requisiciones Generadas</h1>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -150,8 +133,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-requisiciones" class="bg-white divide-y divide-gray-200">
-                            <!-- Filas se insertarán dinámicamente aquí -->
-                            <tr>
+                            <!-- Filas se insertarán dinámicamente aquí --><tr>
                                 <td colspan="5" class="px-6 py-4 text-center text-gray-500">Cargando requisiciones...</td>
                             </tr>
                         </tbody>
@@ -159,16 +141,13 @@
                 </div>
             </div>
 
-            <!-- Pantalla: Administración (Oculta por defecto) -->
-            <div id="admin-screen" class="screen-content hidden">
+            <!-- Pantalla: Administración (Oculta por defecto) --><div id="admin-screen" class="screen-content hidden">
                 <h1 class="text-3xl font-bold text-gray-900 mb-6">Panel de Administración</h1>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     
-                    <!-- Columna 1: Empleados -->
-                    <div class="bg-white p-6 rounded-lg shadow">
+                    <!-- Columna 1: Empleados --><div class="bg-white p-6 rounded-lg shadow">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Gestionar Empleados</h2>
-                        <!-- Formulario para agregar empleado -->
-                        <form id="form-add-empleado" class="mb-6 space-y-4">
+                        <!-- Formulario para agregar empleado --><form id="form-add-empleado" class="mb-6 space-y-4">
                             <div>
                                 <label for="admin-emp-id" class="block text-sm font-medium text-gray-700">Número de Empleado</label>
                                 <input type="number" id="admin-emp-id" name="admin-emp-id" required>
@@ -179,27 +158,23 @@
                             </div>
                             <button type="submit" class="btn btn-primary w-full">Agregar Empleado</button>
                         </form>
-                        <!-- Lista de empleados -->
-                        <h3 class="text-lg font-medium text-gray-700 mb-2">Empleados Registrados</h3>
-                        <div id="admin-list-empleados" class="max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-md border">
+                        <!-- Lista de empleados --><h3 class="text-lg font-medium text-gray-700 mb-2">Empleados Registrados</h3>
+                        <div id="admin-list-empleados" class="max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-md border border-gray-200">
                             <p class="text-gray-500">Cargando...</p>
                         </div>
                     </div>
 
-                    <!-- Columna 2: Artículos -->
-                    <div class="bg-white p-6 rounded-lg shadow">
+                    <!-- Columna 2: Artículos --><div class="bg-white p-6 rounded-lg shadow">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Gestionar Artículos</h2>
-                        <!-- Formulario para agregar artículo -->
-                        <form id="form-add-articulo" class="mb-6 space-y-4">
+                        <!-- Formulario para agregar artículo --><form id="form-add-articulo" class="mb-6 space-y-4">
                             <div>
                                 <label for="admin-art-nombre" class="block text-sm font-medium text-gray-700">Nombre del Artículo</label>
                                 <input type="text" id="admin-art-nombre" name="admin-art-nombre" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-full">Agregar Artículo</button>
                         </form>
-                        <!-- Lista de artículos -->
-                        <h3 class="text-lg font-medium text-gray-700 mb-2">Artículos Registrados</h3>
-                        <div id="admin-list-articulos" class="max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-md border">
+                        <!-- Lista de artículos --><h3 class="text-lg font-medium text-gray-700 mb-2">Artículos Registrados</h3>
+                        <div id="admin-list-articulos" class="max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-md border border-gray-200">
                             <p class="text-gray-500">Cargando...</p>
                         </div>
                     </div>
@@ -209,13 +184,9 @@
         </main>
     </div>
 
-    <!-- MODALES -->
-
-    <!-- Modal: Registrar Requisición -->
-    <div id="registrar-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <!-- MODALES --><!-- Modal: Registrar Requisición --><div id="registrar-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
         <div class="modal-content bg-white rounded-lg shadow-2xl p-6 sm:p-8 w-full max-w-lg relative transform scale-95 opacity-0">
-            <!-- Botón de cerrar -->
-            <button data-dismiss="modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <!-- Botón de cerrar --><button data-dismiss="modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
@@ -236,8 +207,7 @@
                     <label for="reg-articulo" class="block text-sm font-medium text-gray-700">Artículo</label>
                     <select id="reg-articulo" name="reg-articulo" required>
                         <option value="">Seleccione un artículo...</option>
-                        <!-- Opciones se cargarán dinámicamente -->
-                    </select>
+                        <!-- Opciones se cargarán dinámicamente --></select>
                 </div>
                 <div>
                     <label for="reg-fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
@@ -252,11 +222,9 @@
         </div>
     </div>
 
-    <!-- Modal: Iniciar Sesión -->
-    <div id="login-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <!-- Modal: Iniciar Sesión --><div id="login-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
         <div class="modal-content bg-white rounded-lg shadow-2xl p-6 sm:p-8 w-full max-w-sm relative transform scale-95 opacity-0">
-            <!-- Botón de cerrar -->
-            <button data-dismiss="modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <!-- Botón de cerrar --><button data-dismiss="modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
@@ -282,11 +250,9 @@
         </div>
     </div>
 
-    <!-- Modal: Cambiar Estatus -->
-    <div id="status-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <!-- Modal: Cambiar Estatus --><div id="status-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
         <div class="modal-content bg-white rounded-lg shadow-2xl p-6 sm:p-8 w-full max-w-sm relative transform scale-95 opacity-0">
-            <!-- Botón de cerrar -->
-            <button data-dismiss="modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <!-- Botón de cerrar --><button data-dismiss="modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
@@ -304,13 +270,11 @@
         </div>
     </div>
 
-    <!-- Modal: Alerta/Confirmación Genérico -->
-    <div id="alert-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <!-- Modal: Alerta/Confirmación Genérico --><div id="alert-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
         <div class="modal-content bg-white rounded-lg shadow-2xl p-6 sm:p-8 w-full max-w-sm relative transform scale-95 opacity-0">
             <div class="flex items-start">
                 <div id="alert-icon-container" class="flex-shrink-0">
-                    <!-- Icono se insertará dinámicamente -->
-                </div>
+                    <!-- Icono se insertará dinámicamente --></div>
                 <div class="ml-4">
                     <h3 id="alert-title" class="text-lg font-medium text-gray-900"></h3>
                     <p id="alert-message" class="text-sm text-gray-600 mt-2"></p>
@@ -323,8 +287,7 @@
     </div>
 
 
-    <!-- 4. Scripts de Firebase -->
-    <script type="module">
+    <!-- 4. Scripts de Firebase --><script type="module">
         // Importar funciones de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
@@ -735,8 +698,7 @@
             adminListEmpleados.innerHTML = empleados.map(emp => `
                 <div class="flex justify-between items-center p-2 hover:bg-gray-100 rounded">
                     <span class="text-sm"><strong>${emp.id}</strong> - ${emp.nombre}</span>
-                    <!-- Aquí se podría agregar un botón de borrar -->
-                </div>
+                    <!-- Aquí se podría agregar un botón de borrar --></div>
             `).join('');
         }
 
@@ -752,8 +714,7 @@
             adminListArticulos.innerHTML = articulos.map(art => `
                 <div class="flex justify-between items-center p-2 hover:bg-gray-100 rounded">
                     <span class="text-sm">${art.nombre}</span>
-                    <!-- Aquí se podría agregar un botón de borrar -->
-                </div>
+                    <!-- Aquí se podría agregar un botón de borrar --></div>
             `).join('');
         }
         
