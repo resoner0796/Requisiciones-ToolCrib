@@ -35,17 +35,6 @@
     </script>
     <!-- 3. Estilos CSS personalizados -->
     <style>
-        /* Estilo para ocultar elementos al inicio hasta que Vue/JS los maneje */
-        [v-cloak] {
-            display: none;
-        }
-        /* Transición suave para modales */
-        .modal {
-            transition: opacity 0.25s ease, transform 0.25s ease;
-        }
-        .modal-content {
-            transition: transform 0.25s ease;
-        }
         /* Estilo para los inputs */
         input[type="text"],
         input[type="password"],
@@ -73,6 +62,13 @@
         .nav-tab.active {
             @apply bg-white text-primary-600 border-b-2 border-primary-600;
         }
+        /* Transición suave para modales */
+        .modal {
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans antialiased">
@@ -84,24 +80,25 @@
         <header class="bg-primary-800 text-white shadow-md sticky top-0 z-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
-                    <!-- Logo / Título -->
+                    
+                    <!-- Logo / Título (Icono de llave) -->
                     <div class="flex-shrink-0 flex items-center">
                         <svg class="h-8 w-8 text-primary-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v.001h.001v-.001H3.75Zm0 3.75v.001h.001v-.001H3.75Zm0 3.75v.001h.001v-.001H3.75Zm0 3.75v.001h.001v-.001H3.75Zm0 3.75v.001h.001v-.001H3.75Zm3.75 0v.001h.001v-.001H7.5Zm3.75 0v.001h.001v-.001H11.25Zm3.75 0v.001h.001v-.001H15Zm3.75 0v.001h.001v-.001H18.75Zm-3.75-3.75v.001h.001v-.001H15Zm0-3.75v.001h.001v-.001H15Zm0-3.75v.001h.001v-.001H15Zm0-3.75V3.75v.001h.001v-.001H15Zm-3.75 3.75v.001h.001v-.001H11.25Zm0-3.75V3.75v.001h.001v-.001H11.25Zm-3.75 0V3.75v.001h.001v-.001H7.5Zm0 3.75v.001h.001v-.001H7.5Z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.87-5.87m0 0L5.87 5.87m5.55 5.55L4.136 4.136a2.652 2.652 0 0 0-3.75 3.75l7.27 7.27m5.55-5.55 5.87 5.87m-5.87-5.87L15.17 11.42l5.87 5.87m-5.87-5.87-5.87 5.87" />
                         </svg>
                         <span class="ml-3 text-2xl font-bold">ToolCrib Admin</span>
                     </div>
+
                     <!-- Info de Usuario y Login -->
                     <div class="flex items-center space-x-4">
-                        <div class="text-sm text-primary-200">
-                            User ID: <span id="user-id-display" class="font-medium">Cargando...</span>
-                        </div>
+                        <!-- Botón de Login (Engrane) -->
                         <button id="btn-login-icon" class="text-primary-200 hover:text-white transition-colors">
                             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-1.007 1.11-.907L12 3.28c.55.1 1.02.565 1.11.907l.095.45c.306.115.61.25.908.4l.43.195c.523.238.982.697 1.119 1.241l.12.51c.264.18.517.388.756.621l.45.419c.47.438.724 1.065.596 1.673l-.12.582c.03.176.05.357.05.541s-.02.365-.05.541l.12.582c.128.608-.126 1.235-.596 1.673l-.45.419c-.24.233-.492.441-.756.621l-.12.51c-.137.544-.596 1.003-1.119 1.241l-.43.195c-.298.15-.602.284-.908.4l-.095.45c-.09.542-.56 1.007-1.11.907L12 20.72c-.55-.1-1.02-.565-1.11-.907l-.095-.45c-.306-.115-.61-.25-.908-.4l-.43-.195c-.523-.238-.982-.697-1.119-1.241l-.12-.51c-.264-.18-.517-.388-.756-.621l-.45-.419c-.47-.438-.724-1.065-.596-1.673l.12-.582c-.03-.176-.05-.357-.05-.541s.02-.365.05-.541l-.12-.582c-.128-.608.126-1.235.596-1.673l.45-.419c.24-.233.492-.441.756-.621l.12-.51c.137-.544.596-1.003 1.119 1.241l.43-.195c.298-.15.602-.284.908-.4l.095-.45Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-1.007 1.11-.907L12 3.28c.55.1 1.02.565 1.11.907l.095.45c.306.115.61.25.908.4l.43.195c.523.238.982.697 1.119 1.241l.12.51c.264.18.517.388.756.621l.45.419c.47.438.724 1.065.596 1.673l-.12.582c.03.176.05.357.05.541s-.02.365-.05.541l.12.582c.128.608-.126 1.235-.596 1.673l-.45.419c-.24.233-.492.441-.756.621l-.12.51c-.137.544-.596 1.003-1.119 1.241l-.43.195c-.298.15-.602.284-.908.4l-.095.45c-.09.542-.56 1.007-1.11.907L12 20.72c-.55-.1-1.02-.565-1.11-.907l-.095-.45c-.306-.115-.61-.25-.908-.4l-.43-.195c-.523-.238-.982.697-1.119-1.241l-.12-.51c-.264-.18-.517-.388-.756-.621l-.45-.419c-.47-.438-.724-1.065-.596-1.673l.12-.582c-.03-.176-.05-.357-.05-.541s.02-.365.05-.541l-.12-.582c-.128-.608.126-1.235.596-1.673l.45-.419c.24-.233.492.441.756.621l.12-.51c.137-.544.596-1.003 1.119 1.241l.43.195c.298-.15.602-.284.908.4l.095-.45Z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
                         </button>
+                        <!-- Botón de Logout (Oculto) -->
                         <button id="btn-logout" class="btn btn-secondary hidden text-sm py-1 px-3">
                             Cerrar Sesión
                         </button>
@@ -332,52 +329,52 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
             getAuth, 
-            signInAnonymously, 
-            signInWithCustomToken, 
-            onAuthStateChanged 
+            signInAnonymously
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { 
             getFirestore, 
             doc, 
-            getDoc, 
             addDoc, 
-            setDoc, 
             updateDoc, 
-            deleteDoc, 
             onSnapshot, 
             collection, 
-            query, 
-            where, 
             setLogLevel 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- VARIABLES GLOBALES Y CONFIGURACIÓN ---
-        
-        // Configuración de Firebase (se inyectará en el entorno)
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'toolcrib-app-dev';
-        
-        // Inicializar Firebase
+        // --- CONFIGURACIÓN DE FIREBASE (Proporcionada por el usuario) ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDahnSPvBNTYot00JCn5CBjggAYFVGhbjE",
+          authDomain: "panel-logistica-simple.firebaseapp.com",
+          databaseURL: "https://panel-logistica-simple-default-rtdb.firebaseio.com",
+          projectId: "panel-logistica-simple",
+          storageBucket: "panel-logistica-simple.firebasestorage.app",
+          messagingSenderId: "528779971851",
+          appId: "1:528779971851:web:29ed933e7c7fd997a4e60e"
+        };
+
+        // --- INICIALIZACIÓN DE FIREBASE ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         
         // Habilitar logs de Firestore para depuración
         setLogLevel('Debug');
+        
+        // --- REFERENCIAS A COLECCIONES DE FIRESTORE ---
+        // Usando la estructura de colección base 'requi_toolcrib'
+        const requisitionsCollection = collection(db, 'requi_toolcrib', 'data', 'requisitions');
+        const employeesCollection = collection(db, 'requi_toolcrib', 'data', 'employees');
+        const articlesCollection = collection(db, 'requi_toolcrib', 'data', 'articles');
 
+        // --- VARIABLES GLOBALES ---
+        
         // Estado de la aplicación
-        let currentUserId = null; // UID del usuario de Firebase
         let isLoggedIn = false; // Estado de login de "admin"
         let currentEditingRequisitionId = null; // ID de la requisición que se está editando
 
         // Caché de datos locales (Map para búsqueda rápida)
         let empleadosMap = new Map();
         let articulosMap = new Map();
-
-        // Referencias a colecciones de Firestore
-        let requisitionsCollection = null;
-        let employeesCollection = null;
-        let articlesCollection = null;
 
         // Descriptores de onSnapshot para limpieza
         let unsubscribeRequisitions = () => {};
@@ -395,7 +392,6 @@
         // Botones de login/logout
         const btnLoginIcon = document.getElementById('btn-login-icon');
         const btnLogout = document.getElementById('btn-logout');
-        const userIdDisplay = document.getElementById('user-id-display');
 
         // Modal de Registro
         const btnRegistrarNav = document.getElementById('btn-registrar-nav');
@@ -533,61 +529,77 @@
             }
         }
 
-        // --- LÓGICA DE AUTENTICACIÓN (Firebase y Admin) ---
+        // --- LÓGICA DE AUTENTICACIÓN Y DATOS ---
 
         /**
-         * Maneja el cambio de estado de autenticación de Firebase.
+         * Inicia sesión anónima y luego inicia los listeners de datos.
          */
-        async function handleAuthState(user) {
-            if (user) {
-                currentUserId = user.uid;
-                userIdDisplay.textContent = currentUserId;
-                console.log("Usuario autenticado (Firebase):", currentUserId);
-
-                // Definir rutas de colecciones (dependen del userId)
-                // Usamos rutas "privadas" para empleados y artículos (solo admin)
-                employeesCollection = collection(db, 'artifacts', appId, 'users', currentUserId, 'employees');
-                articlesCollection = collection(db, 'artifacts', appId, 'users', currentUserId, 'articles');
-                
-                // Usamos una ruta "pública" para las requisiciones (todos pueden ver)
-                requisitionsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'requisitions');
-                
-                // Iniciar listeners de datos
-                startDataListeners();
-            } else {
-                console.log("Usuario no autenticado.");
-                currentUserId = null;
-                userIdDisplay.textContent = 'N/A';
-                // Detener listeners si el usuario se desconecta
-                stopDataListeners();
-            }
-        }
-
-        /**
-         * Inicia sesión anónima o con token personalizado.
-         */
-        async function initializeAuth() {
+        async function initializeAuthAndListeners() {
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    console.log("Iniciando sesión con Custom Token...");
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    console.log("Iniciando sesión anónimamente...");
-                    await signInAnonymously(auth);
-                }
+                await signInAnonymously(auth);
+                console.log("Autenticado anónimamente.");
+                // Ahora que estamos autenticados, iniciamos los listeners
+                startDataListeners();
             } catch (error) {
-                console.error("Error en la autenticación inicial:", error);
-                showAlert("Error de Autenticación", "No se pudo conectar con el servidor. Por favor, recargue la página.", true);
+                console.error("Error en la autenticación anónima:", error);
+                showAlert("Error de Conexión", "No se pudo conectar con la base de datos. Verifique la configuración de Firebase y las reglas de seguridad.", true);
             }
         }
         
+        /**
+         * Inicia todos los listeners de onSnapshot.
+         */
+        function startDataListeners() {
+            console.log("Iniciando listeners de Firestore...");
+
+            // 1. Listener para Requisiciones
+            unsubscribeRequisitions = onSnapshot(requisitionsCollection, (snapshot) => {
+                const reqs = [];
+                snapshot.forEach((doc) => {
+                    reqs.push({ id: doc.id, ...doc.data() });
+                });
+                // Ordenar por fecha (más nuevas primero)
+                reqs.sort((a, b) => b.fecha.localeCompare(a.fecha));
+                renderRequisitions(reqs);
+            }, (error) => console.error("Error al escuchar requisiciones:", error));
+
+            // 2. Listener para Empleados
+            unsubscribeEmployees = onSnapshot(employeesCollection, (snapshot) => {
+                empleadosMap.clear();
+                const empleadosList = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // Usamos el 'id' (No. Empleado) como clave del Map
+                    empleadosMap.set(data.id, data.nombre);
+                    empleadosList.push({ ...data, fbId: doc.id }); // fbId es el ID del documento
+                });
+                renderAdminListEmpleados(empleadosList);
+                console.log("Empleados cargados:", empleadosMap.size);
+            }, (error) => console.error("Error al escuchar empleados:", error));
+
+            // 3. Listener para Artículos
+            unsubscribeArticles = onSnapshot(articlesCollection, (snapshot) => {
+                articulosMap.clear();
+                const articulosList = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // Usamos el nombre como clave y valor
+                    articulosMap.set(data.nombre, data.nombre);
+                    articulosList.push({ ...data, fbId: doc.id });
+                });
+                renderArticulosDropdown();
+                renderAdminListArticulos(articulosList);
+                console.log("Artículos cargados:", articulosMap.size);
+            }, (error) => console.error("Error al escuchar artículos:", error));
+        }
+
         /**
          * Maneja el "inicio de sesión" del administrador (simulado).
          */
         function handleAdminLogin(e) {
             e.preventDefault();
             const pass = loginPassInput.value;
-            // Contraseña simulada. En un caso real, esto usaría Firebase Auth (Email/Pass, etc.)
+            // Contraseña simulada.
             if (pass === 'admin') {
                 isLoggedIn = true;
                 btnAdminNav.classList.remove('hidden');
@@ -620,87 +632,41 @@
             renderRequisitions();
         }
 
-        // --- LÓGICA DE DATOS (FIRESTORE) ---
-
-        /**
-         * Inicia todos los listeners de onSnapshot.
-         */
-        function startDataListeners() {
-            if (!requisitionsCollection || !employeesCollection || !articlesCollection) {
-                console.error("Las colecciones no están listas. No se inician listeners.");
-                return;
-            }
-
-            console.log("Iniciando listeners...");
-
-            // 1. Listener para Requisiciones (Público)
-            unsubscribeRequisitions = onSnapshot(requisitionsCollection, (snapshot) => {
-                const reqs = [];
-                snapshot.forEach((doc) => {
-                    reqs.push({ id: doc.id, ...doc.data() });
-                });
-                // Ordenar por fecha (más nuevas primero)
-                reqs.sort((a, b) => b.fecha.localeCompare(a.fecha));
-                renderRequisitions(reqs);
-            }, (error) => console.error("Error al escuchar requisiciones:", error));
-
-            // 2. Listener para Empleados (Privado/Admin)
-            unsubscribeEmployees = onSnapshot(employeesCollection, (snapshot) => {
-                empleadosMap.clear();
-                const empleadosList = [];
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    // Usamos el 'id' (No. Empleado) como clave del Map
-                    empleadosMap.set(data.id, data.nombre);
-                    empleadosList.push({ ...data, fbId: doc.id }); // fbId es el ID del documento
-                });
-                renderAdminListEmpleados(empleadosList);
-                console.log("Empleados cargados:", empleadosMap.size);
-            }, (error) => console.error("Error al escuchar empleados:", error));
-
-            // 3. Listener para Artículos (Privado/Admin)
-            unsubscribeArticles = onSnapshot(articlesCollection, (snapshot) => {
-                articulosMap.clear();
-                const articulosList = [];
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    // Usamos el nombre como clave y valor (o podríamos usar el fbId)
-                    articulosMap.set(data.nombre, data.nombre);
-                    articulosList.push({ ...data, fbId: doc.id });
-                });
-                renderArticulosDropdown();
-                renderAdminListArticulos(articulosList);
-                console.log("Artículos cargados:", articulosMap.size);
-            }, (error) => console.error("Error al escuchar artículos:", error));
-        }
-
-        /**
-         * Detiene todos los listeners de onSnapshot.
-         */
-        function stopDataListeners() {
-            console.log("Deteniendo listeners...");
-            unsubscribeRequisitions();
-            unsubscribeEmployees();
-            unsubscribeArticles();
-        }
-
         // --- LÓGICA DE RENDERIZADO (UI) ---
 
         /**
          * Renderiza la tabla de requisiciones.
-         * @param {Array} [reqs] - Array de requisiciones. Si no se provee, muestra "Cargando...".
+         * @param {Array} [reqs] - Array de requisiciones. Si no se provee, usa la caché.
          */
         function renderRequisitions(reqs = null) {
-            if (!reqs) {
+            // Si se pasa un nuevo array, se usa; si no, se re-renderiza con lo que haya
+            // Esto es útil para actualizar la UI al hacer login/logout sin esperar nuevos datos
+            const dataToRender = reqs || Array.from(document.querySelectorAll('#tbody-requisiciones tr')).map((tr, index) => {
+                if (tr.children[0].colSpan === 5) return null; // Es el mensaje de "cargando" o "vacío"
+                const cells = tr.children;
+                return {
+                    id: tr.querySelector('.status-btn')?.dataset.id || `temp-id-${index}`, // Re-obtener id del botón
+                    fecha: cells[0].textContent,
+                    empleadoId: cells[1].textContent,
+                    nombre: cells[2].textContent,
+                    articulo: cells[3].textContent,
+                    status: tr.querySelector('.status-btn')?.dataset.status || 'Pendiente' // Re-obtener status del botón
+                };
+            }).filter(Boolean);
+
+
+            if (dataToRender.length === 0 && !reqs) {
+                // No se pasó data y la tabla estaba vacía
                 tbodyRequisiciones.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Cargando requisiciones...</td></tr>`;
                 return;
             }
-            if (reqs.length === 0) {
+            if (dataToRender.length === 0 && reqs) {
+                 // Se pasó data pero estaba vacía
                 tbodyRequisiciones.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No hay requisiciones registradas.</td></tr>`;
                 return;
             }
 
-            tbodyRequisiciones.innerHTML = reqs.map(req => {
+            tbodyRequisiciones.innerHTML = dataToRender.map(req => {
                 const statusBadge = renderStatusBadge(req.status);
                 const disabled = !isLoggedIn ? 'disabled' : '';
                 const cursor = !isLoggedIn ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:scale-105';
@@ -726,6 +692,7 @@
                 `;
             }).join('');
         }
+
 
         /**
          * Devuelve el HTML para un badge de estatus.
@@ -845,7 +812,8 @@
                 await addDoc(employeesCollection, { id: empId, nombre: nombre });
                 showAlert('Éxito', 'Empleado agregado correctamente.');
                 formAddEmpleado.reset();
-            } catch (error) {
+            } catch (error)
+            {
                 console.error("Error al agregar empleado:", error);
                 showAlert('Error', 'No se pudo agregar el empleado.', true);
             }
@@ -933,9 +901,8 @@
         // --- INICIALIZACIÓN DE EVENTOS ---
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Inicializar autenticación de Firebase
-            onAuthStateChanged(auth, handleAuthState);
-            initializeAuth();
+            // Inicializar autenticación de Firebase e iniciar listeners
+            initializeAuthAndListeners();
 
             // Navegación de pestañas
             navTabs.forEach(tab => {
