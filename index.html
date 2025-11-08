@@ -36,6 +36,9 @@
         .toast-success { @apply border-green-500; } .toast-error { @apply border-red-500; } .toast-info { @apply border-blue-500; } .toast.hiding { @apply animate-slide-out; }
         input:read-only { @apply bg-gray-100 text-gray-500 cursor-not-allowed; }
         .nav-tab.active { @apply bg-white text-primary-600 border-t-2 border-l-2 border-r-2 border-gray-200 border-b-white -mb-px z-10; }
+        /* Aspect Ratio para imágenes de catálogo */
+        .aspect-w-16 { position: relative; padding-bottom: 56.25%; }
+        .aspect-w-16 > * { position: absolute; height: 100%; width: 100%; top: 0; right: 0; bottom: 0; left: 0; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
@@ -49,38 +52,48 @@
                 <div class="flex items-center space-x-4">
                     <span id="user-email-display" class="text-sm text-gray-500 hidden sm:inline-block font-medium"></span>
                     <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Administración">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567l-.091.549a.798.798 0 0 1-.517.608 7.45 7.45 0 0 0-.478.198.798.798 0 0 1-.796-.064l-.453-.324a1.875 1.875 0 0 0-2.416.2l-.043.044a1.875 1.875 0 0 0-.2 2.416l.324.453a.798.798 0 0 1 .064.796 7.448 7.448 0 0 0-.198.478.798.798 0 0 1-.608.517l-.55.092a1.875 1.875 0 0 0-1.566 1.849v.06c0 .916.663 1.699 1.567 1.85l.549.091c.281.047.508.25.608.517.06.162.127.321.198.478a.798.798 0 0 1-.064.796l-.324.453a1.875 1.875 0 0 0 .2 2.416l.043.044a1.875 1.875 0 0 0 2.416-.2l.453-.324a.798.798 0 0 1 .796-.064c.157.071.316.137.478.198.267.1.47.327.517.608l.092.55c.15.903.932 1.566 1.849 1.566h.06c.916 0 1.699-.663 1.85-1.567l.091-.549a.798.798 0 0 1 .517-.608 7.52 7.52 0 0 0 .478-.198.798.798 0 0 1 .796.064l.453.324a1.875 1.875 0 0 0 2.416-.2l.043-.044a1.875 1.875 0 0 0 .2-2.416l-.324-.453a.798.798 0 0 1-.064-.796c.071-.157.137-.316.198-.478.1-.267.327-.47.608-.517l.55-.092a1.875 1.875 0 0 0 1.566-1.849v-.06c0-.916-.663-1.699-1.567-1.85l-.549-.091a.798.798 0 0 1-.608-.517 7.507 7.507 0 0 0-.198-.478.798.798 0 0 1 .064-.796l.324-.453a1.875 1.875 0 0 0-.2-2.416l-.043-.044a1.875 1.875 0 0 0-2.416-.2l-.453.324a.798.798 0 0 1-.796.064 7.462 7.462 0 0 0-.478-.198.798.798 0 0 1-.517-.608l-.092-.55a1.875 1.875 0 0 0-1.849-1.566h-.06ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567l-.091.549a.798.798 0 0 1-.517.608 7.45 7.45 0 0 0-.478.198.798.798 0 0 1-.796-.064l-.453-.324a1.875 1.875 0 0 0-2.416.2l-.043.044a1.875 1.875 0 0 0-.2 2.416l.324.453a.798.798 0 0 1 .064.796 7.448 7.448 0 0 0-.198.478.798.798 0 0 1-.608.517l-.55.092a1.875 1.875 0 0 0-1.566 1.849v.06c0 .916.663 1.699 1.567 1.85l.549.091c.281.047.508.25.608.517.06.162.127.321.198.478a.798.798 0 0 1-.064.796l-.324.453a1.875 1.875 0 0 0 .2 2.416l.043.044a1.875 1.875 0 0 0 2.416-.2l.453-.324a.798.798 0 0 1-.064-.796c.071-.157.137-.316.198-.478.1-.267.327-.47.608-.517l.55-.092a1.875 1.875 0 0 0 1.566-1.849v-.06c0-.916-.663-1.699-1.567-1.85l-.549-.091a.798.798 0 0 1-.608-.517 7.507 7.507 0 0 0-.198-.478.798.798 0 0 1 .064-.796l.324-.453a1.875 1.875 0 0 0-.2-2.416l-.043-.044a1.875 1.875 0 0 0-2.416-.2l-.453.324a.798.798 0 0 1-.796.064 7.462 7.462 0 0 0-.478-.198.798.798 0 0 1-.517-.608l-.092-.55a1.875 1.875 0 0 0-1.849-1.566h-.06ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" /></svg>
                     </button>
                     <button id="btn-logout" class="hidden px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition">Salir</button>
                 </div>
             </div>
         </header>
         <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-            <div class="mb-6 border-b border-gray-200">
+            <div class="mb-6 border-b border-gray-200 overflow-x-auto">
                 <nav class="flex -mb-px space-x-6" aria-label="Tabs">
-                    <button data-screen="home-screen" class="nav-tab active px-1 py-4 text-sm font-medium text-primary-600 border-b-2 border-primary-600">Inicio</button>
-                    <button data-screen="consultar-screen" class="nav-tab px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent">Consultar</button>
-                    <button id="btn-admin-nav" data-screen="admin-screen" class="hidden nav-tab px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent">Administración</button>
+                    <button data-screen="home-screen" class="nav-tab active px-1 py-4 text-sm font-medium text-primary-600 border-b-2 border-primary-600 whitespace-nowrap">Inicio</button>
+                    <button data-screen="consultar-screen" class="nav-tab px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent whitespace-nowrap">Consultar</button>
+                    <button data-screen="catalogo-screen" class="nav-tab px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent whitespace-nowrap">Catálogo</button>
+                    <button id="btn-admin-nav" data-screen="admin-screen" class="hidden nav-tab px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent whitespace-nowrap">Administración</button>
                 </nav>
             </div>
+
+            <!-- Home Screen -->
             <div id="home-screen" class="screen-content animate-fade-in-down">
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center sm:text-left">
                     <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Centro de Control</h1>
                     <p class="mt-2 text-lg text-gray-600">Gestiona tus requisiciones de forma rápida y sencilla.</p>
-                    <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5">
                         <button id="btn-registrar-nav" class="p-6 bg-primary-600 rounded-xl shadow-lg text-white hover:bg-primary-700 transition transform hover:-translate-y-1 flex flex-col items-start">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                             <span class="text-xl font-bold">Nueva Requisición</span>
-                            <span class="text-primary-200 text-sm">Registra una solicitud de herramienta o material.</span>
+                            <span class="text-primary-200 text-sm mt-1 text-left">Registra una solicitud de herramienta o material.</span>
                         </button>
                         <button data-screen-nav="consultar-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 1.875 1.875v12.75a1.875 1.875 0 0 1-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V6.375a1.875 1.875 0 0 1 1.875-1.875Z" /></svg>
                              <span class="text-xl font-bold text-gray-900">Historial</span>
-                             <span class="text-gray-500 text-sm">Consulta el estatus de todas las requisiciones.</span>
+                             <span class="text-gray-500 text-sm mt-1 text-left">Consulta el estatus de todas las requisiciones.</span>
+                        </button>
+                        <button data-screen-nav="catalogo-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
+                             <span class="text-xl font-bold text-gray-900">Catálogo Visual</span>
+                             <span class="text-gray-500 text-sm mt-1 text-left">Explora los artículos con imágenes y detalles.</span>
                         </button>
                     </div>
                 </div>
             </div>
+
+            <!-- Consultar Screen -->
             <div id="consultar-screen" class="screen-content hidden animate-fade-in-down">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -108,6 +121,22 @@
                     </div>
                 </div>
             </div>
+
+             <!-- Catálogo Screen -->
+            <div id="catalogo-screen" class="screen-content hidden animate-fade-in-down">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-bold text-gray-900">Catálogo de Partes</h2>
+                     <div class="relative w-full sm:w-72">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
+                        <input type="search" id="search-catalogo" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar por No. Parte o Descripción...">
+                    </div>
+                </div>
+                <div id="catalogo-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Tarjetas generadas dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Admin Screen -->
             <div id="admin-screen" class="screen-content hidden animate-fade-in-down">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -129,18 +158,24 @@
                     </div>
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                         <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
-                        <form id="form-add-articulo" class="flex gap-3 mb-6">
-                            <input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/3">
-                            <input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-full">
-                            <button type="submit" class="btn btn-primary flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button>
+                        <form id="form-add-articulo" class="flex flex-col gap-3 mb-6">
+                            <div class="flex gap-3">
+                                <input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/2">
+                                <input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-1/2">
+                            </div>
+                            <div class="flex gap-3">
+                                <input type="url" id="admin-art-img" placeholder="URL de Imagen (Opcional)" class="w-full">
+                                <button type="submit" class="btn btn-primary flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button>
+                            </div>
                         </form>
-                        <div id="admin-list-articulos" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+                        <div id="admin-list-articulos" class="h-80 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Modales (Mismos que antes) -->
     <div id="registrar-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform transition-all scale-95 opacity-0">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Nueva Solicitud</h2>
@@ -200,6 +235,8 @@
         const colArts = collection(db, 'requi_toolcrib', 'data', 'articles');
 
         let currentUser = null, currentReqId = null, confirmAction = null, reqsData = [], empsMap = new Map(), artsMap = new Map();
+        // Placeholder elegante para cuando no hay imagen
+        const PLACEHOLDER_IMG = "https://placehold.co/400x300/e2e8f0/94a3b8?text=Sin+Imagen";
 
         window.showToast = (msg, type = 'success') => {
             const t = document.createElement('div'); t.className = `toast toast-${type}`;
@@ -218,12 +255,12 @@
             if(u) { document.getElementById('user-email-display').innerText = u.email; document.getElementById('btn-admin-nav').classList.remove('hidden'); }
             else { document.getElementById('btn-admin-nav').classList.add('hidden'); if(!document.getElementById('admin-screen').classList.contains('hidden')) document.querySelector('[data-screen="home-screen"]').click(); }
             document.querySelectorAll('.col-acciones').forEach(e => e.classList.toggle('hidden', !u));
-            renderReqs(); renderAdmin();
+            renderReqs(); renderAdmin(); renderCatalogo();
         });
 
         onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); reqsData.sort((a,b) => b.fecha.localeCompare(a.fecha)); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
         onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
-        onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderArtsDropdown(); renderAdmin(); });
+        onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderArtsDropdown(); renderAdmin(); renderCatalogo(); });
 
         function renderReqs() {
             const term = document.getElementById('search-input').value.toLowerCase();
@@ -243,6 +280,21 @@
             document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a,b)=>a.id-b.id).map(e => `<div class="flex justify-between p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><button class="btn-del-emp text-gray-300 hover:text-red-500" data-id="${e.fbId}" data-n="${e.nombre}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
             document.getElementById('admin-list-articulos').innerHTML = artsMap.size ? Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => `<div class="flex justify-between p-3 hover:bg-white transition"><div><span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span><span>${a.nom}</span></div><button class="btn-del-art text-gray-300 hover:text-red-500" data-id="${a.fbId}" data-n="${a.nom}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
         }
+        function renderCatalogo() {
+            const term = document.getElementById('search-catalogo').value.toLowerCase();
+            const filtered = Array.from(artsMap.values()).filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term)).sort((a,b) => a.num.localeCompare(b.num));
+            document.getElementById('catalogo-grid').innerHTML = filtered.length ? filtered.map(a => `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
+                    <div class="aspect-w-16 bg-gray-200">
+                        <img src="${a.img || PLACEHOLDER_IMG}" alt="${a.nom}" class="object-cover w-full h-full" onerror="this.src='${PLACEHOLDER_IMG}'">
+                    </div>
+                    <div class="p-4">
+                        <div class="text-xs font-bold text-primary-600 mb-1">${a.num}</div>
+                        <div class="text-sm font-medium text-gray-900 line-clamp-2" title="${a.nom}">${a.nom}</div>
+                    </div>
+                </div>
+            `).join('') : '<div class="col-span-full p-8 text-center text-gray-500 italic">No se encontraron artículos.</div>';
+        }
         function renderArtsDropdown() {
              const s = document.getElementById('reg-articulo'), val = s.value;
              s.innerHTML = '<option value="">Seleccione...</option>' + Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => `<option value="[${a.num}] - ${a.nom}">[${a.num}] - ${a.nom}</option>`).join('');
@@ -254,7 +306,6 @@
             if(e.target.closest('[data-screen-nav]')) document.querySelector(`.nav-tab[data-screen="${e.target.closest('[data-screen-nav]').dataset.screenNav}"]`).click();
             if(e.target.closest('[data-dismiss="modal"]')) closeModal(e.target.closest('.modal').id);
             if(e.target.closest('.status-badge') && currentUser) { currentReqId = e.target.closest('.status-badge').dataset.id; openModal('status-modal'); }
-            // Event Delegation for Deletes
             const delReq = e.target.closest('.btn-del-req'); if(delReq && currentUser) askConfirm('Eliminar Requi', '¿Seguro?', async () => { await deleteDoc(doc(colReqs, delReq.dataset.id)); showToast('Eliminado'); });
             const delEmp = e.target.closest('.btn-del-emp'); if(delEmp && currentUser) askConfirm('Eliminar Empleado', `¿Eliminar a ${delEmp.dataset.n}?`, async () => { await deleteDoc(doc(colEmps, delEmp.dataset.id)); showToast('Eliminado'); });
             const delArt = e.target.closest('.btn-del-art'); if(delArt && currentUser) askConfirm('Eliminar Artículo', `¿Eliminar ${delArt.dataset.n}?`, async () => { await deleteDoc(doc(colArts, delArt.dataset.id)); showToast('Eliminado'); });
@@ -264,6 +315,7 @@
         document.getElementById('btn-logout').onclick = async () => { await signOut(auth); showToast('Sesión cerrada', 'info'); };
         document.getElementById('btn-registrar-nav').onclick = () => { document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0]; openModal('registrar-modal'); };
         document.getElementById('search-input').oninput = renderReqs;
+        document.getElementById('search-catalogo').oninput = renderCatalogo;
         document.getElementById('reg-empleado-id').oninput = (e) => { const emp = empsMap.get(e.target.value); document.getElementById('reg-nombre').value = emp ? emp.nombre : ''; };
         document.getElementById('btn-confirm-ok').onclick = () => { if(confirmAction) confirmAction(); closeModal('confirm-modal'); };
         document.getElementById('btn-status-auth').onclick = () => setStatus('Autorizada');
@@ -273,7 +325,7 @@
         document.getElementById('form-login').onsubmit = async (e) => { e.preventDefault(); document.getElementById('btn-login-submit').disabled=true; try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal'); e.target.reset(); showToast('Bienvenido'); } catch(err) { showToast('Credenciales incorrectas', 'error'); } finally { document.getElementById('btn-login-submit').disabled=false; } };
         document.getElementById('form-registrar').onsubmit = async (e) => { e.preventDefault(); if(!e.target['reg-nombre'].value) return showToast('Empleado no válido', 'error'); try { await addDoc(colReqs, { numRequi: e.target['reg-num-requi'].value, empleadoId: e.target['reg-empleado-id'].value, nombre: e.target['reg-nombre'].value, articulo: e.target['reg-articulo'].value, fecha: e.target['reg-fecha'].value, status: 'Pendiente' }); showToast('Registrado'); closeModal('registrar-modal'); e.target.reset(); } catch(err) { showToast('Error', 'error'); } };
         document.getElementById('form-add-empleado').onsubmit = async (e) => { e.preventDefault(); if(empsMap.has(e.target['admin-emp-id'].value)) return showToast('ID duplicado', 'error'); try { await addDoc(colEmps, {id:e.target['admin-emp-id'].value, nombre:e.target['admin-emp-nombre'].value}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); } };
-        document.getElementById('form-add-articulo').onsubmit = async (e) => { e.preventDefault(); if(artsMap.has(e.target['admin-art-num'].value)) return showToast('No. Parte duplicado', 'error'); try { await addDoc(colArts, {num:e.target['admin-art-num'].value, nom:e.target['admin-art-nom'].value}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); } };
+        document.getElementById('form-add-articulo').onsubmit = async (e) => { e.preventDefault(); if(artsMap.has(e.target['admin-art-num'].value)) return showToast('No. Parte duplicado', 'error'); try { await addDoc(colArts, {num:e.target['admin-art-num'].value, nom:e.target['admin-art-nom'].value, img:e.target['admin-art-img'].value}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); } };
         
         document.getElementById('file-upload-emp').onchange = async (e) => {
             const f = e.target.files[0]; if(!f) return;
