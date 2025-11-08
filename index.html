@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolCrib Ultimate Pro</title>
+    <title>ToolCrib Requisiciones</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,56 +31,31 @@
         }
     </script>
     <style>
-        /* Forzar posición de Toasts abajo a la derecha */
-        #toast-container {
-            position: fixed !important;
-            bottom: 1.5rem !important;
-            right: 1.5rem !important;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
+        #toast-container { position: fixed !important; bottom: 1.5rem !important; right: 1.5rem !important; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; }
         .toast { @apply flex items-center p-4 w-80 bg-white rounded-lg shadow-xl border-l-4 animate-slide-in; }
-        .toast-success { @apply border-green-500; }
-        .toast-error { @apply border-red-500; }
-        .toast-info { @apply border-blue-500; }
-        .toast.hiding { @apply animate-slide-out; }
-
+        .toast-success { @apply border-green-500; } .toast-error { @apply border-red-500; } .toast-info { @apply border-blue-500; } .toast.hiding { @apply animate-slide-out; }
         input:read-only { @apply bg-gray-100 text-gray-500 cursor-not-allowed; }
         .nav-tab.active { @apply bg-white text-primary-600 border-t-2 border-l-2 border-r-2 border-gray-200 border-b-white -mb-px z-10; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
-
-    <!-- Contenedor de Notificaciones -->
     <div id="toast-container"></div>
-
     <div class="min-h-screen flex flex-col">
-        <!-- Header -->
         <header class="bg-white shadow-sm sticky top-0 z-20 border-b border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-primary-600 mr-2">
-                      <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 0 0-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634Zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 0 1-.189-.866c0-.298.059-.605.189-.866Zm2.023 6.828a.75.75 0 1 0-1.06-1.06 3.75 3.75 0 0 1-5.304 0 .75.75 0 0 0-1.06 1.06 5.25 5.25 0 0 0 7.424 0Z" clip-rule="evenodd" />
-                    </svg>
-                    <span class="text-2xl font-bold text-gray-900">ToolCrib <span class="text-primary-600">Pro</span></span>
+                    <span class="text-2xl font-bold text-gray-900">ToolCrib <span class="text-primary-600">Requisiciones</span></span>
                 </div>
                 <div class="flex items-center space-x-4">
                     <span id="user-email-display" class="text-sm text-gray-500 hidden sm:inline-block font-medium"></span>
                     <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Administración">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7">
-                          <path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567l-.091.549a.798.798 0 0 1-.517.608 7.45 7.45 0 0 0-.478.198.798.798 0 0 1-.796-.064l-.453-.324a1.875 1.875 0 0 0-2.416.2l-.043.044a1.875 1.875 0 0 0-.2 2.416l.324.453a.798.798 0 0 1 .064.796 7.448 7.448 0 0 0-.198.478.798.798 0 0 1-.608.517l-.55.092a1.875 1.875 0 0 0-1.566 1.849v.06c0 .916.663 1.699 1.567 1.85l.549.091c.281.047.508.25.608.517.06.162.127.321.198.478a.798.798 0 0 1-.064.796l-.324.453a1.875 1.875 0 0 0 .2 2.416l.043.044a1.875 1.875 0 0 0 2.416-.2l.453-.324a.798.798 0 0 1 .796-.064c.157.071.316.137.478.198.267.1.47.327.517.608l.092.55c.15.903.932 1.566 1.849 1.566h.06c.916 0 1.699-.663 1.85-1.567l.091-.549a.798.798 0 0 1 .517-.608 7.52 7.52 0 0 0 .478-.198.798.798 0 0 1 .796.064l.453.324a1.875 1.875 0 0 0 2.416-.2l.043-.044a1.875 1.875 0 0 0 .2-2.416l-.324-.453a.798.798 0 0 1-.064-.796c.071-.157.137-.316.198-.478.1-.267.327-.47.608-.517l.55-.092a1.875 1.875 0 0 0 1.566-1.849v-.06c0-.916-.663-1.699-1.567-1.85l-.549-.091a.798.798 0 0 1-.608-.517 7.507 7.507 0 0 0-.198-.478.798.798 0 0 1 .064-.796l.324-.453a1.875 1.875 0 0 0-.2-2.416l-.043-.044a1.875 1.875 0 0 0-2.416-.2l-.453.324a.798.798 0 0 1-.796.064 7.462 7.462 0 0 0-.478-.198.798.798 0 0 1-.517-.608l-.092-.55a1.875 1.875 0 0 0-1.849-1.566h-.06ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567l-.091.549a.798.798 0 0 1-.517.608 7.45 7.45 0 0 0-.478.198.798.798 0 0 1-.796-.064l-.453-.324a1.875 1.875 0 0 0-2.416.2l-.043.044a1.875 1.875 0 0 0-.2 2.416l.324.453a.798.798 0 0 1 .064.796 7.448 7.448 0 0 0-.198.478.798.798 0 0 1-.608.517l-.55.092a1.875 1.875 0 0 0-1.566 1.849v.06c0 .916.663 1.699 1.567 1.85l.549.091c.281.047.508.25.608.517.06.162.127.321.198.478a.798.798 0 0 1-.064.796l-.324.453a1.875 1.875 0 0 0 .2 2.416l.043.044a1.875 1.875 0 0 0 2.416-.2l.453-.324a.798.798 0 0 1 .796-.064c.157.071.316.137.478.198.267.1.47.327.517.608l.092.55c.15.903.932 1.566 1.849 1.566h.06c.916 0 1.699-.663 1.85-1.567l.091-.549a.798.798 0 0 1 .517-.608 7.52 7.52 0 0 0 .478-.198.798.798 0 0 1 .796.064l.453.324a1.875 1.875 0 0 0 2.416-.2l.043-.044a1.875 1.875 0 0 0 .2-2.416l-.324-.453a.798.798 0 0 1-.064-.796c.071-.157.137-.316.198-.478.1-.267.327-.47.608-.517l.55-.092a1.875 1.875 0 0 0 1.566-1.849v-.06c0-.916-.663-1.699-1.567-1.85l-.549-.091a.798.798 0 0 1-.608-.517 7.507 7.507 0 0 0-.198-.478.798.798 0 0 1 .064-.796l.324-.453a1.875 1.875 0 0 0-.2-2.416l-.043-.044a1.875 1.875 0 0 0-2.416-.2l-.453.324a.798.798 0 0 1-.796.064 7.462 7.462 0 0 0-.478-.198.798.798 0 0 1-.517-.608l-.092-.55a1.875 1.875 0 0 0-1.849-1.566h-.06ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" /></svg>
                     </button>
                     <button id="btn-logout" class="hidden px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition">Salir</button>
                 </div>
             </div>
         </header>
-
-        <!-- Main Content -->
         <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-            <!-- Navigation Tabs -->
             <div class="mb-6 border-b border-gray-200">
                 <nav class="flex -mb-px space-x-6" aria-label="Tabs">
                     <button data-screen="home-screen" class="nav-tab active px-1 py-4 text-sm font-medium text-primary-600 border-b-2 border-primary-600">Inicio</button>
@@ -88,8 +63,6 @@
                     <button id="btn-admin-nav" data-screen="admin-screen" class="hidden nav-tab px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent">Administración</button>
                 </nav>
             </div>
-
-            <!-- Screens -->
             <div id="home-screen" class="screen-content animate-fade-in-down">
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center sm:text-left">
                     <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Centro de Control</h1>
@@ -108,7 +81,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="consultar-screen" class="screen-content hidden animate-fade-in-down">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -131,25 +103,20 @@
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbody-requisiciones" class="bg-white divide-y divide-gray-200">
-                                <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500">Cargando datos...</td></tr>
-                            </tbody>
+                            <tbody id="tbody-requisiciones" class="bg-white divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
             <div id="admin-screen" class="screen-content hidden animate-fade-in-down">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Panel Empleados -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-lg font-bold flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
                             <div class="flex gap-2">
                                 <input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden">
                                 <button onclick="document.getElementById('file-upload-emp').click()" class="px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                    Cargar Excel
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Cargar Excel
                                 </button>
                             </div>
                         </div>
@@ -160,7 +127,6 @@
                         </form>
                         <div id="admin-list-empleados" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
-                    <!-- Panel Artículos -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                         <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
                         <form id="form-add-articulo" class="flex gap-3 mb-6">
@@ -175,43 +141,24 @@
         </main>
     </div>
 
-    <!-- Modales -->
     <div id="registrar-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform transition-all scale-95 opacity-0">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Nueva Solicitud</h2>
             <form id="form-registrar" class="space-y-4">
                  <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
-                        <input type="text" id="reg-fecha" readonly class="bg-gray-100">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-primary-700 mb-1"># Requisición</label>
-                        <input type="text" id="reg-num-requi" required placeholder="Ej. REQ-001" class="border-primary-300 focus:ring-primary-500">
-                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label><input type="text" id="reg-fecha" readonly class="bg-gray-100"></div>
+                    <div><label class="block text-sm font-medium text-primary-700 mb-1"># Requisición</label><input type="text" id="reg-num-requi" required placeholder="Ej. REQ-001" class="border-primary-300 focus:ring-primary-500"></div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">No. Empleado</label>
-                    <input type="number" id="reg-empleado-id" required placeholder="Ingrese ID para buscar..." class="focus:ring-primary-500">
-                </div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">No. Empleado</label><input type="number" id="reg-empleado-id" required placeholder="Ingrese ID para buscar..." class="focus:ring-primary-500"></div>
                 <input type="text" id="reg-nombre" readonly placeholder="Nombre del empleado..." class="bg-gray-50">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Artículo</label>
-                    <select id="reg-articulo" required class="focus:ring-primary-500"><option value="">Seleccione...</option></select>
-                </div>
-                <div class="flex justify-end space-x-3 mt-8">
-                    <button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn btn-primary px-8">Registrar</button>
-                </div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Artículo</label><select id="reg-articulo" required class="focus:ring-primary-500"><option value="">Seleccione...</option></select></div>
+                <div class="flex justify-end space-x-3 mt-8"><button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button><button type="submit" class="btn btn-primary px-8">Registrar</button></div>
             </form>
         </div>
     </div>
-
     <div id="login-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 transform transition-all scale-95 opacity-0 text-center">
-            <div class="mx-auto w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-primary-600"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
-            </div>
+            <div class="mx-auto w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-primary-600"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg></div>
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Acceso Admin</h2>
             <form id="form-login" class="space-y-4 text-left">
                 <div><label class="text-sm font-medium text-gray-700">Email</label><input type="email" id="login-email" required class="mt-1"></div>
@@ -221,24 +168,20 @@
             <button type="button" data-dismiss="modal" class="w-full text-center text-gray-500 text-sm mt-4 hover:text-gray-700">Cancelar</button>
         </div>
     </div>
-
     <div id="status-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-xl p-6 w-full max-w-xs text-center transform transition-all scale-95 opacity-0">
             <h3 class="text-lg font-bold text-gray-900 mb-4">Cambiar Estatus</h3>
             <div class="space-y-2">
-                <button onclick="setStatus('Autorizada')" class="w-full p-3 rounded-lg bg-green-50 text-green-700 font-medium hover:bg-green-100 transition">Autorizada</button>
-                <button onclick="setStatus('Cobrada')" class="w-full p-3 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition">Cobrada</button>
-                <button onclick="setStatus('Pendiente')" class="w-full p-3 rounded-lg bg-yellow-50 text-yellow-700 font-medium hover:bg-yellow-100 transition">Pendiente</button>
+                <button id="btn-status-auth" class="w-full p-3 rounded-lg bg-green-50 text-green-700 font-medium hover:bg-green-100 transition">Autorizada</button>
+                <button id="btn-status-cob" class="w-full p-3 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition">Cobrada</button>
+                <button id="btn-status-pen" class="w-full p-3 rounded-lg bg-yellow-50 text-yellow-700 font-medium hover:bg-yellow-100 transition">Pendiente</button>
             </div>
             <button data-dismiss="modal" class="mt-4 text-gray-400 hover:text-gray-600 text-sm">Cancelar</button>
         </div>
     </div>
-
     <div id="confirm-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-xl p-6 w-full max-w-sm text-center transform transition-all scale-95 opacity-0">
-             <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-600"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
-            </div>
+             <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-600"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg></div>
             <h3 id="confirm-title" class="text-lg font-bold text-gray-900">¿Estás seguro?</h3>
             <p id="confirm-message" class="text-gray-500 text-sm mt-2 mb-6"></p>
             <div class="flex gap-3"><button onclick="closeModal('confirm-modal')" class="btn btn-secondary flex-1">No, cancelar</button><button id="btn-confirm-ok" class="btn btn-danger flex-1">Sí, eliminar</button></div>
@@ -258,7 +201,6 @@
 
         let currentUser = null, currentReqId = null, confirmAction = null, reqsData = [], empsMap = new Map(), artsMap = new Map();
 
-        // UI Helpers
         window.showToast = (msg, type = 'success') => {
             const t = document.createElement('div'); t.className = `toast toast-${type}`;
             t.innerHTML = `<div class="${type==='success'?'text-green-500':type==='error'?'text-red-500':'text-blue-500'} mr-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg></div><div class="text-sm font-medium">${msg}</div>`;
@@ -268,12 +210,9 @@
         window.openModal = (id) => { const m = document.getElementById(id); m.classList.remove('hidden'); setTimeout(() => { m.querySelector('.modal-content').classList.remove('scale-95','opacity-0'); }, 10); };
         window.closeModal = (id) => { const m = document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95','opacity-0'); setTimeout(() => m.classList.add('hidden'), 200); };
         window.askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
-        window.setStatus = async (s) => { if(!currentReqId) return; try { await updateDoc(doc(colReqs, currentReqId), { status: s, fechaCobro: s === 'Cobrada' ? new Date().toISOString().split('T')[0] : null }); showToast(`Estatus: ${s}`); closeModal('status-modal'); } catch(e) { showToast('Error', 'error'); } };
 
-        // Auth & Init
         onAuthStateChanged(auth, (u) => {
             currentUser = u;
-            document.body.classList.toggle('is-admin', !!u);
             document.getElementById('btn-login-icon').classList.toggle('hidden', !!u);
             document.getElementById('btn-logout').classList.toggle('hidden', !u);
             if(u) { document.getElementById('user-email-display').innerText = u.email; document.getElementById('btn-admin-nav').classList.remove('hidden'); }
@@ -282,12 +221,10 @@
             renderReqs(); renderAdmin();
         });
 
-        // Data Listeners
         onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); reqsData.sort((a,b) => b.fecha.localeCompare(a.fecha)); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
         onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
         onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderArtsDropdown(); renderAdmin(); });
 
-        // Renders
         function renderReqs() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const filtered = reqsData.filter(r => (r.nombre||'').toLowerCase().includes(term) || (r.empleadoId||'').toString().includes(term) || (r.articulo||'').toLowerCase().includes(term) || (r.numRequi||'').toLowerCase().includes(term));
@@ -299,13 +236,12 @@
                     <td class="px-6 py-4 text-sm text-gray-900 font-medium">${r.articulo}</td>
                     <td class="px-6 py-4 text-center"><span data-id="${r.id}" class="status-badge cursor-pointer hover:scale-105 transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${r.status==='Autorizada'?'bg-green-100 text-green-800':r.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800'}">${r.status}</span></td>
                     <td class="px-6 py-4 text-sm text-gray-500">${r.fechaCobro || '-'}</td>
-                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="text-gray-400 hover:text-red-600 transition" onclick="askConfirm('Eliminar Requi', '¿Seguro?', async () => { await deleteDoc(doc(colReqs, '${r.id}')); showToast('Eliminado'); })"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td>
+                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-id="${r.id}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td>
                 </tr>`).join('') : '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>';
         }
         function renderAdmin() {
-            const elEmps = document.getElementById('admin-list-empleados'), elArts = document.getElementById('admin-list-articulos');
-            elEmps.innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a,b)=>a.id-b.id).map(e => `<div class="flex justify-between p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><button class="text-gray-300 hover:text-red-500" onclick="askConfirm('Eliminar Empleado', '${e.nombre}', async () => { await deleteDoc(doc(colEmps, '${e.fbId}')); showToast('Eliminado'); })"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
-            elArts.innerHTML = artsMap.size ? Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => `<div class="flex justify-between p-3 hover:bg-white transition"><div><span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span><span>${a.nom}</span></div><button class="text-gray-300 hover:text-red-500" onclick="askConfirm('Eliminar Artículo', '${a.nom}', async () => { await deleteDoc(doc(colArts, '${a.fbId}')); showToast('Eliminado'); })"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
+            document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a,b)=>a.id-b.id).map(e => `<div class="flex justify-between p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><button class="btn-del-emp text-gray-300 hover:text-red-500" data-id="${e.fbId}" data-n="${e.nombre}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
+            document.getElementById('admin-list-articulos').innerHTML = artsMap.size ? Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => `<div class="flex justify-between p-3 hover:bg-white transition"><div><span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span><span>${a.nom}</span></div><button class="btn-del-art text-gray-300 hover:text-red-500" data-id="${a.fbId}" data-n="${a.nom}"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
         }
         function renderArtsDropdown() {
              const s = document.getElementById('reg-articulo'), val = s.value;
@@ -313,27 +249,32 @@
              s.value = val;
         }
 
-        // Event Listeners & Handlers
         document.addEventListener('click', e => {
             if(e.target.closest('.nav-tab')) { document.querySelectorAll('.screen-content').forEach(s=>s.classList.add('hidden')); document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active')); const t=e.target.closest('.nav-tab'); document.getElementById(t.dataset.screen).classList.remove('hidden'); t.classList.add('active'); }
             if(e.target.closest('[data-screen-nav]')) document.querySelector(`.nav-tab[data-screen="${e.target.closest('[data-screen-nav]').dataset.screenNav}"]`).click();
             if(e.target.closest('[data-dismiss="modal"]')) closeModal(e.target.closest('.modal').id);
             if(e.target.closest('.status-badge') && currentUser) { currentReqId = e.target.closest('.status-badge').dataset.id; openModal('status-modal'); }
+            // Event Delegation for Deletes
+            const delReq = e.target.closest('.btn-del-req'); if(delReq && currentUser) askConfirm('Eliminar Requi', '¿Seguro?', async () => { await deleteDoc(doc(colReqs, delReq.dataset.id)); showToast('Eliminado'); });
+            const delEmp = e.target.closest('.btn-del-emp'); if(delEmp && currentUser) askConfirm('Eliminar Empleado', `¿Eliminar a ${delEmp.dataset.n}?`, async () => { await deleteDoc(doc(colEmps, delEmp.dataset.id)); showToast('Eliminado'); });
+            const delArt = e.target.closest('.btn-del-art'); if(delArt && currentUser) askConfirm('Eliminar Artículo', `¿Eliminar ${delArt.dataset.n}?`, async () => { await deleteDoc(doc(colArts, delArt.dataset.id)); showToast('Eliminado'); });
         });
+
         document.getElementById('btn-login-icon').onclick = () => openModal('login-modal');
         document.getElementById('btn-logout').onclick = async () => { await signOut(auth); showToast('Sesión cerrada', 'info'); };
         document.getElementById('btn-registrar-nav').onclick = () => { document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0]; openModal('registrar-modal'); };
         document.getElementById('search-input').oninput = renderReqs;
         document.getElementById('reg-empleado-id').oninput = (e) => { const emp = empsMap.get(e.target.value); document.getElementById('reg-nombre').value = emp ? emp.nombre : ''; };
         document.getElementById('btn-confirm-ok').onclick = () => { if(confirmAction) confirmAction(); closeModal('confirm-modal'); };
-        
-        // Forms
+        document.getElementById('btn-status-auth').onclick = () => setStatus('Autorizada');
+        document.getElementById('btn-status-cob').onclick = () => setStatus('Cobrada');
+        document.getElementById('btn-status-pen').onclick = () => setStatus('Pendiente');
+
         document.getElementById('form-login').onsubmit = async (e) => { e.preventDefault(); document.getElementById('btn-login-submit').disabled=true; try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal'); e.target.reset(); showToast('Bienvenido'); } catch(err) { showToast('Credenciales incorrectas', 'error'); } finally { document.getElementById('btn-login-submit').disabled=false; } };
         document.getElementById('form-registrar').onsubmit = async (e) => { e.preventDefault(); if(!e.target['reg-nombre'].value) return showToast('Empleado no válido', 'error'); try { await addDoc(colReqs, { numRequi: e.target['reg-num-requi'].value, empleadoId: e.target['reg-empleado-id'].value, nombre: e.target['reg-nombre'].value, articulo: e.target['reg-articulo'].value, fecha: e.target['reg-fecha'].value, status: 'Pendiente' }); showToast('Registrado'); closeModal('registrar-modal'); e.target.reset(); } catch(err) { showToast('Error', 'error'); } };
         document.getElementById('form-add-empleado').onsubmit = async (e) => { e.preventDefault(); if(empsMap.has(e.target['admin-emp-id'].value)) return showToast('ID duplicado', 'error'); try { await addDoc(colEmps, {id:e.target['admin-emp-id'].value, nombre:e.target['admin-emp-nombre'].value}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); } };
         document.getElementById('form-add-articulo').onsubmit = async (e) => { e.preventDefault(); if(artsMap.has(e.target['admin-art-num'].value)) return showToast('No. Parte duplicado', 'error'); try { await addDoc(colArts, {num:e.target['admin-art-num'].value, nom:e.target['admin-art-nom'].value}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); } };
         
-        // Bulk Upload (Excel)
         document.getElementById('file-upload-emp').onchange = async (e) => {
             const f = e.target.files[0]; if(!f) return;
             const reader = new FileReader();
@@ -342,15 +283,10 @@
                     const wb = XLSX.read(evt.target.result, {type: 'binary'});
                     const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1});
                     let count = 0;
-                    for(let i=0; i<data.length; i++) { // Empieza en 0 si no tiene headers, o 1 si tiene
-                         if(data[i][0] && data[i][1] && !empsMap.has(data[i][0].toString())) {
-                             await addDoc(colEmps, {id: data[i][0].toString(), nombre: data[i][1].toString()});
-                             count++;
-                         }
-                    }
+                    for(let i=0; i<data.length; i++) { if(data[i][0] && data[i][1] && !empsMap.has(data[i][0].toString())) { await addDoc(colEmps, {id: data[i][0].toString(), nombre: data[i][1].toString()}); count++; } }
                     showToast(`Cargados ${count} empleados`);
                 } catch(err) { console.error(err); showToast('Error al leer archivo', 'error'); }
-                e.target.value = ''; // Reset file input
+                e.target.value = '';
             };
             reader.readAsBinaryString(f);
         };
