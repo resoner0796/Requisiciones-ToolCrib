@@ -37,9 +37,20 @@
         .toast { @apply flex items-center p-4 w-80 bg-white rounded-lg shadow-xl border-l-4 animate-slide-in; }
         .toast-success { @apply border-green-500; } .toast-error { @apply border-red-500; } .toast-info { @apply border-blue-500; } .toast.hiding { @apply animate-slide-out; }
         input:read-only { @apply bg-gray-100 text-gray-500 cursor-not-allowed; }
-        /* Aspect Ratio para imágenes de catálogo */
         .aspect-w-16 { position: relative; padding-bottom: 56.25%; }
         .aspect-w-16 > * { position: absolute; height: 100%; width: 100%; top: 0; right: 0; bottom: 0; left: 0; }
+        
+        /* --- MODO RESPONSIVO PRO PARA TABLAS (Móvil) --- */
+        @media (max-width: 640px) {
+            .responsive-table thead { display: none; }
+            .responsive-table tbody tr { @apply flex flex-col mb-4 bg-white rounded-xl shadow-sm border border-gray-200 p-4; }
+            .responsive-table td { @apply flex justify-between items-center py-2 px-0 border-b border-gray-50 last:border-0; }
+            /* Usa el atributo data-label para poner el título a la izquierda en móvil */
+            .responsive-table td::before { content: attr(data-label); @apply font-medium text-gray-500 text-sm mr-4; }
+            /* Ajustes específicos para celdas en móvil */
+            .responsive-table td.col-acciones { @apply justify-end mt-2 pt-2 border-t border-gray-100; }
+            .responsive-table td.col-acciones::before { display: none; } /* Ocultar label en acciones */
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
@@ -49,16 +60,13 @@
         <header class="bg-white shadow-sm sticky top-0 z-20 border-b border-gray-200 transition-all">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <!-- Botón Regresar (Oculto en Inicio) -->
-                    <button id="main-back-btn" class="hidden mr-3 p-2 text-gray-500 hover:text-primary-600 hover:bg-gray-100 rounded-full transition" title="Regresar al Inicio">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                        </svg>
+                    <button id="main-back-btn" class="hidden mr-2 sm:mr-3 p-2 text-gray-500 hover:text-primary-600 hover:bg-gray-100 rounded-full transition" title="Regresar al Inicio">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
                     </button>
-                    <span class="text-2xl font-bold text-gray-900">ToolCrib <span class="text-primary-600">Requisiciones</span></span>
+                    <span class="text-xl sm:text-2xl font-bold text-gray-900 truncate">ToolCrib <span class="text-primary-600">Requisiciones</span></span>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <span id="user-email-display" class="text-sm text-gray-500 hidden sm:inline-block font-medium"></span>
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <span id="user-email-display" class="text-sm text-gray-500 hidden md:inline-block font-medium"></span>
                     <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Acceso Admin">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" /></svg>
                     </button>
@@ -70,30 +78,26 @@
         <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
             <!-- Home Screen -->
             <div id="home-screen" class="screen-content animate-fade-in">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center sm:text-left">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100 text-center sm:text-left">
                     <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Centro de Control</h1>
                     <p class="mt-2 text-lg text-gray-600">Selecciona una operación para comenzar.</p>
                     
-                    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        <!-- Botón Nueva Requi -->
+                    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
                         <button id="btn-registrar-nav" class="p-6 bg-primary-600 rounded-xl shadow-lg text-white hover:bg-primary-700 transition transform hover:-translate-y-1 flex flex-col items-start">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                             <span class="text-xl font-bold">Nueva Requisición</span>
                             <span class="text-primary-200 text-sm mt-1 text-left">Crear solicitud de material.</span>
                         </button>
-                        <!-- Botón Historial -->
                         <button data-navigate-to="consultar-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 1.875 1.875v12.75a1.875 1.875 0 0 1-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V6.375a1.875 1.875 0 0 1 1.875-1.875Z" /></svg>
                              <span class="text-xl font-bold text-gray-900">Historial</span>
                              <span class="text-gray-500 text-sm mt-1 text-left">Consultar estatus de solicitudes.</span>
                         </button>
-                        <!-- Botón Catálogo -->
                         <button data-navigate-to="catalogo-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25-9 5.25m18 0-9 5.25-9-5.25m18 0V21l-9 5.25-9-5.25V7.5m18 0V21l-9 5.25-9-5.25V7.5" /></svg>
                              <span class="text-xl font-bold text-gray-900">Catálogo</span>
                              <span class="text-gray-500 text-sm mt-1 text-left">Ver productos e imágenes.</span>
                         </button>
-                        <!-- Botón Administración (Solo Visible si Logged In) -->
                         <button id="btn-admin-home" data-navigate-to="admin-screen" class="hidden p-6 bg-gray-800 rounded-xl shadow-md text-white hover:bg-gray-900 transition transform hover:-translate-y-1 flex flex-col items-start">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
                              <span class="text-xl font-bold">Administración</span>
@@ -103,30 +107,30 @@
                 </div>
             </div>
 
-            <!-- Consultar Screen -->
+            <!-- Consultar Screen (Ahora Responsivo PRO) -->
             <div id="consultar-screen" class="screen-content hidden animate-fade-in">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="bg-white sm:rounded-2xl shadow-sm border-y sm:border border-gray-100 overflow-hidden -mx-4 sm:mx-0">
+                    <div class="p-4 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                         <h2 class="text-xl font-bold text-gray-900">Historial de Requisiciones</h2>
                         <div class="relative w-full sm:w-72">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
-                            <input type="search" id="search-input" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar req, empleado, artículo...">
+                            <input type="search" id="search-input" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar...">
                         </div>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
+                    <div class="p-4 sm:p-0">
+                        <table class="responsive-table min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Requi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empleado</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo Solicitado</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobro</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbody-requisiciones" class="bg-white divide-y divide-gray-200"></tbody>
+                            <tbody id="tbody-requisiciones" class="bg-white sm:divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -138,10 +142,10 @@
                     <h2 class="text-2xl font-bold text-gray-900">Catálogo de Productos</h2>
                      <div class="relative w-full sm:w-72">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
-                        <input type="search" id="search-catalogo" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar por No. Parte o Descripción...">
+                        <input type="search" id="search-catalogo" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar...">
                     </div>
                 </div>
-                <div id="catalogo-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div id="catalogo-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     <!-- Tarjetas generadas dinámicamente -->
                 </div>
             </div>
@@ -150,18 +154,18 @@
             <div id="admin-screen" class="screen-content hidden animate-fade-in">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                        <div class="flex justify-between items-center mb-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                             <h2 class="text-lg font-bold flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
-                            <div class="flex gap-2">
+                            <div class="flex gap-2 w-full sm:w-auto">
                                 <input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden">
-                                <button onclick="document.getElementById('file-upload-emp').click()" class="px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center">
+                                <button onclick="document.getElementById('file-upload-emp').click()" class="flex-1 sm:flex-none px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Cargar Excel
                                 </button>
                             </div>
                         </div>
                         <form id="form-add-empleado" class="flex gap-3 mb-6">
                             <input type="number" id="admin-emp-id" placeholder="ID" required class="w-1/3">
-                            <input type="text" id="admin-emp-nombre" placeholder="Nombre Completo" required class="w-full">
+                            <input type="text" id="admin-emp-nombre" placeholder="Nombre" required class="w-full">
                             <button type="submit" class="btn btn-primary flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button>
                         </form>
                         <div id="admin-list-empleados" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
@@ -174,7 +178,7 @@
                                 <input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-1/2">
                             </div>
                             <div class="flex gap-3">
-                                <input type="text" id="admin-art-img" placeholder="URL imagen o nombre de archivo (ej. lentes.png)" class="w-full">
+                                <input type="text" id="admin-art-img" placeholder="URL imagen o nombre archivo" class="w-full">
                                 <button type="submit" class="btn btn-primary flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button>
                             </div>
                         </form>
@@ -185,18 +189,18 @@
         </main>
     </div>
 
-    <!-- Modales (Sin cambios funcionales, solo estéticos si aplica) -->
+    <!-- Modales -->
     <div id="registrar-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform transition-all scale-95 opacity-0">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Nueva Solicitud</h2>
             <form id="form-registrar" class="space-y-4">
                  <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label><input type="text" id="reg-fecha" readonly class="bg-gray-100"></div>
-                    <div><label class="block text-sm font-medium text-primary-700 mb-1"># Requisición</label><input type="text" id="reg-num-requi" required placeholder="Ej. REQ-001" class="border-primary-300 focus:ring-primary-500"></div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label><input type="text" id="reg-fecha" readonly class="bg-gray-100 w-full"></div>
+                    <div><label class="block text-sm font-medium text-primary-700 mb-1"># Requisición</label><input type="text" id="reg-num-requi" required placeholder="Ej. REQ-001" class="border-primary-300 focus:ring-primary-500 w-full"></div>
                 </div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1">No. Empleado</label><input type="number" id="reg-empleado-id" required placeholder="Ingrese ID para buscar..." class="focus:ring-primary-500"></div>
-                <input type="text" id="reg-nombre" readonly placeholder="Nombre del empleado..." class="bg-gray-50">
-                <div><label class="block text-sm font-medium text-gray-700 mb-1">Artículo</label><select id="reg-articulo" required class="focus:ring-primary-500"><option value="">Seleccione...</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">No. Empleado</label><input type="number" id="reg-empleado-id" required placeholder="Ingrese ID para buscar..." class="focus:ring-primary-500 w-full"></div>
+                <input type="text" id="reg-nombre" readonly placeholder="Nombre del empleado..." class="bg-gray-50 w-full">
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Artículo</label><select id="reg-articulo" required class="focus:ring-primary-500 w-full"><option value="">Seleccione...</option></select></div>
                 <div class="flex justify-end space-x-3 mt-8"><button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button><button type="submit" class="btn btn-primary px-8">Registrar</button></div>
             </form>
         </div>
@@ -206,8 +210,8 @@
             <div class="mx-auto w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-primary-600"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg></div>
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Acceso Admin</h2>
             <form id="form-login" class="space-y-4 text-left">
-                <div><label class="text-sm font-medium text-gray-700">Email</label><input type="email" id="login-email" required class="mt-1"></div>
-                <div><label class="text-sm font-medium text-gray-700">Contraseña</label><input type="password" id="login-pass" required class="mt-1"></div>
+                <div><label class="text-sm font-medium text-gray-700">Email</label><input type="email" id="login-email" required class="mt-1 w-full"></div>
+                <div><label class="text-sm font-medium text-gray-700">Contraseña</label><input type="password" id="login-pass" required class="mt-1 w-full"></div>
                 <button type="submit" id="btn-login-submit" class="btn btn-primary w-full mt-6 py-3">Entrar</button>
             </form>
             <button type="button" data-dismiss="modal" class="w-full text-center text-gray-500 text-sm mt-4 hover:text-gray-700">Cancelar</button>
@@ -257,27 +261,36 @@
         window.closeModal = (id) => { const m = document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95','opacity-0'); setTimeout(() => m.classList.add('hidden'), 200); };
         window.askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
 
-        // --- NUEVA LÓGICA DE NAVEGACIÓN ---
         window.navigateTo = (screenId) => {
             document.querySelectorAll('.screen-content').forEach(s => s.classList.add('hidden'));
             document.getElementById(screenId).classList.remove('hidden');
-            // Mostrar u ocultar botón de regresar
             document.getElementById('main-back-btn').classList.toggle('hidden', screenId === 'home-screen');
         };
+
+        // --- FUNCIÓN FALTANTE AÑADIDA AQUÍ ---
+        window.setStatus = async (newStatus) => {
+            if (!currentReqId || !currentUser) return;
+            try {
+                const updateData = { status: newStatus };
+                if (newStatus === 'Cobrada') {
+                    updateData.fechaCobro = new Date().toISOString().split('T')[0];
+                } else {
+                    updateData.fechaCobro = null;
+                }
+                await updateDoc(doc(colReqs, currentReqId), updateData);
+                showToast(`Estatus: ${newStatus}`);
+                closeModal('status-modal');
+            } catch (e) { console.error(e); showToast('Error al actualizar', 'error'); }
+        };
+        // ------------------------------------
 
         onAuthStateChanged(auth, (u) => {
             currentUser = u;
             document.getElementById('btn-login-icon').classList.toggle('hidden', !!u);
             document.getElementById('btn-logout').classList.toggle('hidden', !u);
-            // Mostrar botón Admin en Home solo si está logueado
             document.getElementById('btn-admin-home').classList.toggle('hidden', !u);
-
-            if(u) { 
-                document.getElementById('user-email-display').innerText = u.email; 
-            } else { 
-                // Si cierra sesión y estaba en admin, volver a home
-                if(!document.getElementById('admin-screen').classList.contains('hidden')) window.navigateTo('home-screen');
-            }
+            if(u) { document.getElementById('user-email-display').innerText = u.email; } 
+            else { if(!document.getElementById('admin-screen').classList.contains('hidden')) window.navigateTo('home-screen'); }
             document.querySelectorAll('.col-acciones').forEach(e => e.classList.toggle('hidden', !u));
             renderReqs(); renderAdmin(); renderCatalogo();
         });
@@ -291,12 +304,12 @@
             const filtered = reqsData.filter(r => (r.nombre||'').toLowerCase().includes(term) || (r.empleadoId||'').toString().includes(term) || (r.articulo||'').toLowerCase().includes(term) || (r.numRequi||'').toLowerCase().includes(term));
             document.getElementById('tbody-requisiciones').innerHTML = filtered.length ? filtered.map(r => `
                 <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4 font-medium text-primary-900">${r.numRequi || '-'}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td>
-                    <td class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td>
-                    <td class="px-6 py-4 text-sm text-gray-900 font-medium">${r.articulo}</td>
-                    <td class="px-6 py-4 text-center"><span data-id="${r.id}" class="status-badge cursor-pointer hover:scale-105 transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${r.status==='Autorizada'?'bg-green-100 text-green-800':r.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800'}">${r.status}</span></td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${r.fechaCobro || '-'}</td>
+                    <td data-label="# Requi" class="px-6 py-4 font-medium text-primary-900">${r.numRequi || '-'}</td>
+                    <td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td>
+                    <td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td>
+                    <td data-label="Artículo" class="px-6 py-4 text-sm text-gray-900 font-medium">${r.articulo}</td>
+                    <td data-label="Estatus" class="px-6 py-4 text-center"><span data-id="${r.id}" class="status-badge cursor-pointer hover:scale-105 transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${r.status==='Autorizada'?'bg-green-100 text-green-800':r.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800'}">${r.status}</span></td>
+                    <td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">${r.fechaCobro || '-'}</td>
                     <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-id="${r.id}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td>
                 </tr>`).join('') : '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>';
         }
@@ -326,10 +339,8 @@
         }
 
         document.addEventListener('click', e => {
-            // Nueva Delegación para Navegación
             const navBtn = e.target.closest('[data-navigate-to]');
             if (navBtn) window.navigateTo(navBtn.dataset.navigateTo);
-            
             if(e.target.closest('[data-dismiss="modal"]')) closeModal(e.target.closest('.modal').id);
             if(e.target.closest('.status-badge') && currentUser) { currentReqId = e.target.closest('.status-badge').dataset.id; openModal('status-modal'); }
             const delReq = e.target.closest('.btn-del-req'); if(delReq && currentUser) askConfirm('Eliminar Requi', '¿Seguro?', async () => { await deleteDoc(doc(colReqs, delReq.dataset.id)); showToast('Eliminado'); });
@@ -370,7 +381,6 @@
             reader.readAsBinaryString(f);
         };
 
-        // Iniciar en Home
         window.navigateTo('home-screen');
     </script>
 </body>
