@@ -32,17 +32,22 @@
                         },
                     },
                     animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'fade-out-down': 'fadeOutDown 0.5s ease-out forwards',
                         'fade-in-down': 'fadeInDown 0.5s ease-out',
-                        'fade-out-up': 'fadeOutUp 0.5s ease-out forwards',
                     },
                     keyframes: {
-                        fadeInDown: {
-                            '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
                         },
-                        fadeOutUp: {
+                        fadeOutDown: {
                             '0%': { opacity: '1', transform: 'translateY(0)' },
-                            '100%': { opacity: '0', transform: 'translateY(-10px)' },
+                            '100%': { opacity: '0', transform: 'translateY(20px)' },
+                        },
+                         fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         },
                     }
                 }
@@ -102,12 +107,12 @@
             opacity: 0;
         }
 
-        /* Contenedor de Toasts */
+        /* Contenedor de Toasts (AHORA ABAJO A LA DERECHA) */
         #toast-container {
-            @apply fixed top-5 right-5 z-50 flex flex-col gap-3;
+            @apply fixed bottom-5 right-5 z-50 flex flex-col gap-3;
         }
         .toast {
-            @apply flex items-center p-4 mb-4 w-full max-w-xs text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 border-l-4 animate-fade-in-down;
+            @apply flex items-center p-4 w-full max-w-xs text-gray-900 bg-white rounded-lg shadow-lg border-l-4 animate-fade-in-up;
         }
         .toast-success { @apply border-green-500; }
         .toast-error { @apply border-red-500; }
@@ -150,12 +155,11 @@
                         
                         
 
-<button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition-colors p-1 rounded-full hover:bg-gray-100" title="Iniciar Sesión">
+<button id="btn-login-icon" class="text-gray-500 hover:text-primary-600 transition-colors p-1 rounded-full hover:bg-gray-100" title="Configuración / Iniciar Sesión">
                             
 
-<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-1.007 1.11-.907L12 3.28c.55.1 1.02.565 1.11.907l.095.45c.306.115.61.25.908.4l.43.195c.523.238.982.697 1.119 1.241l.12.51c.264.18.517.388.756.621l.45.419c.47.438.724 1.065.596 1.673l-.12.582c.03.176.05.357.05.541s-.02.365-.05.541l.12.582c.128.608-.126 1.235-.596 1.673l-.45.419c-.24.233-.492.441-.756.621l-.12.51c-.137.544-.596 1.003-1.119 1.241l-.43.195c-.298.15-.602.284-.908.4l-.095.45c-.09.542-.56 1.007-1.11.907L12 20.72c-.55-.1-1.02-.565-1.11-.907l-.095-.45c-.306-.115-.61-.25-.908-.4l-.43-.195c-.523-.238-.982-.697-1.119-1.241l-.12-.51c-.264-.18-.517-.388-.756-.621l-.45-.419c-.47-.438-.724-1.065-.596-1.673l.12-.582c-.03-.176-.05-.357-.05-.541s.02-.365.05-.541l-.12-.582c-.128-.608.126-1.235.596-1.673l.45-.419c.24-.233.492.441.756.621l.12-.51c.137-.544.596-1.003 1.119 1.241l.43.195c.298-.15.602-.284.908-.4l.095-.45Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                              <path fill-rule="evenodd" d="M11.828 2.25c-.916 0-1.699.663-1.85 1.567l-.091.549a.798.798 0 0 1-.517.608 7.45 7.45 0 0 0-.478.198.798.798 0 0 1-.796-.064l-.453-.324a1.875 1.875 0 0 0-2.416.2l-.043.044a1.875 1.875 0 0 0-.2 2.416l.324.453a.798.798 0 0 1 .064.796 7.448 7.448 0 0 0-.198.478.798.798 0 0 1-.608.517l-.55.092a1.875 1.875 0 0 0-1.566 1.849v.06c0 .916.663 1.699 1.567 1.85l.549.091c.281.047.508.25.608.517.06.162.127.321.198.478a.798.798 0 0 1-.064.796l-.324.453a1.875 1.875 0 0 0 .2 2.416l.043.044a1.875 1.875 0 0 0 2.416-.2l.453-.324a.798.798 0 0 1 .796-.064c.157.071.316.137.478.198.267.1.47.327.517.608l.092.55c.15.903.932 1.566 1.849 1.566h.06c.916 0 1.699-.663 1.85-1.567l.091-.549a.798.798 0 0 1 .517-.608 7.52 7.52 0 0 0 .478-.198.798.798 0 0 1 .796.064l.453.324a1.875 1.875 0 0 0 2.416-.2l.043-.044a1.875 1.875 0 0 0 .2-2.416l-.324-.453a.798.798 0 0 1-.064-.796c.071-.157.137-.316.198-.478.1-.267.327-.47.608-.517l.55-.092a1.875 1.875 0 0 0 1.566-1.849v-.06c0-.916-.663-1.699-1.567-1.85l-.549-.091a.798.798 0 0 1-.608-.517 7.507 7.507 0 0 0-.198-.478.798.798 0 0 1 .064-.796l.324-.453a1.875 1.875 0 0 0-.2-2.416l-.043-.044a1.875 1.875 0 0 0-2.416-.2l-.453.324a.798.798 0 0 1-.796.064 7.462 7.462 0 0 0-.478-.198.798.798 0 0 1-.517-.608l-.092-.55a1.875 1.875 0 0 0-1.849-1.566h-.06ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" />
                             </svg>
                         </button>
                         
@@ -245,18 +249,21 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Emp</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Emp</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobrada el</th>
+                                <!-- Columna de Acciones (visible solo para admin) -->
+                                <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-requisiciones" class="bg-white divide-y divide-gray-200">
                             
 
 <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                <td colspan="7" class="px-6 py-12 text-center text-gray-500">
                                     <div class="flex justify-center items-center flex-col">
                                         <svg class="animate-spin h-8 w-8 text-primary-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -535,14 +542,14 @@
         // Estado Global
         let currentUser = null;
         let currentEditingRequisitionId = null;
-        let confirmCallback = null; // Para el modal de confirmación
-        let requisitionsData = []; // Copia local para filtrado
+        let confirmCallback = null;
+        let requisitionsData = [];
 
         // Mapas para caché
         let empleadosMap = new Map();
         let articulosMap = new Map();
 
-        // Referencias DOM (UI Elements)
+        // Referencias DOM
         const toastContainer = document.getElementById('toast-container');
         const btnLoginIcon = document.getElementById('btn-login-icon');
         const btnLogout = document.getElementById('btn-logout');
@@ -567,7 +574,7 @@
         const btnConfirmOk = document.getElementById('btn-confirm-ok');
         const btnConfirmCancel = document.getElementById('btn-confirm-cancel');
 
-        // --- FUNCIONES DE UI (TOASTS & MODALES) ---
+        // --- UI HELPERS ---
 
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
@@ -575,18 +582,18 @@
             
             let iconSvg = '';
             if (type === 'success') {
-                iconSvg = '<svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>';
+                iconSvg = '<svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>';
             } else if (type === 'error') {
-                iconSvg = '<svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>';
+                iconSvg = '<svg class="w-5 h-5 text-red-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>';
             } else {
-                 iconSvg = '<svg class="w-5 h-5 text-blue-500 mr-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>';
+                 iconSvg = '<svg class="w-5 h-5 text-blue-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>';
             }
 
             toast.innerHTML = `${iconSvg}<div class="text-sm font-normal">${message}</div>`;
             toastContainer.appendChild(toast);
 
             setTimeout(() => {
-                toast.classList.replace('animate-fade-in-down', 'animate-fade-out-up');
+                toast.classList.replace('animate-fade-in-up', 'animate-fade-out-down');
                 setTimeout(() => toast.remove(), 500);
             }, 3000);
         }
@@ -615,53 +622,43 @@
             openModal('confirm-modal');
         }
 
-        // --- AUTENTICACIÓN ---
+        // --- AUTHENTICATION ---
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
-                // Usuario Logueado
-                console.log("Usuario conectado:", user.email);
                 btnLoginIcon.classList.add('hidden');
                 btnLogout.classList.remove('hidden');
                 userEmailDisplay.textContent = user.email;
                 userEmailDisplay.classList.remove('hidden');
                 btnAdminNav.classList.remove('hidden');
+                document.querySelectorAll('.col-acciones').forEach(el => el.classList.remove('hidden'));
             } else {
-                // Usuario Desconectado
-                console.log("Usuario desconectado");
                 btnLoginIcon.classList.remove('hidden');
                 btnLogout.classList.add('hidden');
                 userEmailDisplay.classList.add('hidden');
                 btnAdminNav.classList.add('hidden');
-                // Si estaba en admin, volver a home
+                document.querySelectorAll('.col-acciones').forEach(el => el.classList.add('hidden'));
                 if (!document.getElementById('admin-screen').classList.contains('hidden')) {
                     document.querySelector('[data-screen="home-screen"]').click();
                 }
             }
-            renderRequisitions(); // Re-renderizar para actualizar permisos de UI
-            renderAdminLists();   // Re-renderizar listas de admin
+            filterAndRenderRequisitions(); 
+            renderAdminLists();
         });
 
         async function handleLogin(e) {
             e.preventDefault();
-            const email = loginEmailInput.value;
-            const password = loginPassInput.value;
-
             btnLoginSubmit.disabled = true;
             loginSpinner.classList.remove('hidden');
-
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                await signInWithEmailAndPassword(auth, loginEmailInput.value, loginPassInput.value);
                 closeModal('login-modal');
-                showToast(`Bienvenido, ${email}`);
-                loginEmailInput.value = '';
-                loginPassInput.value = '';
+                showToast(`Bienvenido, ${loginEmailInput.value}`);
+                e.target.reset();
             } catch (error) {
-                console.error("Error de login:", error);
-                let msg = "Error al iniciar sesión.";
-                if (error.code === 'auth/invalid-credential') msg = "Correo o contraseña incorrectos.";
-                if (error.code === 'auth/too-many-requests') msg = "Demasiados intentos. Espere un momento.";
+                let msg = "Error de credenciales.";
+                if (error.code === 'auth/too-many-requests') msg = "Demasiados intentos. Espere.";
                 showToast(msg, 'error');
             } finally {
                 btnLoginSubmit.disabled = false;
@@ -669,39 +666,23 @@
             }
         }
 
-        async function handleLogout() {
-            try {
-                await signOut(auth);
-                showToast("Sesión cerrada correctamente.", 'info');
-            } catch (error) {
-                console.error("Error al cerrar sesión:", error);
-            }
-        }
+        // --- DATA HANDLERS ---
 
-        // --- FIRESTORE DATA HANDLERS ---
-
-        // 1. Requisiciones (Público - Lectura)
         onSnapshot(requisitionsCollection, (snapshot) => {
             requisitionsData = [];
             snapshot.forEach((doc) => requisitionsData.push({ id: doc.id, ...doc.data() }));
-            requisitionsData.sort((a, b) => b.fecha.localeCompare(a.fecha)); // Ordenar por fecha desc
+            requisitionsData.sort((a, b) => b.fecha.localeCompare(a.fecha));
             filterAndRenderRequisitions();
         }, (error) => {
-            console.error("Error requisiciones:", error);
-            // Si el error es de permisos, mostramos lista vacía en vez de spinner eterno
-            if (error.code === 'permission-denied') {
-                 tbodyRequisiciones.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-gray-500">No tienes permisos para ver las requisiciones.</td></tr>`;
-            }
+            if (error.code === 'permission-denied') tbodyRequisiciones.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500">No tienes permisos para ver datos.</td></tr>`;
         });
 
-        // 2. Empleados (Público - Lectura para autocompletar, Escritura protegida)
         onSnapshot(employeesCollection, (snapshot) => {
             empleadosMap.clear();
             snapshot.forEach((doc) => empleadosMap.set(doc.data().id, { ...doc.data(), fbId: doc.id }));
             renderAdminLists();
         });
 
-        // 3. Artículos (Igual que empleados)
         onSnapshot(articlesCollection, (snapshot) => {
             articulosMap.clear();
             snapshot.forEach((doc) => articulosMap.set(doc.data().nombre, { ...doc.data(), fbId: doc.id }));
@@ -709,7 +690,7 @@
             renderAdminLists();
         });
 
-        // --- RENDERING UI ---
+        // --- RENDER FUNCTIONS ---
 
         function filterAndRenderRequisitions() {
             const term = searchInput.value.toLowerCase();
@@ -721,9 +702,9 @@
             renderRequisitions(filtered);
         }
 
-        function renderRequisitions(data = requisitionsData) {
+        function renderRequisitions(data) {
             if (data.length === 0) {
-                tbodyRequisiciones.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-gray-500 italic">No se encontraron requisiciones.</td></tr>`;
+                tbodyRequisiciones.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">No se encontraron requisiciones.</td></tr>`;
                 return;
             }
 
@@ -733,18 +714,25 @@
                 if (req.status === 'Cobrada') statusColor = 'bg-blue-100 text-blue-800 border-blue-200';
 
                 const isClickable = currentUser ? 'cursor-pointer hover:scale-105' : 'cursor-default opacity-90';
-                const title = currentUser ? 'Clic para cambiar estatus' : '';
+                const fechaCobro = req.fechaCobro || '-';
+                const accionesClass = currentUser ? '' : 'hidden';
 
                 return `
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${req.fecha}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${req.empleadoId}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${req.nombre}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${req.articulo}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span data-id="${req.id}" class="status-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${statusColor} transition-transform ${isClickable}" title="${title}">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">${req.fecha}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${req.empleadoId}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">${req.nombre}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">${req.articulo}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span data-id="${req.id}" class="status-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${statusColor} transition-transform ${isClickable}">
                                 ${req.status}
                             </span>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">${fechaCobro}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-center col-acciones ${accionesClass}">
+                             <button class="btn-delete-req text-gray-400 hover:text-red-600 p-1 transition-colors" data-reqid="${req.id}" title="Eliminar Requisición">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                            </button>
                         </td>
                     </tr>
                 `;
@@ -752,57 +740,37 @@
         }
 
         function renderAdminLists() {
-            // Render Empleados
             if (empleadosMap.size === 0) {
-                adminListEmpleados.innerHTML = '<div class="p-4 text-center text-gray-500 italic">Sin empleados registrados.</div>';
+                adminListEmpleados.innerHTML = '<div class="p-4 text-center text-gray-500 italic">Sin empleados.</div>';
             } else {
-                const sorted = Array.from(empleadosMap.values()).sort((a, b) => a.id - b.id);
-                adminListEmpleados.innerHTML = sorted.map(emp => `
-                    <div class="flex justify-between items-center p-3 hover:bg-white transition-colors">
-                        <div>
-                            <span class="font-medium text-gray-900">${emp.id}</span>
-                            <span class="text-gray-500 ml-2">— ${emp.nombre}</span>
-                        </div>
-                        <button class="btn-delete-emp text-gray-400 hover:text-red-600 p-1 transition-colors" data-fbid="${emp.fbId}" data-name="${emp.nombre}">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                        </button>
-                    </div>
-                `).join('');
+                adminListEmpleados.innerHTML = Array.from(empleadosMap.values())
+                    .sort((a, b) => a.id - b.id)
+                    .map(emp => `<div class="flex justify-between items-center p-3 hover:bg-white transition-colors"><div><span class="font-medium text-gray-900">${emp.id}</span><span class="text-gray-500 ml-2">— ${emp.nombre}</span></div><button class="btn-delete-emp text-gray-400 hover:text-red-600 p-1" data-fbid="${emp.fbId}" data-name="${emp.nombre}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></div>`)
+                    .join('');
             }
 
-            // Render Artículos
             if (articulosMap.size === 0) {
-                adminListArticulos.innerHTML = '<div class="p-4 text-center text-gray-500 italic">Sin artículos registrados.</div>';
+                adminListArticulos.innerHTML = '<div class="p-4 text-center text-gray-500 italic">Sin artículos.</div>';
             } else {
-                const sorted = Array.from(articulosMap.values()).sort((a, b) => a.nombre.localeCompare(b.nombre));
-                adminListArticulos.innerHTML = sorted.map(art => `
-                    <div class="flex justify-between items-center p-3 hover:bg-white transition-colors">
-                        <span class="text-gray-700">${art.nombre}</span>
-                        <button class="btn-delete-art text-gray-400 hover:text-red-600 p-1 transition-colors" data-fbid="${art.fbId}" data-name="${art.nombre}">
-                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                        </button>
-                    </div>
-                `).join('');
+                adminListArticulos.innerHTML = Array.from(articulosMap.values())
+                    .sort((a, b) => a.nombre.localeCompare(b.nombre))
+                    .map(art => `<div class="flex justify-between items-center p-3 hover:bg-white transition-colors"><span class="text-gray-700">${art.nombre}</span><button class="btn-delete-art text-gray-400 hover:text-red-600 p-1" data-fbid="${art.fbId}" data-name="${art.nombre}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></div>`)
+                    .join('');
             }
         }
 
         function renderArticulosDropdown() {
             const select = document.getElementById('reg-articulo');
             const currentVal = select.value;
-            let html = '<option value="">Seleccione un artículo...</option>';
-            
-            const sorted = Array.from(articulosMap.keys()).sort();
-            sorted.forEach(nombre => {
-                html += `<option value="${nombre}">${nombre}</option>`;
-            });
-            select.innerHTML = html;
-            select.value = currentVal; // Intentar mantener selección si existe
+            select.innerHTML = '<option value="">Seleccione un artículo...</option>' + 
+                Array.from(articulosMap.keys()).sort().map(n => `<option value="${n}">${n}</option>`).join('');
+            select.value = currentVal;
         }
 
-        // --- EVENT LISTENERS ---
+        // --- INITIALIZATION & LISTENERS ---
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Navegación
+            // Tabs & Nav
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     document.querySelectorAll('.screen-content').forEach(s => s.classList.add('hidden'));
@@ -811,129 +779,90 @@
                     tab.classList.add('active');
                 });
             });
+            document.querySelectorAll('[data-screen-nav]').forEach(btn => btn.addEventListener('click', () => document.querySelector(`.nav-tab[data-screen="${btn.dataset.screenNav}"]`).click()));
 
-            document.querySelectorAll('[data-screen-nav]').forEach(btn => {
-                btn.addEventListener('click', () => document.querySelector(`.nav-tab[data-screen="${btn.dataset.screenNav}"]`).click());
-            });
-
-            // Modales
-            document.querySelectorAll('[data-dismiss="modal"]').forEach(btn => {
-                btn.addEventListener('click', () => closeModal(btn.closest('.modal').id));
-            });
-
+            // Modals
+            document.querySelectorAll('[data-dismiss="modal"]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.closest('.modal').id)));
+            btnLoginIcon.addEventListener('click', () => openModal('login-modal'));
             document.getElementById('btn-registrar-nav').addEventListener('click', () => {
                 document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0];
                 openModal('registrar-modal');
             });
 
-            btnLoginIcon.addEventListener('click', () => openModal('login-modal'));
+            // Auth Listeners
             document.getElementById('form-login').addEventListener('submit', handleLogin);
-            btnLogout.addEventListener('click', handleLogout);
+            btnLogout.addEventListener('click', async () => { await signOut(auth); showToast("Sesión cerrada.", 'info'); });
 
-            // Búsqueda
+            // Inputs
             searchInput.addEventListener('input', filterAndRenderRequisitions);
-
-            // Autocompletado Empleado
             document.getElementById('reg-empleado-id').addEventListener('input', (e) => {
-                const empData = empleadosMap.get(e.target.value);
-                document.getElementById('reg-nombre').value = empData ? empData.nombre : '';
+                const emp = empleadosMap.get(e.target.value);
+                document.getElementById('reg-nombre').value = emp ? emp.nombre : '';
             });
 
-            // Formularios Submit
+            // Forms
             document.getElementById('form-registrar').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const form = e.target;
-                if (!form['reg-nombre'].value) return showToast('Número de empleado no válido', 'error');
-                
+                if (!e.target['reg-nombre'].value) return showToast('Empleado inválido', 'error');
                 try {
                     await addDoc(requisitionsCollection, {
-                        empleadoId: form['reg-empleado-id'].value,
-                        nombre: form['reg-nombre'].value,
-                        articulo: form['reg-articulo'].value,
-                        fecha: form['reg-fecha'].value,
-                        status: 'Pendiente'
+                        empleadoId: e.target['reg-empleado-id'].value, nombre: e.target['reg-nombre'].value,
+                        articulo: e.target['reg-articulo'].value, fecha: e.target['reg-fecha'].value, status: 'Pendiente'
                     });
-                    showToast('Requisición registrada correctamente');
-                    closeModal('registrar-modal');
-                    form.reset();
-                } catch (err) { console.error(err); showToast('Error al registrar', 'error'); }
+                    showToast('Requisición registrada'); closeModal('registrar-modal'); e.target.reset();
+                } catch (err) { showToast('Error al registrar', 'error'); }
             });
 
             document.getElementById('form-add-empleado').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (!currentUser) return showToast('Debes iniciar sesión como administrador', 'error');
-                const id = document.getElementById('admin-emp-id').value;
-                if (empleadosMap.has(id)) return showToast('Este ID de empleado ya existe', 'error');
-
-                try {
-                    await addDoc(employeesCollection, { id, nombre: document.getElementById('admin-emp-nombre').value });
-                    showToast('Empleado agregado');
-                    e.target.reset();
-                } catch (err) { console.error(err); showToast('Error al guardar empleado', 'error'); }
+                e.preventDefault(); if (!currentUser) return;
+                if (empleadosMap.has(e.target['admin-emp-id'].value)) return showToast('ID ya existe', 'error');
+                try { await addDoc(employeesCollection, { id: e.target['admin-emp-id'].value, nombre: e.target['admin-emp-nombre'].value }); showToast('Empleado agregado'); e.target.reset(); } catch (err) { showToast('Error', 'error'); }
             });
 
-            document.getElementById('form-add-articulo').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (!currentUser) return showToast('Debes iniciar sesión como administrador', 'error');
-                const nombre = document.getElementById('admin-art-nombre').value.trim();
-                if (articulosMap.has(nombre)) return showToast('Este artículo ya existe', 'error');
-
-                try {
-                    await addDoc(articlesCollection, { nombre });
-                    showToast('Artículo agregado');
-                    e.target.reset();
-                } catch (err) { console.error(err); showToast('Error al guardar artículo', 'error'); }
+             document.getElementById('form-add-articulo').addEventListener('submit', async (e) => {
+                e.preventDefault(); if (!currentUser) return;
+                if (articulosMap.has(e.target['admin-art-nombre'].value.trim())) return showToast('Artículo ya existe', 'error');
+                try { await addDoc(articlesCollection, { nombre: e.target['admin-art-nombre'].value.trim() }); showToast('Artículo agregado'); e.target.reset(); } catch (err) { showToast('Error', 'error'); }
             });
 
-            // Delegación de eventos para listas dinámicas
-            tbodyRequisiciones.addEventListener('click', (e) => {
-                const badge = e.target.closest('.status-badge');
-                if (badge && currentUser) {
-                    currentEditingRequisitionId = badge.dataset.id;
-                    openModal('status-modal');
-                }
-            });
-
-            // Manejadores para eliminar (Admin)
-            adminListEmpleados.addEventListener('click', (e) => {
-                const btn = e.target.closest('.btn-delete-emp');
-                if (btn) {
-                    askConfirmation('Eliminar Empleado', `¿Eliminar a ${btn.dataset.name}?`, async () => {
-                        await deleteDoc(doc(employeesCollection, btn.dataset.fbid));
-                        showToast('Empleado eliminado');
-                    });
-                }
-            });
-
-            adminListArticulos.addEventListener('click', (e) => {
-                const btn = e.target.closest('.btn-delete-art');
-                if (btn) {
-                    askConfirmation('Eliminar Artículo', `¿Eliminar "${btn.dataset.name}"?`, async () => {
-                        await deleteDoc(doc(articlesCollection, btn.dataset.fbid));
-                        showToast('Artículo eliminado');
-                    });
-                }
-            });
-
-            // Confirmación Modal Actions
-            btnConfirmOk.addEventListener('click', () => {
-                if (confirmCallback) confirmCallback();
-                closeModal('confirm-modal');
-            });
+            // Confirm Action
+            btnConfirmOk.addEventListener('click', () => { if(confirmCallback) confirmCallback(); closeModal('confirm-modal'); });
             btnConfirmCancel.addEventListener('click', () => closeModal('confirm-modal'));
 
-            // Botones de estatus
-            const updateStatus = async (status) => {
+            // Dynamic Lists Click Handlers
+            tbodyRequisiciones.addEventListener('click', (e) => {
+                if (currentUser && e.target.closest('.status-badge')) {
+                    currentEditingRequisitionId = e.target.closest('.status-badge').dataset.id;
+                    openModal('status-modal');
+                }
+                if (currentUser && e.target.closest('.btn-delete-req')) {
+                    const reqId = e.target.closest('.btn-delete-req').dataset.reqid;
+                    askConfirmation('Eliminar Requisición', '¿Seguro que deseas eliminar este registro?', async () => {
+                        await deleteDoc(doc(requisitionsCollection, reqId)); showToast('Requisición eliminada');
+                    });
+                }
+            });
+
+            adminListEmpleados.addEventListener('click', (e) => {
+                const btn = e.target.closest('.btn-delete-emp');
+                if (btn) askConfirmation('Eliminar Empleado', `¿Eliminar a ${btn.dataset.name}?`, async () => { await deleteDoc(doc(employeesCollection, btn.dataset.fbid)); showToast('Empleado eliminado'); });
+            });
+             adminListArticulos.addEventListener('click', (e) => {
+                const btn = e.target.closest('.btn-delete-art');
+                if (btn) askConfirmation('Eliminar Artículo', `¿Eliminar "${btn.dataset.name}"?`, async () => { await deleteDoc(doc(articlesCollection, btn.dataset.fbid)); showToast('Artículo eliminado'); });
+            });
+
+            // Status Update
+            const setStatus = async (status) => {
                 if (!currentEditingRequisitionId) return;
-                try {
-                    await updateDoc(doc(requisitionsCollection, currentEditingRequisitionId), { status });
-                    showToast(`Estatus actualizado a: ${status}`);
-                    closeModal('status-modal');
-                } catch (err) { console.error(err); showToast('Error al actualizar estatus', 'error'); }
+                const updateData = { status };
+                if (status === 'Cobrada') updateData.fechaCobro = new Date().toISOString().split('T')[0];
+                else updateData.fechaCobro = null; // Borrar fecha si cambia de estatus
+                try { await updateDoc(doc(requisitionsCollection, currentEditingRequisitionId), updateData); showToast(`Estatus: ${status}`); closeModal('status-modal'); } catch (err) { showToast('Error al actualizar', 'error'); }
             };
-            document.getElementById('btn-status-auth').addEventListener('click', () => updateStatus('Autorizada'));
-            document.getElementById('btn-status-cobrada').addEventListener('click', () => updateStatus('Cobrada'));
-            document.getElementById('btn-status-pendiente').addEventListener('click', () => updateStatus('Pendiente'));
+            document.getElementById('btn-status-auth').onclick = () => setStatus('Autorizada');
+            document.getElementById('btn-status-cobrada').onclick = () => setStatus('Cobrada');
+            document.getElementById('btn-status-pendiente').onclick = () => setStatus('Pendiente');
         });
     </script>
 </body>
