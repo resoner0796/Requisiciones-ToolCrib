@@ -3,867 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolCrib Requisitions Pro</title>
+    <title>ToolCrib Ultimate Pro</title>
     
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS para leer Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
-<script src="https://cdn.tailwindcss.com"></script>
-    
-
-<script>
+    <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        'primary': {
-                            '50': '#eff6ff',
-                            '100': '#dbeafe',
-                            '200': '#bfdbfe',
-                            '300': '#93c5fd',
-                            '400': '#60a5fa',
-                            '500': '#3b82f6',
-                            '600': '#2563eb',
-                            '700': '#1d4ed8',
-                            '800': '#1e40af',
-                            '900': '#1e3a8a',
-                            '950': '#172554',
-                        },
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
                     },
                     animation: {
-                        'fade-in-up': 'fadeInUp 0.5s ease-out',
-                        'fade-out-down': 'fadeOutDown 0.5s ease-out forwards',
-                        'fade-in-down': 'fadeInDown 0.5s ease-out',
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                        'slide-out': 'slideOut 0.3s ease-in forwards',
                     },
                     keyframes: {
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        fadeOutDown: {
-                            '0%': { opacity: '1', transform: 'translateY(0)' },
-                            '100%': { opacity: '0', transform: 'translateY(20px)' },
-                        },
-                         fadeInDown: {
-                            '0%': { opacity: '0', transform: 'translateY(-10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
+                        slideIn: { '0%': { transform: 'translateX(100%)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        slideOut: { '0%': { transform: 'translateX(0)', opacity: '1' }, '100%': { transform: 'translateX(100%)', opacity: '0' } }
                     }
                 }
             }
         }
     </script>
-    
-
-<style>
-        /* Estilo para los inputs (siempre visibles) */
-        input[type="text"],
-        input[type="password"],
-        input[type="email"],
-        input[type="number"],
-        select {
-            @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white transition-colors;
-        }
-        input:read-only {
-            @apply bg-gray-100 text-gray-500 cursor-not-allowed;
-        }
-
-        /* Estilo para los botones principales */
-        .btn {
-            @apply px-4 py-2 rounded-md font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors;
-        }
-        .btn-primary {
-            @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
-        }
-        .btn-secondary {
-            @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-500;
-        }
-        .btn-danger {
-            @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
-        }
-
-        /* Estilo para las pestañas de navegación */
-        .nav-tab {
-            @apply px-4 py-2 font-medium text-gray-500 rounded-t-lg hover:text-gray-700 hover:bg-gray-50 transition-colors;
-        }
-        .nav-tab.active {
-            @apply bg-white text-primary-600 border-t-2 border-l-2 border-r-2 border-gray-200 border-b-white -mb-px z-10;
-        }
-
-        /* Transición suave para modales */
-        .modal {
-            transition: opacity 0.20s ease-in-out;
-        }
-        .modal-content {
-            transition: transform 0.20s ease-in-out, opacity 0.20s ease-in-out;
-        }
-        .modal.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .modal.hidden .modal-content {
-            transform: scale(0.95);
-            opacity: 0;
-        }
-
-        /* Contenedor de Toasts (AHORA ABAJO A LA DERECHA) */
+    <style>
+        /* Forzar posición de Toasts abajo a la derecha */
         #toast-container {
-            @apply fixed bottom-5 right-5 z-50 flex flex-col gap-3;
+            position: fixed !important;
+            bottom: 1.5rem !important;
+            right: 1.5rem !important;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
-        .toast {
-            @apply flex items-center p-4 w-full max-w-xs text-gray-900 bg-white rounded-lg shadow-lg border-l-4 animate-fade-in-up;
-        }
+        .toast { @apply flex items-center p-4 w-80 bg-white rounded-lg shadow-xl border-l-4 animate-slide-in; }
         .toast-success { @apply border-green-500; }
         .toast-error { @apply border-red-500; }
         .toast-info { @apply border-blue-500; }
+        .toast.hiding { @apply animate-slide-out; }
 
-        /* Spinner de carga */
-        .spinner {
-            @apply animate-spin h-5 w-5 text-primary-600;
-        }
+        input:read-only { @apply bg-gray-100 text-gray-500 cursor-not-allowed; }
+        .nav-tab.active { @apply bg-white text-primary-600 border-t-2 border-l-2 border-r-2 border-gray-200 border-b-white -mb-px z-10; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans antialiased text-gray-900">
+<body class="bg-gray-50 font-sans text-gray-900">
 
-    
+    <!-- Contenedor de Notificaciones -->
+    <div id="toast-container"></div>
 
-<div id="toast-container"></div>
-
-    
-
-<div id="app-container" class="min-h-screen flex flex-col">
-
-        
-
-<header class="bg-white shadow-sm sticky top-0 z-10 border-b border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    
-                    
-
-<div class="flex-shrink-0 flex items-center">
-                        <span class="text-2xl font-bold text-primary-900">ToolCrib Pro</span>
-                    </div>
-
-                    
-
-<div class="flex items-center space-x-4">
-                        
-
-<span id="user-email-display" class="text-sm text-gray-500 hidden sm:inline-block"></span>
-                        
-                        
-
-<button id="btn-login-icon" class="text-gray-500 hover:text-primary-600 transition-colors p-1 rounded-full hover:bg-gray-100" title="Configuración / Iniciar Sesión">
-                            
-
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                              <path fill-rule="evenodd" d="M11.828 2.25c-.916 0-1.699.663-1.85 1.567l-.091.549a.798.798 0 0 1-.517.608 7.45 7.45 0 0 0-.478.198.798.798 0 0 1-.796-.064l-.453-.324a1.875 1.875 0 0 0-2.416.2l-.043.044a1.875 1.875 0 0 0-.2 2.416l.324.453a.798.798 0 0 1 .064.796 7.448 7.448 0 0 0-.198.478.798.798 0 0 1-.608.517l-.55.092a1.875 1.875 0 0 0-1.566 1.849v.06c0 .916.663 1.699 1.567 1.85l.549.091c.281.047.508.25.608.517.06.162.127.321.198.478a.798.798 0 0 1-.064.796l-.324.453a1.875 1.875 0 0 0 .2 2.416l.043.044a1.875 1.875 0 0 0 2.416-.2l.453-.324a.798.798 0 0 1 .796-.064c.157.071.316.137.478.198.267.1.47.327.517.608l.092.55c.15.903.932 1.566 1.849 1.566h.06c.916 0 1.699-.663 1.85-1.567l.091-.549a.798.798 0 0 1 .517-.608 7.52 7.52 0 0 0 .478-.198.798.798 0 0 1 .796.064l.453.324a1.875 1.875 0 0 0 2.416-.2l.043-.044a1.875 1.875 0 0 0 .2-2.416l-.324-.453a.798.798 0 0 1-.064-.796c.071-.157.137-.316.198-.478.1-.267.327-.47.608-.517l.55-.092a1.875 1.875 0 0 0 1.566-1.849v-.06c0-.916-.663-1.699-1.567-1.85l-.549-.091a.798.798 0 0 1-.608-.517 7.507 7.507 0 0 0-.198-.478.798.798 0 0 1 .064-.796l.324-.453a1.875 1.875 0 0 0-.2-2.416l-.043-.044a1.875 1.875 0 0 0-2.416-.2l-.453.324a.798.798 0 0 1-.796.064 7.462 7.462 0 0 0-.478-.198.798.798 0 0 1-.517-.608l-.092-.55a1.875 1.875 0 0 0-1.849-1.566h-.06ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        
-
-<button id="btn-logout" class="btn btn-secondary hidden text-sm py-1.5 px-3 flex items-center space-x-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
-                            </svg>
-                            <span>Salir</span>
-                        </button>
-                    </div>
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-20 border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-primary-600 mr-2">
+                      <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 0 0-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634Zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 0 1-.189-.866c0-.298.059-.605.189-.866Zm2.023 6.828a.75.75 0 1 0-1.06-1.06 3.75 3.75 0 0 1-5.304 0 .75.75 0 0 0-1.06 1.06 5.25 5.25 0 0 0 7.424 0Z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-2xl font-bold text-gray-900">ToolCrib <span class="text-primary-600">Pro</span></span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="user-email-display" class="text-sm text-gray-500 hidden sm:inline-block font-medium"></span>
+                    <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Administración">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7">
+                          <path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567l-.091.549a.798.798 0 0 1-.517.608 7.45 7.45 0 0 0-.478.198.798.798 0 0 1-.796-.064l-.453-.324a1.875 1.875 0 0 0-2.416.2l-.043.044a1.875 1.875 0 0 0-.2 2.416l.324.453a.798.798 0 0 1 .064.796 7.448 7.448 0 0 0-.198.478.798.798 0 0 1-.608.517l-.55.092a1.875 1.875 0 0 0-1.566 1.849v.06c0 .916.663 1.699 1.567 1.85l.549.091c.281.047.508.25.608.517.06.162.127.321.198.478a.798.798 0 0 1-.064.796l-.324.453a1.875 1.875 0 0 0 .2 2.416l.043.044a1.875 1.875 0 0 0 2.416-.2l.453-.324a.798.798 0 0 1 .796-.064c.157.071.316.137.478.198.267.1.47.327.517.608l.092.55c.15.903.932 1.566 1.849 1.566h.06c.916 0 1.699-.663 1.85-1.567l.091-.549a.798.798 0 0 1 .517-.608 7.52 7.52 0 0 0 .478-.198.798.798 0 0 1 .796.064l.453.324a1.875 1.875 0 0 0 2.416-.2l.043-.044a1.875 1.875 0 0 0 .2-2.416l-.324-.453a.798.798 0 0 1-.064-.796c.071-.157.137-.316.198-.478.1-.267.327-.47.608-.517l.55-.092a1.875 1.875 0 0 0 1.566-1.849v-.06c0-.916-.663-1.699-1.567-1.85l-.549-.091a.798.798 0 0 1-.608-.517 7.507 7.507 0 0 0-.198-.478.798.798 0 0 1 .064-.796l.324-.453a1.875 1.875 0 0 0-.2-2.416l-.043-.044a1.875 1.875 0 0 0-2.416-.2l-.453.324a.798.798 0 0 1-.796.064 7.462 7.462 0 0 0-.478-.198.798.798 0 0 1-.517-.608l-.092-.55a1.875 1.875 0 0 0-1.849-1.566h-.06ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <button id="btn-logout" class="hidden px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition">Salir</button>
                 </div>
             </div>
         </header>
 
-        
-
-<main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-
-            
-
-<div class="mb-6 border-b border-gray-200">
-                <nav class="flex -mb-px space-x-4" aria-label="Tabs">
-                    <button data-screen="home-screen" class="nav-tab active">Inicio</button>
-                    <button data-screen="consultar-screen" class="nav-tab">Consultar</button>
-                    <button id="btn-admin-nav" data-screen="admin-screen" class="nav-tab hidden">Administración</button>
+        <!-- Main Content -->
+        <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+            <!-- Navigation Tabs -->
+            <div class="mb-6 border-b border-gray-200">
+                <nav class="flex -mb-px space-x-6" aria-label="Tabs">
+                    <button data-screen="home-screen" class="nav-tab active px-1 py-4 text-sm font-medium text-primary-600 border-b-2 border-primary-600">Inicio</button>
+                    <button data-screen="consultar-screen" class="nav-tab px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent">Consultar</button>
+                    <button id="btn-admin-nav" data-screen="admin-screen" class="hidden nav-tab px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent">Administración</button>
                 </nav>
             </div>
 
-            
-
-<div id="home-screen" class="screen-content bg-white p-6 sm:p-8 rounded-lg shadow-sm border border-gray-200 animate-fade-in-down">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Bienvenido al Sistema</h1>
-                <p class="text-lg text-gray-600 mb-8">Seleccione una opción para comenzar.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <button id="btn-registrar-nav" class="group w-full text-left p-6 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            
-
-<div class="p-3 bg-white/20 rounded-lg">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-white">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white/50 group-hover:translate-x-1 transition-transform">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-semibold mb-1">Registrar Requisición</h2>
-                        <p class="text-primary-100">Crear una nueva solicitud de artículo.</p>
-                    </button>
-                    <button data-screen-nav="consultar-screen" class="group w-full text-left p-6 bg-white text-gray-900 rounded-xl shadow-sm hover:shadow-md border border-gray-200 transition-all transform hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            
-
-<div class="p-3 bg-primary-50 rounded-lg">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-primary-600">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 1.875 1.875v12.75a1.875 1.875 0 0 1-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V6.375a1.875 1.875 0 0 1 1.875-1.875Z" />
-                                </svg>
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400 group-hover:translate-x-1 transition-transform">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-semibold mb-1">Consultar Requisiciones</h2>
-                        <p class="text-gray-500">Ver historial y estado de solicitudes.</p>
-                    </button>
-                </div>
-            </div>
-
-            
-
-<div id="consultar-screen" class="screen-content hidden bg-white p-6 sm:p-8 rounded-lg shadow-sm border border-gray-200 animate-fade-in-down">
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Historial de Requisiciones</h1>
-                    
-
-<div class="relative w-full sm:w-64">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </div>
-                        <input type="search" id="search-input" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500" placeholder="Buscar por nombre, ID o artículo...">
+            <!-- Screens -->
+            <div id="home-screen" class="screen-content animate-fade-in-down">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center sm:text-left">
+                    <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Centro de Control</h1>
+                    <p class="mt-2 text-lg text-gray-600">Gestiona tus requisiciones de forma rápida y sencilla.</p>
+                    <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                        <button id="btn-registrar-nav" class="p-6 bg-primary-600 rounded-xl shadow-lg text-white hover:bg-primary-700 transition transform hover:-translate-y-1 flex flex-col items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                            <span class="text-xl font-bold">Nueva Requisición</span>
+                            <span class="text-primary-200 text-sm">Registra una solicitud de herramienta o material.</span>
+                        </button>
+                        <button data-screen-nav="consultar-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 1.875 1.875v12.75a1.875 1.875 0 0 1-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V6.375a1.875 1.875 0 0 1 1.875-1.875Z" /></svg>
+                             <span class="text-xl font-bold text-gray-900">Historial</span>
+                             <span class="text-gray-500 text-sm">Consulta el estatus de todas las requisiciones.</span>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <div class="overflow-x-auto border rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Emp</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobrada el</th>
-                                <!-- Columna de Acciones (visible solo para admin) -->
-                                <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-requisiciones" class="bg-white divide-y divide-gray-200">
-                            
-
-<tr>
-                                <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                                    <div class="flex justify-center items-center flex-col">
-                                        <svg class="animate-spin h-8 w-8 text-primary-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        <p>Cargando requisiciones...</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div id="consultar-screen" class="screen-content hidden animate-fade-in-down">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <h2 class="text-xl font-bold text-gray-900">Requisiciones Registradas</h2>
+                        <div class="relative w-full sm:w-72">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
+                            <input type="search" id="search-input" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar req, empleado, artículo...">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Requi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empleado</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo Solicitado</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobro</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-requisiciones" class="bg-white divide-y divide-gray-200">
+                                <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500">Cargando datos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            
-
-<div id="admin-screen" class="screen-content hidden animate-fade-in-down">
-                <h1 class="text-2xl font-bold text-gray-900 mb-6">Panel de Administración</h1>
+            <div id="admin-screen" class="screen-content hidden animate-fade-in-down">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    
-                    
-
-<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-primary-600">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-                            </svg>
-                            Empleados
-                        </h2>
-                        
-
-<form id="form-add-empleado" class="mb-6 flex gap-2">
-                            <div class="flex-1">
-                                <input type="number" id="admin-emp-id" name="admin-emp-id" placeholder="No. Empleado" required class="mb-2 sm:mb-0">
-                            </div>
-                            <div class="flex-[2]">
-                                <input type="text" id="admin-emp-nombre" name="admin-emp-nombre" placeholder="Nombre Completo" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary flex-shrink-0 px-3" title="Agregar Empleado">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                            </button>
-                        </form>
-                        
-
-<div class="mt-4">
-                            <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Lista Registrada</h3>
-                            <div id="admin-list-empleados" class="max-h-80 overflow-y-auto bg-gray-50 rounded-md border border-gray-200 divide-y divide-gray-200">
-                                
-
-<div class="p-4 text-center text-gray-500 flex justify-center">
-                                    <svg class="animate-spin h-5 w-5 text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Cargando...
-                                </div>
+                    <!-- Panel Empleados -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-lg font-bold flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
+                            <div class="flex gap-2">
+                                <input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden">
+                                <button onclick="document.getElementById('file-upload-emp').click()" class="px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                    Cargar Excel
+                                </button>
                             </div>
                         </div>
+                        <form id="form-add-empleado" class="flex gap-3 mb-6">
+                            <input type="number" id="admin-emp-id" placeholder="ID" required class="w-1/3">
+                            <input type="text" id="admin-emp-nombre" placeholder="Nombre Completo" required class="w-full">
+                            <button type="submit" class="btn btn-primary flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button>
+                        </form>
+                        <div id="admin-list-empleados" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
-
-                    
-
-<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-primary-600">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                            </svg>
-                            Artículos
-                        </h2>
-                        
-
-<form id="form-add-articulo" class="mb-6 flex gap-2">
-                            <div class="flex-grow">
-                                <input type="text" id="admin-art-nombre" name="admin-art-nombre" placeholder="Nombre del Artículo" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary flex-shrink-0 px-3" title="Agregar Artículo">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                            </button>
+                    <!-- Panel Artículos -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
+                        <form id="form-add-articulo" class="flex gap-3 mb-6">
+                            <input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/3">
+                            <input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-full">
+                            <button type="submit" class="btn btn-primary flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button>
                         </form>
-                        
-
-<div class="mt-4">
-                            <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Lista Registrada</h3>
-                            <div id="admin-list-articulos" class="max-h-80 overflow-y-auto bg-gray-50 rounded-md border border-gray-200 divide-y divide-gray-200">
-                                
-
-<div class="p-4 text-center text-gray-500 flex justify-center">
-                                    <svg class="animate-spin h-5 w-5 text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Cargando...
-                                </div>
-                            </div>
-                        </div>
+                        <div id="admin-list-articulos" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 
-    
-
-<div id="registrar-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-        <div class="modal-content bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-md relative transform scale-95 opacity-0 transition-all">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Nueva Requisición</h2>
-                <button data-dismiss="modal" class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100">
-                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            
-            <form id="form-registrar" class="space-y-5">
-                <div>
-                    <label for="reg-empleado-id" class="block text-sm font-medium text-gray-700 mb-1">Número de Empleado</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-gray-400">
-                              <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A9.916 9.916 0 0 0 10 18c2.314 0 4.438-.784 6.131-2.1.43-.333-.604-2.472-1.338-3.51Zm0-8a6 6 0 0 1 6 6 9.97 9.97 0 0 1-1.409 4.966l.004.007A7.95 7.95 0 0 0 10 4.05V4Z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <input type="number" id="reg-empleado-id" name="reg-empleado-id" required class="pl-10" placeholder="Ingrese ID...">
+    <!-- Modales -->
+    <div id="registrar-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform transition-all scale-95 opacity-0">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900">Nueva Solicitud</h2>
+            <form id="form-registrar" class="space-y-4">
+                 <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+                        <input type="text" id="reg-fecha" readonly class="bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-primary-700 mb-1"># Requisición</label>
+                        <input type="text" id="reg-num-requi" required placeholder="Ej. REQ-001" class="border-primary-300 focus:ring-primary-500">
                     </div>
                 </div>
                 <div>
-                    <label for="reg-nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                    <input type="text" id="reg-nombre" name="reg-nombre" readonly placeholder="Se rellena automáticamente...">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">No. Empleado</label>
+                    <input type="number" id="reg-empleado-id" required placeholder="Ingrese ID para buscar..." class="focus:ring-primary-500">
                 </div>
+                <input type="text" id="reg-nombre" readonly placeholder="Nombre del empleado..." class="bg-gray-50">
                 <div>
-                    <label for="reg-articulo" class="block text-sm font-medium text-gray-700 mb-1">Artículo</label>
-                    <select id="reg-articulo" name="reg-articulo" required>
-                        <option value="">Seleccione un artículo...</option>
-                        
-
-</select>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Artículo</label>
+                    <select id="reg-articulo" required class="focus:ring-primary-500"><option value="">Seleccione...</option></select>
                 </div>
-                <div>
-                    <label for="reg-fecha" class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
-                    <input type="text" id="reg-fecha" name="reg-fecha" readonly>
-                </div>
-                
-                <div class="pt-4 flex justify-end space-x-3">
+                <div class="flex justify-end space-x-3 mt-8">
                     <button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn btn-primary w-full sm:w-auto">Registrar</button>
+                    <button type="submit" class="btn btn-primary px-8">Registrar</button>
                 </div>
             </form>
         </div>
     </div>
 
-    
-
-<div id="login-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-        <div class="modal-content bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-sm relative transform scale-95 opacity-0 transition-all">
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-primary-600">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-900">Acceso Administrador</h2>
-                <p class="text-gray-500 text-sm mt-1">Ingrese sus credenciales para continuar.</p>
+    <div id="login-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 transform transition-all scale-95 opacity-0 text-center">
+            <div class="mx-auto w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-primary-600"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
             </div>
-            
-            <form id="form-login" class="space-y-5">
-                <div>
-                    <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                    <input type="email" id="login-email" name="login-email" required placeholder="admin@toolcrib.com" autocomplete="email">
-                </div>
-                <div>
-                    <div class="flex justify-between mb-1">
-                        <label for="login-pass" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                    </div>
-                    <input type="password" id="login-pass" name="login-pass" required placeholder="••••••••" autocomplete="current-password">
-                </div>
-                
-                <div class="pt-4 flex flex-col space-y-3">
-                    <button type="submit" id="btn-login-submit" class="btn btn-primary w-full flex justify-center items-center">
-                        <span>Entrar</span>
-                         
-
-<svg id="login-spinner" class="hidden animate-spin ml-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </button>
-                    <button type="button" data-dismiss="modal" class="btn btn-secondary w-full">Cancelar</button>
-                </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Acceso Admin</h2>
+            <form id="form-login" class="space-y-4 text-left">
+                <div><label class="text-sm font-medium text-gray-700">Email</label><input type="email" id="login-email" required class="mt-1"></div>
+                <div><label class="text-sm font-medium text-gray-700">Contraseña</label><input type="password" id="login-pass" required class="mt-1"></div>
+                <button type="submit" id="btn-login-submit" class="btn btn-primary w-full mt-6 py-3">Entrar</button>
             </form>
+            <button type="button" data-dismiss="modal" class="w-full text-center text-gray-500 text-sm mt-4 hover:text-gray-700">Cancelar</button>
         </div>
     </div>
 
-    
-
-<div id="status-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-        <div class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm relative transform scale-95 opacity-0 transition-all text-center">
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Actualizar Estatus</h3>
-            <p class="text-sm text-gray-500 mb-6">Seleccione el nuevo estado para esta requisición.</p>
-            
-            <div class="space-y-3">
-                <button id="btn-status-auth" class="w-full py-3 px-4 rounded-lg font-medium bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 transition-colors flex items-center justify-center">
-                    <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span> Autorizada
-                </button>
-                <button id="btn-status-cobrada" class="w-full py-3 px-4 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-colors flex items-center justify-center">
-                    <span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span> Cobrada
-                </button>
-                <button id="btn-status-pendiente" class="w-full py-3 px-4 rounded-lg font-medium bg-yellow-50 text-yellow-700 hover:bg-yellow-100 border border-yellow-200 transition-colors flex items-center justify-center">
-                    <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span> Pendiente
-                </button>
-                <button data-dismiss="modal" class="btn btn-secondary w-full mt-2">Cancelar</button>
+    <div id="status-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl p-6 w-full max-w-xs text-center transform transition-all scale-95 opacity-0">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Cambiar Estatus</h3>
+            <div class="space-y-2">
+                <button onclick="setStatus('Autorizada')" class="w-full p-3 rounded-lg bg-green-50 text-green-700 font-medium hover:bg-green-100 transition">Autorizada</button>
+                <button onclick="setStatus('Cobrada')" class="w-full p-3 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition">Cobrada</button>
+                <button onclick="setStatus('Pendiente')" class="w-full p-3 rounded-lg bg-yellow-50 text-yellow-700 font-medium hover:bg-yellow-100 transition">Pendiente</button>
             </div>
+            <button data-dismiss="modal" class="mt-4 text-gray-400 hover:text-gray-600 text-sm">Cancelar</button>
         </div>
     </div>
 
-    
-
-<div id="confirm-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-        <div class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm relative transform scale-95 opacity-0 transition-all">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-600">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                </svg>
+    <div id="confirm-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl p-6 w-full max-w-sm text-center transform transition-all scale-95 opacity-0">
+             <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-600"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
             </div>
-            <div class="text-center mb-6">
-                <h3 id="confirm-title" class="text-lg font-semibold text-gray-900">¿Estás seguro?</h3>
-                <p id="confirm-message" class="text-sm text-gray-500 mt-2">Esta acción no se puede deshacer.</p>
-            </div>
-            <div class="flex space-x-3">
-                <button id="btn-confirm-cancel" class="btn btn-secondary flex-1">Cancelar</button>
-                <button id="btn-confirm-ok" class="btn btn-danger flex-1">Sí, eliminar</button>
-            </div>
+            <h3 id="confirm-title" class="text-lg font-bold text-gray-900">¿Estás seguro?</h3>
+            <p id="confirm-message" class="text-gray-500 text-sm mt-2 mb-6"></p>
+            <div class="flex gap-3"><button onclick="closeModal('confirm-modal')" class="btn btn-secondary flex-1">No, cancelar</button><button id="btn-confirm-ok" class="btn btn-danger flex-1">Sí, eliminar</button></div>
         </div>
     </div>
 
-
-    
-
-<script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
-            signInWithEmailAndPassword,
-            signOut,
-            onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection, setLogLevel 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONFIGURACIÓN DE FIREBASE ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyDahnSPvBNTYot00JCn5CBjggAYFVGhbjE",
-          authDomain: "panel-logistica-simple.firebaseapp.com",
-          databaseURL: "https://panel-logistica-simple-default-rtdb.firebaseio.com",
-          projectId: "panel-logistica-simple",
-          storageBucket: "panel-logistica-simple.firebasestorage.app",
-          messagingSenderId: "528779971851",
-          appId: "1:528779971851:web:29ed933e7c7fd997a4e60e"
+        const app = initializeApp({ apiKey: "AIzaSyDahnSPvBNTYot00JCn5CBjggAYFVGhbjE", authDomain: "panel-logistica-simple.firebaseapp.com", projectId: "panel-logistica-simple", storageBucket: "panel-logistica-simple.firebasestorage.app", messagingSenderId: "528779971851", appId: "1:528779971851:web:29ed933e7c7fd997a4e60e" });
+        const auth = getAuth(app); const db = getFirestore(app);
+        const colReqs = collection(db, 'requi_toolcrib', 'data', 'requisitions');
+        const colEmps = collection(db, 'requi_toolcrib', 'data', 'employees');
+        const colArts = collection(db, 'requi_toolcrib', 'data', 'articles');
+
+        let currentUser = null, currentReqId = null, confirmAction = null, reqsData = [], empsMap = new Map(), artsMap = new Map();
+
+        // UI Helpers
+        window.showToast = (msg, type = 'success') => {
+            const t = document.createElement('div'); t.className = `toast toast-${type}`;
+            t.innerHTML = `<div class="${type==='success'?'text-green-500':type==='error'?'text-red-500':'text-blue-500'} mr-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg></div><div class="text-sm font-medium">${msg}</div>`;
+            document.getElementById('toast-container').appendChild(t);
+            setTimeout(() => { t.classList.add('hiding'); setTimeout(() => t.remove(), 300) }, 3000);
         };
+        window.openModal = (id) => { const m = document.getElementById(id); m.classList.remove('hidden'); setTimeout(() => { m.querySelector('.modal-content').classList.remove('scale-95','opacity-0'); }, 10); };
+        window.closeModal = (id) => { const m = document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95','opacity-0'); setTimeout(() => m.classList.add('hidden'), 200); };
+        window.askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
+        window.setStatus = async (s) => { if(!currentReqId) return; try { await updateDoc(doc(colReqs, currentReqId), { status: s, fechaCobro: s === 'Cobrada' ? new Date().toISOString().split('T')[0] : null }); showToast(`Estatus: ${s}`); closeModal('status-modal'); } catch(e) { showToast('Error', 'error'); } };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        // Auth & Init
+        onAuthStateChanged(auth, (u) => {
+            currentUser = u;
+            document.body.classList.toggle('is-admin', !!u);
+            document.getElementById('btn-login-icon').classList.toggle('hidden', !!u);
+            document.getElementById('btn-logout').classList.toggle('hidden', !u);
+            if(u) { document.getElementById('user-email-display').innerText = u.email; document.getElementById('btn-admin-nav').classList.remove('hidden'); }
+            else { document.getElementById('btn-admin-nav').classList.add('hidden'); if(!document.getElementById('admin-screen').classList.contains('hidden')) document.querySelector('[data-screen="home-screen"]').click(); }
+            document.querySelectorAll('.col-acciones').forEach(e => e.classList.toggle('hidden', !u));
+            renderReqs(); renderAdmin();
+        });
+
+        // Data Listeners
+        onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); reqsData.sort((a,b) => b.fecha.localeCompare(a.fecha)); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
+        onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
+        onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderArtsDropdown(); renderAdmin(); });
+
+        // Renders
+        function renderReqs() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = reqsData.filter(r => (r.nombre||'').toLowerCase().includes(term) || (r.empleadoId||'').toString().includes(term) || (r.articulo||'').toLowerCase().includes(term) || (r.numRequi||'').toLowerCase().includes(term));
+            document.getElementById('tbody-requisiciones').innerHTML = filtered.length ? filtered.map(r => `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 font-medium text-primary-900">${r.numRequi || '-'}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td>
+                    <td class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td>
+                    <td class="px-6 py-4 text-sm text-gray-900 font-medium">${r.articulo}</td>
+                    <td class="px-6 py-4 text-center"><span data-id="${r.id}" class="status-badge cursor-pointer hover:scale-105 transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${r.status==='Autorizada'?'bg-green-100 text-green-800':r.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800'}">${r.status}</span></td>
+                    <td class="px-6 py-4 text-sm text-gray-500">${r.fechaCobro || '-'}</td>
+                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="text-gray-400 hover:text-red-600 transition" onclick="askConfirm('Eliminar Requi', '¿Seguro?', async () => { await deleteDoc(doc(colReqs, '${r.id}')); showToast('Eliminado'); })"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td>
+                </tr>`).join('') : '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>';
+        }
+        function renderAdmin() {
+            const elEmps = document.getElementById('admin-list-empleados'), elArts = document.getElementById('admin-list-articulos');
+            elEmps.innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a,b)=>a.id-b.id).map(e => `<div class="flex justify-between p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><button class="text-gray-300 hover:text-red-500" onclick="askConfirm('Eliminar Empleado', '${e.nombre}', async () => { await deleteDoc(doc(colEmps, '${e.fbId}')); showToast('Eliminado'); })"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
+            elArts.innerHTML = artsMap.size ? Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => `<div class="flex justify-between p-3 hover:bg-white transition"><div><span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span><span>${a.nom}</span></div><button class="text-gray-300 hover:text-red-500" onclick="askConfirm('Eliminar Artículo', '${a.nom}', async () => { await deleteDoc(doc(colArts, '${a.fbId}')); showToast('Eliminado'); })"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
+        }
+        function renderArtsDropdown() {
+             const s = document.getElementById('reg-articulo'), val = s.value;
+             s.innerHTML = '<option value="">Seleccione...</option>' + Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => `<option value="[${a.num}] - ${a.nom}">[${a.num}] - ${a.nom}</option>`).join('');
+             s.value = val;
+        }
+
+        // Event Listeners & Handlers
+        document.addEventListener('click', e => {
+            if(e.target.closest('.nav-tab')) { document.querySelectorAll('.screen-content').forEach(s=>s.classList.add('hidden')); document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active')); const t=e.target.closest('.nav-tab'); document.getElementById(t.dataset.screen).classList.remove('hidden'); t.classList.add('active'); }
+            if(e.target.closest('[data-screen-nav]')) document.querySelector(`.nav-tab[data-screen="${e.target.closest('[data-screen-nav]').dataset.screenNav}"]`).click();
+            if(e.target.closest('[data-dismiss="modal"]')) closeModal(e.target.closest('.modal').id);
+            if(e.target.closest('.status-badge') && currentUser) { currentReqId = e.target.closest('.status-badge').dataset.id; openModal('status-modal'); }
+        });
+        document.getElementById('btn-login-icon').onclick = () => openModal('login-modal');
+        document.getElementById('btn-logout').onclick = async () => { await signOut(auth); showToast('Sesión cerrada', 'info'); };
+        document.getElementById('btn-registrar-nav').onclick = () => { document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0]; openModal('registrar-modal'); };
+        document.getElementById('search-input').oninput = renderReqs;
+        document.getElementById('reg-empleado-id').oninput = (e) => { const emp = empsMap.get(e.target.value); document.getElementById('reg-nombre').value = emp ? emp.nombre : ''; };
+        document.getElementById('btn-confirm-ok').onclick = () => { if(confirmAction) confirmAction(); closeModal('confirm-modal'); };
         
-        // Colecciones
-        const requisitionsCollection = collection(db, 'requi_toolcrib', 'data', 'requisitions');
-        const employeesCollection = collection(db, 'requi_toolcrib', 'data', 'employees');
-        const articlesCollection = collection(db, 'requi_toolcrib', 'data', 'articles');
-
-        // Estado Global
-        let currentUser = null;
-        let currentEditingRequisitionId = null;
-        let confirmCallback = null;
-        let requisitionsData = [];
-
-        // Mapas para caché
-        let empleadosMap = new Map();
-        let articulosMap = new Map();
-
-        // Referencias DOM
-        const toastContainer = document.getElementById('toast-container');
-        const btnLoginIcon = document.getElementById('btn-login-icon');
-        const btnLogout = document.getElementById('btn-logout');
-        const userEmailDisplay = document.getElementById('user-email-display');
-        const btnAdminNav = document.getElementById('btn-admin-nav');
+        // Forms
+        document.getElementById('form-login').onsubmit = async (e) => { e.preventDefault(); document.getElementById('btn-login-submit').disabled=true; try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal'); e.target.reset(); showToast('Bienvenido'); } catch(err) { showToast('Credenciales incorrectas', 'error'); } finally { document.getElementById('btn-login-submit').disabled=false; } };
+        document.getElementById('form-registrar').onsubmit = async (e) => { e.preventDefault(); if(!e.target['reg-nombre'].value) return showToast('Empleado no válido', 'error'); try { await addDoc(colReqs, { numRequi: e.target['reg-num-requi'].value, empleadoId: e.target['reg-empleado-id'].value, nombre: e.target['reg-nombre'].value, articulo: e.target['reg-articulo'].value, fecha: e.target['reg-fecha'].value, status: 'Pendiente' }); showToast('Registrado'); closeModal('registrar-modal'); e.target.reset(); } catch(err) { showToast('Error', 'error'); } };
+        document.getElementById('form-add-empleado').onsubmit = async (e) => { e.preventDefault(); if(empsMap.has(e.target['admin-emp-id'].value)) return showToast('ID duplicado', 'error'); try { await addDoc(colEmps, {id:e.target['admin-emp-id'].value, nombre:e.target['admin-emp-nombre'].value}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); } };
+        document.getElementById('form-add-articulo').onsubmit = async (e) => { e.preventDefault(); if(artsMap.has(e.target['admin-art-num'].value)) return showToast('No. Parte duplicado', 'error'); try { await addDoc(colArts, {num:e.target['admin-art-num'].value, nom:e.target['admin-art-nom'].value}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); } };
         
-        const loginModal = document.getElementById('login-modal');
-        const loginEmailInput = document.getElementById('login-email');
-        const loginPassInput = document.getElementById('login-pass');
-        const btnLoginSubmit = document.getElementById('btn-login-submit');
-        const loginSpinner = document.getElementById('login-spinner');
-
-        const tbodyRequisiciones = document.getElementById('tbody-requisiciones');
-        const searchInput = document.getElementById('search-input');
-
-        const adminListEmpleados = document.getElementById('admin-list-empleados');
-        const adminListArticulos = document.getElementById('admin-list-articulos');
-        
-        const confirmModal = document.getElementById('confirm-modal');
-        const confirmTitle = document.getElementById('confirm-title');
-        const confirmMessage = document.getElementById('confirm-message');
-        const btnConfirmOk = document.getElementById('btn-confirm-ok');
-        const btnConfirmCancel = document.getElementById('btn-confirm-cancel');
-
-        // --- UI HELPERS ---
-
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            
-            let iconSvg = '';
-            if (type === 'success') {
-                iconSvg = '<svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>';
-            } else if (type === 'error') {
-                iconSvg = '<svg class="w-5 h-5 text-red-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>';
-            } else {
-                 iconSvg = '<svg class="w-5 h-5 text-blue-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>';
-            }
-
-            toast.innerHTML = `${iconSvg}<div class="text-sm font-normal">${message}</div>`;
-            toastContainer.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.replace('animate-fade-in-up', 'animate-fade-out-down');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
-        }
-
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-            modal.classList.remove('hidden');
-            void modal.offsetWidth; 
-            modal.querySelector('.modal-content').classList.add('opacity-100', 'scale-100');
-            modal.classList.remove('opacity-0');
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-            modal.querySelector('.modal-content').classList.remove('opacity-100', 'scale-100');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 200);
-        }
-
-        function askConfirmation(title, message, callback) {
-            confirmTitle.textContent = title;
-            confirmMessage.textContent = message;
-            confirmCallback = callback;
-            openModal('confirm-modal');
-        }
-
-        // --- AUTHENTICATION ---
-
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                btnLoginIcon.classList.add('hidden');
-                btnLogout.classList.remove('hidden');
-                userEmailDisplay.textContent = user.email;
-                userEmailDisplay.classList.remove('hidden');
-                btnAdminNav.classList.remove('hidden');
-                document.querySelectorAll('.col-acciones').forEach(el => el.classList.remove('hidden'));
-            } else {
-                btnLoginIcon.classList.remove('hidden');
-                btnLogout.classList.add('hidden');
-                userEmailDisplay.classList.add('hidden');
-                btnAdminNav.classList.add('hidden');
-                document.querySelectorAll('.col-acciones').forEach(el => el.classList.add('hidden'));
-                if (!document.getElementById('admin-screen').classList.contains('hidden')) {
-                    document.querySelector('[data-screen="home-screen"]').click();
-                }
-            }
-            filterAndRenderRequisitions(); 
-            renderAdminLists();
-        });
-
-        async function handleLogin(e) {
-            e.preventDefault();
-            btnLoginSubmit.disabled = true;
-            loginSpinner.classList.remove('hidden');
-            try {
-                await signInWithEmailAndPassword(auth, loginEmailInput.value, loginPassInput.value);
-                closeModal('login-modal');
-                showToast(`Bienvenido, ${loginEmailInput.value}`);
-                e.target.reset();
-            } catch (error) {
-                let msg = "Error de credenciales.";
-                if (error.code === 'auth/too-many-requests') msg = "Demasiados intentos. Espere.";
-                showToast(msg, 'error');
-            } finally {
-                btnLoginSubmit.disabled = false;
-                loginSpinner.classList.add('hidden');
-            }
-        }
-
-        // --- DATA HANDLERS ---
-
-        onSnapshot(requisitionsCollection, (snapshot) => {
-            requisitionsData = [];
-            snapshot.forEach((doc) => requisitionsData.push({ id: doc.id, ...doc.data() }));
-            requisitionsData.sort((a, b) => b.fecha.localeCompare(a.fecha));
-            filterAndRenderRequisitions();
-        }, (error) => {
-            if (error.code === 'permission-denied') tbodyRequisiciones.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500">No tienes permisos para ver datos.</td></tr>`;
-        });
-
-        onSnapshot(employeesCollection, (snapshot) => {
-            empleadosMap.clear();
-            snapshot.forEach((doc) => empleadosMap.set(doc.data().id, { ...doc.data(), fbId: doc.id }));
-            renderAdminLists();
-        });
-
-        onSnapshot(articlesCollection, (snapshot) => {
-            articulosMap.clear();
-            snapshot.forEach((doc) => articulosMap.set(doc.data().nombre, { ...doc.data(), fbId: doc.id }));
-            renderArticulosDropdown();
-            renderAdminLists();
-        });
-
-        // --- RENDER FUNCTIONS ---
-
-        function filterAndRenderRequisitions() {
-            const term = searchInput.value.toLowerCase();
-            const filtered = requisitionsData.filter(req => 
-                req.nombre.toLowerCase().includes(term) ||
-                req.empleadoId.toString().includes(term) ||
-                req.articulo.toLowerCase().includes(term)
-            );
-            renderRequisitions(filtered);
-        }
-
-        function renderRequisitions(data) {
-            if (data.length === 0) {
-                tbodyRequisiciones.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">No se encontraron requisiciones.</td></tr>`;
-                return;
-            }
-
-            tbodyRequisiciones.innerHTML = data.map(req => {
-                let statusColor = 'bg-yellow-100 text-yellow-800 border-yellow-200';
-                if (req.status === 'Autorizada') statusColor = 'bg-green-100 text-green-800 border-green-200';
-                if (req.status === 'Cobrada') statusColor = 'bg-blue-100 text-blue-800 border-blue-200';
-
-                const isClickable = currentUser ? 'cursor-pointer hover:scale-105' : 'cursor-default opacity-90';
-                const fechaCobro = req.fechaCobro || '-';
-                const accionesClass = currentUser ? '' : 'hidden';
-
-                return `
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">${req.fecha}</td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${req.empleadoId}</td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">${req.nombre}</td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">${req.articulo}</td>
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            <span data-id="${req.id}" class="status-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${statusColor} transition-transform ${isClickable}">
-                                ${req.status}
-                            </span>
-                        </td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">${fechaCobro}</td>
-                        <td class="px-4 py-4 whitespace-nowrap text-center col-acciones ${accionesClass}">
-                             <button class="btn-delete-req text-gray-400 hover:text-red-600 p-1 transition-colors" data-reqid="${req.id}" title="Eliminar Requisición">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function renderAdminLists() {
-            if (empleadosMap.size === 0) {
-                adminListEmpleados.innerHTML = '<div class="p-4 text-center text-gray-500 italic">Sin empleados.</div>';
-            } else {
-                adminListEmpleados.innerHTML = Array.from(empleadosMap.values())
-                    .sort((a, b) => a.id - b.id)
-                    .map(emp => `<div class="flex justify-between items-center p-3 hover:bg-white transition-colors"><div><span class="font-medium text-gray-900">${emp.id}</span><span class="text-gray-500 ml-2">— ${emp.nombre}</span></div><button class="btn-delete-emp text-gray-400 hover:text-red-600 p-1" data-fbid="${emp.fbId}" data-name="${emp.nombre}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></div>`)
-                    .join('');
-            }
-
-            if (articulosMap.size === 0) {
-                adminListArticulos.innerHTML = '<div class="p-4 text-center text-gray-500 italic">Sin artículos.</div>';
-            } else {
-                adminListArticulos.innerHTML = Array.from(articulosMap.values())
-                    .sort((a, b) => a.nombre.localeCompare(b.nombre))
-                    .map(art => `<div class="flex justify-between items-center p-3 hover:bg-white transition-colors"><span class="text-gray-700">${art.nombre}</span><button class="btn-delete-art text-gray-400 hover:text-red-600 p-1" data-fbid="${art.fbId}" data-name="${art.nombre}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></div>`)
-                    .join('');
-            }
-        }
-
-        function renderArticulosDropdown() {
-            const select = document.getElementById('reg-articulo');
-            const currentVal = select.value;
-            select.innerHTML = '<option value="">Seleccione un artículo...</option>' + 
-                Array.from(articulosMap.keys()).sort().map(n => `<option value="${n}">${n}</option>`).join('');
-            select.value = currentVal;
-        }
-
-        // --- INITIALIZATION & LISTENERS ---
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Tabs & Nav
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.screen-content').forEach(s => s.classList.add('hidden'));
-                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                    document.getElementById(tab.dataset.screen).classList.remove('hidden');
-                    tab.classList.add('active');
-                });
-            });
-            document.querySelectorAll('[data-screen-nav]').forEach(btn => btn.addEventListener('click', () => document.querySelector(`.nav-tab[data-screen="${btn.dataset.screenNav}"]`).click()));
-
-            // Modals
-            document.querySelectorAll('[data-dismiss="modal"]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.closest('.modal').id)));
-            btnLoginIcon.addEventListener('click', () => openModal('login-modal'));
-            document.getElementById('btn-registrar-nav').addEventListener('click', () => {
-                document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0];
-                openModal('registrar-modal');
-            });
-
-            // Auth Listeners
-            document.getElementById('form-login').addEventListener('submit', handleLogin);
-            btnLogout.addEventListener('click', async () => { await signOut(auth); showToast("Sesión cerrada.", 'info'); });
-
-            // Inputs
-            searchInput.addEventListener('input', filterAndRenderRequisitions);
-            document.getElementById('reg-empleado-id').addEventListener('input', (e) => {
-                const emp = empleadosMap.get(e.target.value);
-                document.getElementById('reg-nombre').value = emp ? emp.nombre : '';
-            });
-
-            // Forms
-            document.getElementById('form-registrar').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (!e.target['reg-nombre'].value) return showToast('Empleado inválido', 'error');
+        // Bulk Upload (Excel)
+        document.getElementById('file-upload-emp').onchange = async (e) => {
+            const f = e.target.files[0]; if(!f) return;
+            const reader = new FileReader();
+            reader.onload = async (evt) => {
                 try {
-                    await addDoc(requisitionsCollection, {
-                        empleadoId: e.target['reg-empleado-id'].value, nombre: e.target['reg-nombre'].value,
-                        articulo: e.target['reg-articulo'].value, fecha: e.target['reg-fecha'].value, status: 'Pendiente'
-                    });
-                    showToast('Requisición registrada'); closeModal('registrar-modal'); e.target.reset();
-                } catch (err) { showToast('Error al registrar', 'error'); }
-            });
-
-            document.getElementById('form-add-empleado').addEventListener('submit', async (e) => {
-                e.preventDefault(); if (!currentUser) return;
-                if (empleadosMap.has(e.target['admin-emp-id'].value)) return showToast('ID ya existe', 'error');
-                try { await addDoc(employeesCollection, { id: e.target['admin-emp-id'].value, nombre: e.target['admin-emp-nombre'].value }); showToast('Empleado agregado'); e.target.reset(); } catch (err) { showToast('Error', 'error'); }
-            });
-
-             document.getElementById('form-add-articulo').addEventListener('submit', async (e) => {
-                e.preventDefault(); if (!currentUser) return;
-                if (articulosMap.has(e.target['admin-art-nombre'].value.trim())) return showToast('Artículo ya existe', 'error');
-                try { await addDoc(articlesCollection, { nombre: e.target['admin-art-nombre'].value.trim() }); showToast('Artículo agregado'); e.target.reset(); } catch (err) { showToast('Error', 'error'); }
-            });
-
-            // Confirm Action
-            btnConfirmOk.addEventListener('click', () => { if(confirmCallback) confirmCallback(); closeModal('confirm-modal'); });
-            btnConfirmCancel.addEventListener('click', () => closeModal('confirm-modal'));
-
-            // Dynamic Lists Click Handlers
-            tbodyRequisiciones.addEventListener('click', (e) => {
-                if (currentUser && e.target.closest('.status-badge')) {
-                    currentEditingRequisitionId = e.target.closest('.status-badge').dataset.id;
-                    openModal('status-modal');
-                }
-                if (currentUser && e.target.closest('.btn-delete-req')) {
-                    const reqId = e.target.closest('.btn-delete-req').dataset.reqid;
-                    askConfirmation('Eliminar Requisición', '¿Seguro que deseas eliminar este registro?', async () => {
-                        await deleteDoc(doc(requisitionsCollection, reqId)); showToast('Requisición eliminada');
-                    });
-                }
-            });
-
-            adminListEmpleados.addEventListener('click', (e) => {
-                const btn = e.target.closest('.btn-delete-emp');
-                if (btn) askConfirmation('Eliminar Empleado', `¿Eliminar a ${btn.dataset.name}?`, async () => { await deleteDoc(doc(employeesCollection, btn.dataset.fbid)); showToast('Empleado eliminado'); });
-            });
-             adminListArticulos.addEventListener('click', (e) => {
-                const btn = e.target.closest('.btn-delete-art');
-                if (btn) askConfirmation('Eliminar Artículo', `¿Eliminar "${btn.dataset.name}"?`, async () => { await deleteDoc(doc(articlesCollection, btn.dataset.fbid)); showToast('Artículo eliminado'); });
-            });
-
-            // Status Update
-            const setStatus = async (status) => {
-                if (!currentEditingRequisitionId) return;
-                const updateData = { status };
-                if (status === 'Cobrada') updateData.fechaCobro = new Date().toISOString().split('T')[0];
-                else updateData.fechaCobro = null; // Borrar fecha si cambia de estatus
-                try { await updateDoc(doc(requisitionsCollection, currentEditingRequisitionId), updateData); showToast(`Estatus: ${status}`); closeModal('status-modal'); } catch (err) { showToast('Error al actualizar', 'error'); }
+                    const wb = XLSX.read(evt.target.result, {type: 'binary'});
+                    const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1});
+                    let count = 0;
+                    for(let i=0; i<data.length; i++) { // Empieza en 0 si no tiene headers, o 1 si tiene
+                         if(data[i][0] && data[i][1] && !empsMap.has(data[i][0].toString())) {
+                             await addDoc(colEmps, {id: data[i][0].toString(), nombre: data[i][1].toString()});
+                             count++;
+                         }
+                    }
+                    showToast(`Cargados ${count} empleados`);
+                } catch(err) { console.error(err); showToast('Error al leer archivo', 'error'); }
+                e.target.value = ''; // Reset file input
             };
-            document.getElementById('btn-status-auth').onclick = () => setStatus('Autorizada');
-            document.getElementById('btn-status-cobrada').onclick = () => setStatus('Cobrada');
-            document.getElementById('btn-status-pendiente').onclick = () => setStatus('Pendiente');
-        });
+            reader.readAsBinaryString(f);
+        };
     </script>
 </body>
 </html>
