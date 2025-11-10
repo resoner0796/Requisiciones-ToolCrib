@@ -40,34 +40,6 @@
         .aspect-w-1 { position: relative; padding-bottom: 100%; } /* Relación de aspecto 1:1 (cuadrada) */
         .aspect-w-1 > * { position: absolute; height: 100%; width: 100%; top: 0; right: 0; bottom: 0; left: 0; }
 
-        /* Loader para Gemini API */
-        #loading-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 9998;
-            display: none; /* Oculto por defecto */
-            align-items: center;
-            justify-content: center;
-        }
-        #loading-overlay::after {
-            content: '';
-            width: 48px;
-            height: 48px;
-            border: 5px solid #FFF;
-            border-bottom-color: #3b82f6;
-            border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
-        }
-        @keyframes rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-
         /* --- MODO RESPONSIVO PRO PARA TABLAS (Móvil - Tarjetas Mejoradas) --- */
         @media (max-width: 640px) {
             .responsive-table thead { display: none; }
@@ -84,12 +56,17 @@
             .responsive-table td.col-acciones { @apply justify-end mt-3 pt-3 border-t border-gray-100; }
             .responsive-table td.col-acciones::before { display: none; }
         }
+        /* Ajuste para grid de 3 columnas en admin */
+        @media (max-width: 1024px) and (min-width: 640px) {
+            #admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (min-width: 1024px) {
+            #admin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
     <div id="toast-container"></div>
-    <!-- Overlay de Carga para API -->
-    <div id="loading-overlay"></div>
 
     <div class="min-h-screen flex flex-col">
         <!-- Header Principal -->
@@ -103,14 +80,6 @@
                 </div>
                 <div class="flex items-center space-x-2 sm:space-x-4">
                     <span id="user-email-display" class="text-sm text-gray-500 hidden md:inline-block font-medium"></span>
-                    
-                    <!-- Botón para API Key de Gemini -->
-                    <button id="btn-gemini-key" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Configurar API Key">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-                            <path d="M10 3.75a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM10 8.75a.75.75 0 0 0-1.136.643l-1.002 5.013a.75.75 0 0 0 .73 1.094l.21.042a.75.75 0 0 0 .73-.393L10 13.52l.468 1.63a.75.75 0 0 0 .73.393l.21-.042a.75.75 0 0 0 .73-1.094l-1.002-5.013A.75.75 0 0 0 10 8.75Z" />
-                            <path fill-rule="evenodd" d="M3 10a7 7 0 1 1 14 0 7 7 0 0 1-14 0Zm7-8.75A8.75 8.75 0 1 0 18.75 10 8.75 8.75 0 0 0 10 1.25Z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
                     
                     <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Acceso Admin">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" /></svg>
@@ -191,12 +160,9 @@
                     </div>
                 </div>
 
-                <!-- ======== FILTROS DE CATEGORÍA ======== -->
+                <!-- ======== FILTROS DE CATEGORÍA (DINÁMICOS) ======== -->
                 <div id="catalogo-filtros" class="flex flex-wrap gap-2 mb-6">
-                    <button data-category="Todos" class="btn-cat-filter px-4 py-1.5 text-sm font-medium rounded-full bg-primary-600 text-white transition">Todos</button>
-                    <button data-category="Consumibles" class="btn-cat-filter px-4 py-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Consumibles</button>
-                    <button data-category="Herramientas" class="btn-cat-filter px-4 py-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Herramientas</button>
-                    <button data-category="Equipo de Protección Personal" class="btn-cat-filter px-4 py-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition">EPP</button>
+                    <!-- Generados por JS -->
                 </div>
                 <!-- ============================================== -->
 
@@ -207,10 +173,12 @@
 
             <!-- Admin Screen -->
             <div id="admin-screen" class="screen-content hidden animate-fade-in">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <!-- ======== ADMIN GRID ACTUALIZADO A 3 COLUMNAS ======== -->
+                <div id="admin-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Tarjeta de Empleados -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                            <!-- ======== TÍTULO DE FORMULARIO DE EMPLEADO ACTUALIZADO ======== -->
                             <h2 id="emp-form-title" class="text-lg font-bold flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
                             <div class="flex gap-2 w-full sm:w-auto">
                                 <input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden">
@@ -222,7 +190,6 @@
                         <form id="form-add-empleado" class="flex gap-3 mb-6">
                             <input type="number" id="admin-emp-id" placeholder="ID" required class="w-1/3">
                             <input type="text" id="admin-emp-nombre" placeholder="Nombre" required class="w-full">
-                            <!-- ======== BOTONES DE GUARDAR/CANCELAR EMPLEADO ACTUALIZADOS ======== -->
                             <button type="button" id="btn-cancel-emp" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                             </button>
@@ -232,10 +199,23 @@
                                 </svg>
                             </button>
                         </form>
-                        <div id="admin-list-empleados" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+                        <div id="admin-list-empleados" class="flex-grow h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                        <!-- ======== TÍTULO DE FORMULARIO DE ARTÍCULO ACTUALIZADO ======== -->
+                    
+                    <!-- ======== NUEVA TARJETA DE CATEGORÍAS ======== -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+                        <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>Gestionar Categorías</h2>
+                        <form id="form-add-categoria" class="flex gap-3 mb-6">
+                            <input type="text" id="admin-cat-name" placeholder="Nombre de categoría" required class="w-full">
+                            <button type="submit" class="btn btn-primary flex-shrink-0" title="Agregar Categoría">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </form>
+                        <div id="admin-list-categorias" class="flex-grow h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+                    </div>
+                    
+                    <!-- Tarjeta de Artículos -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                         <h2 id="art-form-title" class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
                         <form id="form-add-articulo" class="flex flex-col gap-3 mb-6">
                             <div class="flex gap-3">
@@ -243,16 +223,14 @@
                                 <input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-1/2">
                             </div>
                             <div class="flex gap-3">
+                                <!-- ======== DROPDOWN DE CATEGORÍA (DINÁMICO) ======== -->
                                 <select id="admin-art-cat" required class="w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
                                     <option value="">Seleccione Categoría...</option>
-                                    <option value="Consumibles">Consumibles</option>
-                                    <option value="Herramientas">Herramientas</option>
-                                    <option value="Equipo de Protección Personal">Equipo de Protección Personal</option>
+                                    <!-- Opciones generadas por JS -->
                                 </select>
                             </div>
                             <div class="flex gap-3">
                                 <input type="text" id="admin-art-img" placeholder="URL imagen o nombre archivo" class="w-full">
-                                <!-- ======== BOTONES DE GUARDAR/CANCELAR ARTÍCULO ACTUALIZADOS ======== -->
                                 <button type="button" id="btn-cancel-art" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                                 </button>
@@ -263,7 +241,7 @@
                                 </button>
                             </div>
                         </form>
-                        <div id="admin-list-articulos" class="h-80 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+                        <div id="admin-list-articulos" class="flex-grow h-80 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
                 </div>
             </div>
@@ -283,20 +261,7 @@
                <input type="text" id="reg-nombre" readonly placeholder="Nombre del empleado..." class="bg-gray-50 w-full">
                <div><label class="block text-sm font-medium text-gray-700 mb-1">Artículo</label><select id="reg-articulo" required class="focus:ring-primary-500 w-full"><option value="">Seleccione...</option></select></div>
                
-               <!-- ======== CAMPO JUSTIFICACIÓN + BOTÓN GEMINI ======== -->
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="block text-sm font-medium text-gray-700">Justificación</label>
-                        <button type="button" id="btn-gemini-justify" class="text-primary-600 hover:text-primary-800 transition p-1 rounded-full hover:bg-primary-100" title="✨ Generar justificación con IA">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
-                                <path fill-rule="evenodd" d="M10 2.5c.38 0 .73.12 1.02.32l.01.01c.1.06.2.14.3.23l.02.02a1.5 1.5 0 0 1 .64 1.15l.01.12V6h2.25a.75.75 0 0 1 0 1.5H11.5v2.25a.75.75 0 0 1-1.5 0V7.5H7.75a.75.75 0 0 1 0-1.5H10V4.35l-.01-.12a1.5 1.5 0 0 1 .65-1.15l.02-.02c.1-.09.2-.17.3-.23l.01-.01A2.5 2.5 0 0 1 10 2.5ZM10 17.5c-.38 0-.73-.12-1.02-.32l-.01-.01c-.1-.06-.2-.14-.3-.23l-.02-.02a1.5 1.5 0 0 1-.64-1.15l-.01-.12V14H7.75a.75.75 0 0 1 0-1.5H10v-2.25a.75.75 0 0 1 1.5 0V12.5h2.25a.75.75 0 0 1 0 1.5H11.5v2.65l.01.12c.01.44-.17.86-.48 1.15l-.02.02c-.1.09-.2.17-.3.23l-.01.01A2.5 2.5 0 0 1 10 17.5ZM5.65 6.17c.09-.1.17-.2.23-.3l.02-.02a1.5 1.5 0 0 1 1.15-.64l.12-.01H9.25a.75.75 0 0 1 .75.75V8.25a.75.75 0 0 1-1.5 0V6H6.22l-.12.01a1.5 1.5 0 0 1-1.15.65l-.02.02c-.09.1-.17.2-.23.3l-.01.01a2.5 2.5 0 0 1-2.14-1.3c-.09-.18-.16-.38-.2-.58a.75.75 0 0 1 .59-1.01l.01 0c1.03-.21 2.01-.64 2.89-1.28l.02-.01a.75.75 0 0 1 .84.18Z" clip-rule="evenodd" />
-                                <path d="M12.94 15.31c.09.1.17.2.23.3l.02.02a1.5 1.5 0 0 1 .65 1.15l.01.12V19.25a.75.75 0 0 1-1.5 0v-2.22l-.12-.01a1.5 1.5 0 0 1-1.15-.65l-.02-.02c-.09-.1-.17-.2-.23-.3l-.01-.01a2.5 2.5 0 0 1 1.3-2.14c.18-.09.38-.16.58-.2l.01 0a.75.75 0 0 1 1.01.59Z" />
-                            </svg>
-                        </button>
-                    </div>
-                    <textarea id="reg-justificacion" placeholder="Motivo de la solicitud..." class="focus:ring-primary-500 w-full" rows="3"></textarea>
-                </div>
-               <!-- ======================================================= -->
+               <!-- Campo Justificación ELIMINADO -->
 
                <div class="flex justify-end space-x-3 mt-8"><button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button><button type="submit" class="btn btn-primary px-8">Registrar</button></div>
             </form>
@@ -334,23 +299,7 @@
         </div>
     </div>
 
-    <!-- Modal para API Key de Gemini -->
-    <div id="gemini-key-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform transition-all scale-95 opacity-0">
-            <h2 class="text-2xl font-bold mb-4 text-gray-900">Configurar API Key</h2>
-            <p class="text-gray-600 text-sm mb-6">Necesitas una API Key de Google AI Studio (Gemini) para usar las funciones de IA. Esta se guardará en tu navegador.</p>
-            <form id="form-gemini-key" class="space-y-4">
-               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">API Key</label>
-                <input type="password" id="gemini-key-input" placeholder="Pega tu API Key aquí..." class="w-full">
-               </div>
-               <div class="flex justify-end space-x-3 pt-4">
-                <button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button>
-                <button type="submit" class="btn btn-primary px-8">Guardar</button>
-               </div>
-            </form>
-        </div>
-    </div>
+    <!-- Modal API Key de Gemini ELIMINADO -->
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -364,24 +313,25 @@
         const colReqs = collection(db, 'requi_toolcrib', 'data', 'requisitions');
         const colEmps = collection(db, 'requi_toolcrib', 'data', 'employees');
         const colArts = collection(db, 'requi_toolcrib', 'data', 'articles');
+        // ======== NUEVA COLECCIÓN DE CATEGORÍAS ========
+        const colCats = collection(db, 'requi_toolcrib', 'data', 'categories');
+        // ==============================================
 
         // --- VARIABLES GLOBALES ---
         let currentUser = null, currentReqId = null, confirmAction = null, reqsData = [], empsMap = new Map(), artsMap = new Map();
+        // ======== NUEVA MAPA DE CATEGORÍAS ========
+        let catsMap = new Map();
+        // ==========================================
         let currentCategory = 'Todos'; 
         const PLACEHOLDER_IMG = "https://placehold.co/400x400/f1f5f9/94a3b8?text=Sin+Imagen";
-        const GEMINI_API_KEY_STORAGE = 'gemini_api_key_toolcrib';
-        let geminiApiKey = localStorage.getItem(GEMINI_API_KEY_STORAGE);
 
-        // --- NUEVAS VARIABLES GLOBALES PARA CRUD ---
-        let editingEmpId = null; // Almacena el ID de Firestore del empleado que se edita
-        let editingArtId = null; // Almacena el ID de Firestore del artículo que se edita
-        const iconAdd = '<path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />';
-        const iconEdit = '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />'; // Un checkmark (requiere stroke-width)
-        const iconEditSVG = '<svg id="emp-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>';
-        const iconAddSVG = '<svg id="emp-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>';
-        // --- --- --- --- --- --- ---
+        // --- VARIABLES CRUD ---
+        let editingEmpId = null; 
+        let editingArtId = null; 
+        const iconAddSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>';
+        const iconEditSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>';
 
-        // --- FUNCIONES UTILITARIAS (Modales, Toasts, Loader) ---
+        // --- FUNCIONES UTILITARIAS (Modales, Toasts) ---
         window.showToast = (msg, type = 'success') => {
             const t = document.createElement('div'); t.className = `toast toast-${type}`;
             t.innerHTML = `<div class="${type==='success'?'text-green-500':type==='error'?'text-red-500':'text-blue-500'} mr-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg></div><div class="text-sm font-medium">${msg}</div>`;
@@ -392,7 +342,7 @@
         window.closeModal = (id) => { const m = document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95','opacity-0'); setTimeout(() => m.classList.add('hidden'), 200); };
         window.askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
         
-        const showLoader = (show) => { document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; };
+        // Loader de Gemini ELIMINADO
 
         // --- NAVEGACIÓN ---
         window.navigateTo = (screenId) => {
@@ -416,6 +366,17 @@
         onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); reqsData.sort((a,b) => b.fecha.localeCompare(a.fecha)); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
         onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
         onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderArtsDropdown(); renderAdmin(); renderCatalogo(); });
+        
+        // ======== NUEVO LISTENER PARA CATEGORÍAS ========
+        onSnapshot(colCats, (s) => {
+            catsMap.clear();
+            s.forEach(d => {
+                catsMap.set(d.data().name, { ...d.data(), fbId: d.id });
+            });
+            // Llamar a las funciones que actualizan la UI de categorías
+            renderDynamicCategoryUI();
+        }, (e) => { console.error("Error al cargar categorías", e); });
+        // ================================================
 
         // --- LÓGICA DE RENDERIZADO ---
         function renderReqs() {
@@ -426,10 +387,9 @@
                     <td data-label="# Requi" class="px-6 py-4 font-medium text-primary-900">${r.numRequi || '-'}</td>
                     <td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td>
                     <td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td>
-                    <!-- Artículo actualizado para mostrar justificación -->
+                    <!-- Artículo SIN justificación -->
                     <td data-label="Artículo" class="px-6 py-4">
                         <div class="text-sm text-gray-900 font-medium">${r.articulo}</div>
-                        <div class="text-xs text-gray-500 italic mt-1 truncate" title="${r.justificacion || ''}">${r.justificacion || ''}</div>
                     </td>
                     <td data-label="Estatus" class="px-6 py-4 text-center"><span data-id="${r.id}" class="status-badge cursor-pointer hover:scale-105 transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${r.status==='Autorizada'?'bg-green-100 text-green-800':r.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800'}">${r.status}</span></td>
                     <td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">${r.fechaCobro || '-'}</td>
@@ -437,8 +397,8 @@
                 </tr>`).join('') : '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>';
         }
 
-        // RENDER ADMIN ACTUALIZADO CON BOTONES DE EDITAR
         function renderAdmin() {
+            // Render Empleados
             document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a,b)=>a.id-b.id).map(e => `
                 <div class="flex justify-between items-center p-3 hover:bg-white transition">
                     <div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div>
@@ -452,6 +412,7 @@
                     </div>
                 </div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
             
+            // Render Artículos
             document.getElementById('admin-list-articulos').innerHTML = artsMap.size ? Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => `
                 <div class="flex justify-between items-center p-3 hover:bg-white transition">
                     <div><span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span><span>${a.nom}</span></div>
@@ -497,6 +458,59 @@
              s.value = val;
         }
 
+        // ======== NUEVAS FUNCIONES DE RENDERIZADO DE CATEGORÍAS ========
+        function renderDynamicCategoryUI() {
+            renderAdminCategorias();
+            renderArticuloCategoryDropdown();
+            renderCatalogoFiltros();
+        }
+
+        function renderAdminCategorias() {
+            const list = document.getElementById('admin-list-categorias');
+            const sortedCats = Array.from(catsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+            list.innerHTML = sortedCats.length ? sortedCats.map(cat => `
+                <div class="flex justify-between items-center p-3 hover:bg-white transition">
+                    <span class="text-gray-700">${cat.name}</span>
+                    <button class="btn-del-cat text-gray-400 hover:text-red-600 transition" data-id="${cat.fbId}" data-n="${cat.name}" title="Eliminar Categoría">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </button>
+                </div>
+            `).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
+        }
+
+        function renderArticuloCategoryDropdown() {
+            const select = document.getElementById('admin-art-cat');
+            const currentValue = select.value; // Guardar valor si se está editando
+            const sortedCats = Array.from(catsMap.keys()).sort();
+            select.innerHTML = '<option value="">Seleccione Categoría...</option>'; // Reset
+            sortedCats.forEach(catName => {
+                select.innerHTML += `<option value="${catName}">${catName}</option>`;
+            });
+            select.value = currentValue; // Re-asignar valor
+        }
+
+        function renderCatalogoFiltros() {
+            const container = document.getElementById('catalogo-filtros');
+            const sortedCats = Array.from(catsMap.keys()).sort();
+            let html = '<button data-category="Todos" class="btn-cat-filter px-4 py-1.5 text-sm font-medium rounded-full bg-primary-600 text-white transition">Todos</button>';
+            sortedCats.forEach(catName => {
+                html += `<button data-category="${catName}" class="btn-cat-filter px-4 py-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition">${catName}</button>`;
+            });
+            container.innerHTML = html;
+
+            // Resaltar el filtro activo
+            document.querySelectorAll('.btn-cat-filter').forEach(btn => {
+                if (btn.dataset.category === currentCategory) {
+                    btn.classList.add('bg-primary-600', 'text-white');
+                    btn.classList.remove('bg-gray-100', 'text-gray-700');
+                } else {
+                    btn.classList.remove('bg-primary-600', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                }
+            });
+        }
+        // ========================================================
+
         // --- LÓGICA DE CLICS (Event Delegation) ---
         document.addEventListener('click', e => {
             // Navegación
@@ -511,21 +525,26 @@
             const delReq = e.target.closest('.btn-del-req'); if(delReq && currentUser) askConfirm('Eliminar Requi', '¿Seguro?', async () => { await deleteDoc(doc(colReqs, delReq.dataset.id)); showToast('Eliminado'); });
             const delEmp = e.target.closest('.btn-del-emp'); if(delEmp && currentUser) askConfirm('Eliminar Empleado', `¿Eliminar a ${delEmp.dataset.n}?`, async () => { await deleteDoc(doc(colEmps, delEmp.dataset.id)); showToast('Eliminado'); });
             const delArt = e.target.closest('.btn-del-art'); if(delArt && currentUser) askConfirm('Eliminar Artículo', `¿Eliminar ${delArt.dataset.n}?`, async () => { await deleteDoc(doc(colArts, delArt.dataset.id)); showToast('Eliminado'); });
+            
+            // ======== NUEVO BORRADO DE CATEGORÍA ========
+            const delCat = e.target.closest('.btn-del-cat'); 
+            if(delCat && currentUser) {
+                askConfirm('Eliminar Categoría', `¿Eliminar "${delCat.dataset.n}"? Esto no eliminará los artículos que ya la usan.`, async () => { 
+                    await deleteDoc(doc(colCats, delCat.dataset.id)); 
+                    showToast('Categoría eliminada'); 
+                });
+            }
+            // ==========================================
         
             // Filtros de Categoría
             const catBtn = e.target.closest('.btn-cat-filter');
             if (catBtn) {
                 currentCategory = catBtn.dataset.category;
-                document.querySelectorAll('.btn-cat-filter').forEach(btn => {
-                    btn.classList.remove('bg-primary-600', 'text-white');
-                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-                });
-                catBtn.classList.add('bg-primary-600', 'text-white');
-                catBtn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-                renderCatalogo();
+                renderCatalogoFiltros(); // Re-renderiza para actualizar estilos
+                renderCatalogo(); // Re-renderiza la cuadrícula
             }
 
-            // --- NUEVOS CLICS PARA EDITAR ---
+            // Clics para Editar
             const editEmp = e.target.closest('.btn-edit-emp');
             if (editEmp) {
                 startEditEmpleado(editEmp.dataset);
@@ -535,7 +554,6 @@
                 const artData = Array.from(artsMap.values()).find(a => a.fbId === editArt.dataset.id);
                 if (artData) startEditArticulo(artData);
             }
-            // --- --- --- --- --- --- --- ---
         });
 
         // --- FUNCIONES DE CRUD (EMPLEADOS) ---
@@ -594,15 +612,13 @@
         document.getElementById('btn-status-auth').onclick = () => setStatus('Autorizada');
         document.getElementById('btn-status-cob').onclick = () => setStatus('Cobrada');
         document.getElementById('btn-status-pen').onclick = () => setStatus('Pendiente');
-
-        // --- LISTENERS DE CANCELAR EDICIÓN ---
         document.getElementById('btn-cancel-emp').onclick = cancelEditEmpleado;
         document.getElementById('btn-cancel-art').onclick = cancelEditArticulo;
 
         // --- FORMULARIO DE LOGIN ---
         document.getElementById('form-login').onsubmit = async (e) => { e.preventDefault(); document.getElementById('btn-login-submit').disabled=true; try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal'); e.target.reset(); showToast('Bienvenido'); } catch(err) { showToast('Credenciales incorrectas', 'error'); } finally { document.getElementById('btn-login-submit').disabled=false; } };
         
-        // --- FORMULARIO DE REGISTRO (CON JUSTIFICACIÓN) ---
+        // --- FORMULARIO DE REGISTRO (SIN JUSTIFICACIÓN) ---
         document.getElementById('form-registrar').onsubmit = async (e) => { 
             e.preventDefault(); 
             if(!e.target['reg-nombre'].value) return showToast('Empleado no válido', 'error'); 
@@ -613,8 +629,7 @@
                     nombre: e.target['reg-nombre'].value, 
                     articulo: e.target['reg-articulo'].value, 
                     fecha: e.target['reg-fecha'].value, 
-                    status: 'Pendiente',
-                    justificacion: e.target['reg-justificacion'].value || '' // Guardar justificación
+                    status: 'Pendiente'
                 }); 
                 showToast('Registrado'); 
                 closeModal('registrar-modal'); 
@@ -624,14 +639,13 @@
             } 
         };
         
-        // --- FORMULARIO AÑADIR/EDITAR EMPLEADO (ACTUALIZADO) ---
+        // --- FORMULARIO AÑADIR/EDITAR EMPLEADO ---
         document.getElementById('form-add-empleado').onsubmit = async (e) => { 
             e.preventDefault();
             const empId = e.target['admin-emp-id'].value;
             const empNombre = e.target['admin-emp-nombre'].value;
 
             if (editingEmpId) {
-                // Modo Edición
                 try {
                     await updateDoc(doc(colEmps, editingEmpId), { id: empId, nombre: empNombre });
                     showToast('Empleado actualizado');
@@ -640,7 +654,6 @@
                     showToast('Error al actualizar', 'error');
                 }
             } else {
-                // Modo Añadir
                 if(empsMap.has(empId)) return showToast('ID duplicado', 'error'); 
                 try { 
                     await addDoc(colEmps, {id: empId, nombre: empNombre}); 
@@ -652,7 +665,7 @@
             }
         };
         
-        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (ACTUALIZADO) ---
+        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO ---
         document.getElementById('form-add-articulo').onsubmit = async (e) => { 
             e.preventDefault(); 
             const num = e.target['admin-art-num'].value;
@@ -661,7 +674,6 @@
             const img = e.target['admin-art-img'].value;
 
             if (editingArtId) {
-                // Modo Edición
                 if(!cat) return showToast('Debes seleccionar una categoría', 'error');
                 try {
                     await updateDoc(doc(colArts, editingArtId), { num, nom, cat, img });
@@ -671,7 +683,6 @@
                     showToast('Error al actualizar', 'error');
                 }
             } else {
-                // Modo Añadir
                 if(artsMap.has(num)) return showToast('No. Parte duplicado', 'error'); 
                 if(!cat) return showToast('Debes seleccionar una categoría', 'error');
                 try { 
@@ -683,6 +694,26 @@
                 }
             }
         };
+        
+        // ======== NUEVO FORMULARIO DE CATEGORÍA ========
+        document.getElementById('form-add-categoria').onsubmit = async (e) => {
+            e.preventDefault();
+            const catName = e.target['admin-cat-name'].value.trim();
+            if (!catName) return;
+
+            if (catsMap.has(catName)) {
+                return showToast('Esa categoría ya existe', 'error');
+            }
+            try {
+                await addDoc(colCats, { name: catName });
+                showToast('Categoría agregada');
+                e.target.reset();
+            } catch (err) {
+                console.error("Error al agregar categoría: ", err);
+                showToast('Error al agregar', 'error');
+            }
+        };
+        // ===============================================
         
         // --- CARGA DE EXCEL (EMPLEADOS) ---
         document.getElementById('file-upload-emp').onchange = async (e) => {
@@ -701,103 +732,16 @@
             reader.readAsBinaryString(f);
         };
 
-        // --- LÓGICA DE GEMINI API ---
-        document.getElementById('btn-gemini-key').onclick = () => {
-            document.getElementById('gemini-key-input').value = geminiApiKey || '';
-            openModal('gemini-key-modal');
-        };
-
-        document.getElementById('form-gemini-key').onsubmit = (e) => {
-            e.preventDefault();
-            geminiApiKey = document.getElementById('gemini-key-input').value;
-            if (geminiApiKey) {
-                localStorage.setItem(GEMINI_API_KEY_STORAGE, geminiApiKey);
-                showToast('API Key guardada');
-            } else {
-                localStorage.removeItem(GEMINI_API_KEY_STORAGE);
-                showToast('API Key eliminada', 'info');
-            }
-            closeModal('gemini-key-modal');
-        };
-
-        async function callGeminiApi(prompt) {
-            if (!geminiApiKey) {
-                openModal('gemini-key-modal');
-                return null;
-            }
-            showLoader(true);
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiApiKey}`;
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        systemInstruction: {
-                            parts: [{ text: "Eres un asistente de almacén. Escribe justificaciones breves, en español, y muy profesionales para solicitar material. Sé conciso." }]
-                        },
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error("Error de API:", errorData);
-                    let errorMsg = `Error: ${response.statusText}`;
-                    if (errorData.error?.message.includes("API key not valid")) {
-                        errorMsg = "API Key no válida. Revísala.";
-                        localStorage.removeItem(GEMINI_API_KEY_STORAGE); // Limpia la key mala
-                        geminiApiKey = null;
-                        openModal('gemini-key-modal');
-                    }
-                    showToast(errorMsg, 'error');
-                    return null;
-                }
-
-                const result = await response.json();
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                return text || null;
-
-            } catch (err) {
-                console.error("Fetch error:", err);
-                showToast('No se pudo conectar a la API', 'error');
-                return null;
-            } finally {
-                showLoader(false);
-            }
-        }
-
-        document.getElementById('btn-gemini-justify').onclick = async () => {
-            const nombre = document.getElementById('reg-nombre').value;
-            const articulo = document.getElementById('reg-articulo').value;
-
-            if (!nombre || !articulo) {
-                showToast('Completa Empleado y Artículo primero', 'info');
-                return;
-            }
-
-            const prompt = `Escribe una justificación de una línea para una requisición de material. Empleado: "${nombre}". Artículo: "${articulo}". Motivo: Reemplazo de rutina o stock.`;
-            const justificacion = await callGeminiApi(prompt);
-            
-            if (justificacion) {
-                document.getElementById('reg-justificacion').value = justificacion;
-                showToast('Justificación generada ✨', 'info');
-            }
-        };
+        // --- LÓGICA DE GEMINI API ELIMINADA ---
 
         // --- INICIALIZACIÓN DE LA APP ---
         function setInitialIcons() {
-            document.getElementById('emp-submit-icon').innerHTML = iconAdd;
-            document.getElementById('art-submit-icon').innerHTML = iconAdd;
+            document.getElementById('emp-submit-icon').innerHTML = iconAddSVG;
+            document.getElementById('art-submit-icon').innerHTML = iconAddSVG;
         }
 
         setInitialIcons();
         window.navigateTo('home-screen');
-        if (!geminiApiKey) {
-            setTimeout(() => {
-                showToast('Configura tu API Key de Gemini para activar IA ✨', 'info');
-                openModal('gemini-key-modal');
-            }, 1500);
-        }
     </script>
 </body>
 </html>
