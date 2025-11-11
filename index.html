@@ -125,7 +125,7 @@
                 </div>
             </div>
 
-            <!-- ======== NUEVA PANTALLA DE REGISTRO ======== -->
+            <!-- ======== PANTALLA DE REGISTRO ======== -->
             <div id="registrar-screen" class="screen-content hidden animate-fade-in">
                 <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Crear Nueva Requisición</h1>
                 
@@ -172,9 +172,16 @@
 
                         <!-- Cesta de Artículos Seleccionados -->
                         <h3 class="text-lg font-bold text-gray-800 mb-3">Artículos Seleccionados (<span id="cesta-conteo">0</span>)</h3>
-                        <div id="cesta-articulos" class="h-40 overflow-y-auto border rounded-lg bg-white p-2 divide-y divide-gray-100 mb-6">
-                            <div id="cesta-placeholder" class="p-4 text-center text-gray-400 italic">Aún no has agregado artículos.</div>
+                        <!-- ======== CORRECCIÓN DEL BUG: Contenedor padre para la cesta y el placeholder ======== -->
+                        <div class="h-40 overflow-y-auto border rounded-lg bg-white mb-6">
+                            <div id="cesta-placeholder" class="p-4 text-center text-gray-400 italic">
+                                Aún no has agregado artículos.
+                            </div>
+                            <div id="cesta-articulos" class="p-2 divide-y divide-gray-100 hidden">
+                                <!-- Artículos seleccionados van aquí -->
+                            </div>
                         </div>
+                        <!-- ================================================================================== -->
 
                         <button id="btn-registrar-submit" class="btn btn-primary w-full py-3 text-base font-bold">
                             Registrar Requisición(es)
@@ -217,7 +224,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
                     <h2 class="text-2xl font-bold text-gray-900">Catálogo de Productos</h2>
                     <div class="flex w-full sm:w-auto items-center gap-4">
-                        <!-- ======== NUEVO TOGGLE DE VISTA LISTA/GRID ======== -->
+                        <!-- TOGGLE DE VISTA LISTA/GRID -->
                         <div class="flex items-center border border-gray-300 rounded-lg p-0.5 bg-gray-100">
                             <button id="btn-view-grid" class="btn-view active p-2 rounded-md" title="Vista de Galería">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5ZM2 13.25A2.25 2.25 0 0 1 4.25 11h2.5A2.25 2.25 0 0 1 9 13.25v2.5A2.25 2.25 0 0 1 6.75 18h-2.5A2.25 2.25 0 0 1 2 15.75v-2.5ZM13.25 2A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5ZM11 13.25A2.25 2.25 0 0 1 13.25 11h2.5A2.25 2.25 0 0 1 18 13.25v2.5A2.25 2.25 0 0 1 15.75 18h-2.5A2.25 2.25 0 0 1 11 15.75v-2.5Z" clip-rule="evenodd" /></svg>
@@ -321,8 +328,6 @@
     </div>
 
     <!-- Modales -->
-    <!-- Modal de Registro ELIMINADO -->
-
     <div id="login-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 transform transition-all scale-95 opacity-0 text-center">
             <div class="mx-auto w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-primary-600"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg></div>
@@ -386,7 +391,6 @@
         const iconEditSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>';
 
         // --- FUNCIONES UTILITARIAS (Modales, Toasts) ---
-        // (Estas funciones no necesitan `window.` si se llaman desde este mismo script)
         const showToast = (msg, type = 'success') => {
             const t = document.createElement('div'); t.className = `toast toast-${type}`;
             t.innerHTML = `<div class="${type==='success'?'text-green-500':type==='error'?'text-red-500':'text-blue-500'} mr-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg></div><div class="text-sm font-medium">${msg}</div>`;
@@ -582,13 +586,11 @@
             }
         }
 
-        // Dropdown de Artículos para el formulario de Requisición (el viejo, ahora obsoleto pero lo dejo por si acaso)
+        // Dropdown de Artículos para el formulario de Requisición (el viejo, ahora obsoleto)
         function renderArtsDropdown() {
              const s = document.getElementById('reg-articulo');
-             if (s) { // El dropdown ya no existe, pero es buena práctica checar
-                const val = s.value;
-                s.innerHTML = '<option value="">Seleccione...</option>' + Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => `<option value="[${a.num}] - ${a.nom}">[${a.num}] - ${a.nom}</option>`).join('');
-                s.value = val;
+             if (s) { // El dropdown ya no existe
+                s.innerHTML = '';
              }
         }
 
@@ -651,7 +653,7 @@
         // --- RENDERIZADO PANTALLA REGISTRO (NUEVAS FUNCIONES) ---
         function renderRegistrarArticulos() {
             const list = document.getElementById('lista-reg-articulo');
-            if (!list) return; // No hacer nada si la pantalla no está activa
+            if (!list) return; 
             
             const term = document.getElementById('search-reg-articulo').value.toLowerCase();
             let articles = Array.from(artsMap.values());
@@ -677,18 +679,23 @@
             `}).join('') : '<div class="p-4 text-center text-gray-400 italic">No se encontraron artículos.</div>';
         }
 
+        // ======== FUNCIÓN DE RENDER CESTA (CORREGIDA) ========
         function renderCestaArticulos() {
             const cesta = document.getElementById('cesta-articulos');
             const placeholder = document.getElementById('cesta-placeholder');
             const conteo = document.getElementById('cesta-conteo');
             
+            if (!cesta || !placeholder || !conteo) return; // Guardia de seguridad
+
             conteo.innerText = articulosSeleccionados.length;
             
             if (articulosSeleccionados.length === 0) {
-                cesta.innerHTML = '';
-                placeholder.classList.remove('hidden');
+                cesta.innerHTML = ''; // Limpia la lista
+                cesta.classList.add('hidden'); // Oculta el contenedor de la lista
+                placeholder.classList.remove('hidden'); // Muestra el placeholder
             } else {
-                placeholder.classList.add('hidden');
+                cesta.classList.remove('hidden'); // Muestra el contenedor de la lista
+                placeholder.classList.add('hidden'); // Oculta el placeholder
                 cesta.innerHTML = articulosSeleccionados.map(art => `
                 <div class="flex justify-between items-center p-3">
                     <div>
@@ -701,6 +708,7 @@
                 </div>
                 `).join('');
             }
+            
             // Actualizar botones en la lista de artículos
             renderRegistrarArticulos();
         }
@@ -840,20 +848,15 @@
         document.getElementById('btn-login-icon').onclick = () => openModal('login-modal');
         document.getElementById('btn-logout').onclick = async () => { await signOut(auth); showToast('Sesión cerrada', 'info'); };
         
-        // Listener para la vieja nav (ahora en event delegation)
-        // document.getElementById('btn-registrar-nav').onclick = ...
-        
         document.getElementById('search-input').oninput = renderReqs;
         document.getElementById('search-catalogo').oninput = renderCatalogo;
         document.getElementById('search-reg-articulo').oninput = renderRegistrarArticulos;
         document.getElementById('reg-empleado-id').oninput = (e) => { const emp = empsMap.get(e.target.value); document.getElementById('reg-nombre').value = emp ? emp.nombre : ''; };
         document.getElementById('btn-confirm-ok').onclick = () => { if(confirmAction) confirmAction(); closeModal('confirm-modal'); };
         
-        // --- CORRECCIÓN DE BUGS: Listeners para botones de modal ---
         document.getElementById('btn-status-auth').onclick = () => setStatus('Autorizada');
         document.getElementById('btn-status-cob').onclick = () => setStatus('Cobrada');
         document.getElementById('btn-status-pen').onclick = () => setStatus('Pendiente');
-        // --- FIN CORRECCIÓN ---
 
         document.getElementById('btn-cancel-emp').onclick = cancelEditEmpleado;
         document.getElementById('btn-cancel-art').onclick = cancelEditArticulo;
