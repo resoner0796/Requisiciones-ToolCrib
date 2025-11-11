@@ -159,6 +159,20 @@
                     <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100 row-span-2">
                         <h2 class="text-xl font-bold text-gray-900 mb-6">2. Seleccionar Artículos</h2>
                         
+                        <!-- ======== NUEVA LISTA DE CONSUMIBLES DIARIOS ======== -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2 text-yellow-500"><path fill-rule="evenodd" d="M10.868 2.884c.321-.772 1.415-.772 1.736 0l1.681 4.062a.75.75 0 0 0 .564.41l4.47.652c.817.119 1.147 1.114.545 1.695l-3.235 3.152a.75.75 0 0 0-.216.66l.764 4.452c.138.809-.71.1.428-1.09l-3.996-2.1a.75.75 0 0 0-.69 0l-3.996 2.1c-.71.378-1.567-.281-1.428-1.09l.764-4.452a.75.75 0 0 0-.216-.66L.64 9.703c-.602-.581-.272-1.576.545-1.695l4.47-.652a.75.75 0 0 0 .564-.41L9.132 2.884Z" clip-rule="evenodd" /></svg>
+                                Consumibles Diarios (Acceso Rápido)
+                            </h3>
+                            <div id="lista-diarios" class="h-40 overflow-y-auto border rounded-lg bg-gray-50 p-2 divide-y divide-gray-200">
+                                <!-- Artículos diarios van aquí -->
+                            </div>
+                        </div>
+                        <!-- ======================================================= -->
+
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">Todos los Artículos</h3>
+                        
                         <!-- Filtros y Búsqueda de Artículos -->
                         <div class="relative mb-2">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
@@ -184,7 +198,7 @@
                             </div>
                         </div>
 
-                        <!-- ======== BOTÓN DE REGISTRAR (CON ESTILOS) ======== -->
+                        <!-- BOTÓN DE REGISTRAR (CON ESTILOS) -->
                         <button id="btn-registrar-submit" class="btn btn-primary w-full py-3 text-base font-bold shadow-lg hover:bg-primary-700 transition-all transform hover:-translate-y-0.5">
                             Registrar Requisición(es)
                         </button>
@@ -299,7 +313,7 @@
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                         <h2 id="art-form-title" class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
                         
-                        <!-- ======== FORMULARIO DE ARTÍCULO (CON VARIANTES) ======== -->
+                        <!-- FORMULARIO DE ARTÍCULO (CON VARIANTES Y LISTA RÁPIDA) -->
                         <form id="form-add-articulo" class="flex flex-col gap-3 mb-6">
                             <div class="flex gap-3">
                                 <input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/2 rounded-lg">
@@ -314,7 +328,7 @@
                             <div class="flex gap-3">
                                 <input type="text" id="admin-art-img" placeholder="URL imagen o nombre archivo" class="w-full rounded-lg">
                             </div>
-                            <!-- Nuevos campos de Variantes -->
+                            <!-- Checkbox de Variantes -->
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500">
                                 <label for="admin-art-hasVariants" class="text-sm font-medium text-gray-700">Tiene Variantes (ej. Tallas)</label>
@@ -323,6 +337,12 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Variantes (separadas por coma)</label>
                                 <input type="text" id="admin-art-variants" placeholder="Ej: S, M, L, XL" class="w-full rounded-lg">
                             </div>
+                            <!-- ======== NUEVO CHECKBOX "CONSUMIBLES DIARIOS" ======== -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="admin-art-isDaily" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500">
+                                <label for="admin-art-isDaily" class="text-sm font-medium text-gray-700">Agregar a "Consumibles Diarios"</label>
+                            </div>
+                            <!-- ======================================================= -->
                             <!-- Botones de Acción -->
                             <div class="flex gap-3 mt-2">
                                 <button type="button" id="btn-cancel-art" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición">
@@ -377,7 +397,7 @@
         </div>
     </div>
     
-    <!-- ======== NUEVO MODAL PARA VARIANTES (TALLAS) ======== -->
+    <!-- MODAL PARA VARIANTES (TALLAS) -->
     <div id="variant-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all scale-95 opacity-0">
             <h2 id="variant-modal-title" class="text-xl font-bold mb-5 text-gray-900">Seleccionar Talla</h2>
@@ -483,6 +503,7 @@
                 document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0];
                 articulosSeleccionados = [];
                 currentRegCategory = 'Todos';
+                renderDailyConsumibles(); // Renderiza la lista RÁPIDA
                 renderRegistrarArticulos(); 
                 renderCestaArticulos(); 
                 renderDynamicCategoryUI(); 
@@ -507,14 +528,14 @@
         onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); reqsData.sort((a,b) => b.fecha.localeCompare(a.fecha)); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
         onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
         
-        // Listener de Artículos actualizado para incluir variantes
+        // Listener de Artículos actualizado para incluir variantes y lista rápida
         onSnapshot(colArts, (s) => { 
             artsMap.clear(); 
             s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); 
-            // renderArtsDropdown(); // Ya no se usa
             renderAdmin(); 
             renderCatalogo(); 
             renderRegistrarArticulos(); 
+            renderDailyConsumibles(); // Actualiza la lista rápida
         });
         
         onSnapshot(colCats, (s) => {
@@ -535,7 +556,6 @@
                     <td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td>
                     <td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td>
                     <td data-label="Artículo" class="px-6 py-4">
-                        <!-- Artículo ahora puede mostrar variante -->
                         <div class="text-sm text-gray-900 font-medium">${r.articulo}</div>
                     </td>
                     <td data-label="Estatus" class="px-6 py-4 text-center">
@@ -570,6 +590,7 @@
                         <span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span>
                         <span>${a.nom}</span>
                         ${a.hasVariants ? `<span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full ml-2 font-medium">Variantes</span>` : ''}
+                        ${a.isDaily ? `<span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full ml-2 font-medium">Diario</span>` : ''}
                     </div>
                     <div class="flex gap-3">
                         <button class="btn-edit-art text-gray-400 hover:text-blue-600 transition" data-id="${a.fbId}" title="Editar">
@@ -637,9 +658,6 @@
             }
         }
 
-        // Dropdown de Artículos (Obsoleto, la pantalla de registro ya no lo usa)
-        function renderArtsDropdown() { }
-
         // --- RENDERIZADO DE CATEGORÍAS (DINÁMICO) ---
         function renderDynamicCategoryUI() {
             renderAdminCategorias();
@@ -648,6 +666,7 @@
             renderCatalogoFiltros('filtros-reg-articulo', currentRegCategory, 'btn-reg-cat-filter');
             renderCatalogo(); 
             renderRegistrarArticulos(); 
+            renderDailyConsumibles(); // <-- Asegurarse que se llame
         }
 
         function renderAdminCategorias() {
@@ -697,6 +716,44 @@
         }
 
         // --- RENDERIZADO PANTALLA REGISTRO (NUEVAS FUNCIONES) ---
+
+        // ======== NUEVA FUNCIÓN PARA LISTA RÁPIDA (DIARIOS) ========
+        function renderDailyConsumibles() {
+            const list = document.getElementById('lista-diarios');
+            if (!list) return; 
+
+            const dailyItems = Array.from(artsMap.values())
+                                  .filter(a => a.isDaily === true)
+                                  .sort((a,b) => a.nom.localeCompare(b.nom));
+
+            if (dailyItems.length === 0) {
+                list.innerHTML = '<div class="p-4 text-center text-gray-400 italic">No hay artículos en la lista rápida. Agrégalos desde el panel de Admin.</div>';
+                return;
+            }
+
+            list.innerHTML = dailyItems.map(a => {
+                // El botón + siempre está activo para artículos con variantes
+                const isAdded = !a.hasVariants && articulosSeleccionados.some(art => art.num === a.num);
+                return `
+                <div class="flex justify-between items-center p-3 hover:bg-white transition">
+                    <div>
+                        <div class="font-medium text-gray-800">${a.nom}</div>
+                        <div class="text-sm text-primary-600 font-medium">${a.num}</div>
+                    </div>
+                    <button class="btn-add-articulo btn ${isAdded ? 'btn-secondary' : 'btn-primary'} flex-shrink-0" 
+                            data-num="${a.num}" 
+                            data-nom="${a.nom}"
+                            data-has-variants="${a.hasVariants || false}"
+                            data-variants="${a.variants || ''}"
+                            ${isAdded ? 'disabled' : ''}>
+                        ${isAdded ? 
+                            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" /></svg>' : 
+                            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg>'}
+                    </button>
+                </div>
+            `}).join('');
+        }
+
         function renderRegistrarArticulos() {
             const list = document.getElementById('lista-reg-articulo');
             if (!list) return; 
@@ -708,8 +765,7 @@
             articles.sort((a,b) => a.num.localeCompare(b.num));
 
             list.innerHTML = articles.length ? articles.map(a => {
-                // Deshabilitar botón si es un artículo con variantes y ya se agregó (lógica simple, se puede mejorar)
-                const isAdded = articulosSeleccionados.some(art => art.num === a.num && !a.hasVariants);
+                const isAdded = !a.hasVariants && articulosSeleccionados.some(art => art.num === a.num);
                 return `
                 <div class="flex justify-between items-center p-3 hover:bg-white transition">
                     <div>
@@ -717,7 +773,6 @@
                         <div class="font-medium text-gray-800">${a.nom}</div>
                         <div class="text-sm text-primary-600 font-medium">${a.num}</div>
                     </div>
-                    <!-- El botón ahora guarda datos sobre las variantes -->
                     <button class="btn-add-articulo btn ${isAdded ? 'btn-secondary' : 'btn-primary'} flex-shrink-0" 
                             data-num="${a.num}" 
                             data-nom="${a.nom}"
@@ -732,7 +787,7 @@
             `}).join('') : '<div class="p-4 text-center text-gray-400 italic">No se encontraron artículos.</div>';
         }
 
-        // ======== FUNCIÓN DE RENDER CESTA (ACTUALIZADA CON VARIANTES) ========
+        // FUNCIÓN DE RENDER CESTA (ACTUALIZADA CON VARIANTES)
         function renderCestaArticulos() {
             const cesta = document.getElementById('cesta-articulos');
             const placeholder = document.getElementById('cesta-placeholder');
@@ -749,7 +804,6 @@
             } else {
                 cesta.classList.remove('hidden'); 
                 placeholder.classList.add('hidden'); 
-                // Se usa el ÍNDICE del array para el borrado, para permitir duplicados con diferentes tallas
                 cesta.innerHTML = articulosSeleccionados.map((art, index) => `
                 <div class="flex justify-between items-center p-3">
                     <div>
@@ -764,6 +818,7 @@
             }
             
             renderRegistrarArticulos();
+            renderDailyConsumibles(); // <-- Actualizar lista rápida también
         }
 
         // --- LÓGICA DE CLICS (Event Delegation) ---
@@ -843,10 +898,9 @@
                     // 1. Artículo TIENE variantes
                     currentArticleForVariant = { num, nom }; // Guardar datos del artículo
                     
-                    // Llenar el modal
                     document.getElementById('variant-modal-title').innerText = `Seleccionar Talla para: ${nom}`;
                     const variantSelect = document.getElementById('variant-select');
-                    variantSelect.innerHTML = '<option value="">Seleccione...</option>'; // Limpiar
+                    variantSelect.innerHTML = '<option value="">Seleccione...</option>'; 
                     variants.split(',').forEach(v => {
                         const variant = v.trim();
                         if (variant) {
@@ -858,7 +912,7 @@
                     // 2. Artículo NO tiene variantes
                     const artData = artsMap.get(num);
                     if (artData) {
-                        articulosSeleccionados.push({ ...artData, variant: null }); // Guardar con variante nula
+                        articulosSeleccionados.push({ ...artData, variant: null }); 
                         renderCestaArticulos();
                     }
                 }
@@ -869,7 +923,7 @@
             if (removeArt) {
                 const indexToRemove = parseInt(removeArt.dataset.index, 10);
                 if (!isNaN(indexToRemove)) {
-                    articulosSeleccionados.splice(indexToRemove, 1); // Eliminar por índice
+                    articulosSeleccionados.splice(indexToRemove, 1); 
                     renderCestaArticulos();
                 }
             }
@@ -882,7 +936,7 @@
             document.getElementById('admin-emp-id').readOnly = true;
             document.getElementById('admin-emp-nombre').value = data.n;
             document.getElementById('emp-form-title').innerText = "Editar Empleado";
-            document.getElementById('emp-submit-icon').outerHTML = iconEditSVG;
+            document.getElementById('emp-submit-icon').innerHTML = iconEditSVG;
             document.getElementById('btn-cancel-emp').classList.remove('hidden');
             document.getElementById('admin-emp-nombre').focus();
         }
@@ -892,13 +946,13 @@
             document.getElementById('form-add-empleado').reset();
             document.getElementById('admin-emp-id').readOnly = false;
             document.getElementById('emp-form-title').innerText = "Empleados";
-            document.getElementById('emp-submit-icon').outerHTML = iconAddSVG;
+            document.getElementById('emp-submit-icon').innerHTML = iconAddSVG;
             document.getElementById('btn-cancel-emp').classList.add('hidden');
         }
 
-        // --- FUNCIONES DE CRUD (ARTÍCULOS CON VARIANTES) ---
+        // --- FUNCIONES DE CRUD (ARTÍCULOS CON VARIANTES Y LISTA RÁPIDA) ---
         function startEditArticulo(art) {
-            editingArtId = art.fbId; // Firestore Document ID
+            editingArtId = art.fbId; 
             document.getElementById('admin-art-num').value = art.num;
             document.getElementById('admin-art-num').readOnly = true;
             document.getElementById('admin-art-nom').value = art.nom;
@@ -919,9 +973,12 @@
                 variantsInput.value = '';
                 variantsContainer.style.display = 'none';
             }
+            
+            // Lógica de Lista Rápida
+            document.getElementById('admin-art-isDaily').checked = art.isDaily || false;
 
             document.getElementById('art-form-title').innerText = "Editar Artículo";
-            document.getElementById('art-submit-icon').innerHTML = iconEditSVG; // innerHTML para SVG
+            document.getElementById('art-submit-icon').innerHTML = iconEditSVG; 
             document.getElementById('btn-cancel-art').classList.remove('hidden');
             document.getElementById('admin-art-nom').focus();
         }
@@ -931,12 +988,13 @@
             document.getElementById('form-add-articulo').reset();
             document.getElementById('admin-art-num').readOnly = false;
             
-            // Resetear Variantes
+            // Resetear Variantes y Lista Rápida
             document.getElementById('admin-variants-container').style.display = 'none';
             document.getElementById('admin-art-hasVariants').checked = false;
+            document.getElementById('admin-art-isDaily').checked = false;
             
             document.getElementById('art-form-title').innerText = "Catálogo Artículos";
-            document.getElementById('art-submit-icon').innerHTML = iconAddSVG; // innerHTML para SVG
+            document.getElementById('art-submit-icon').innerHTML = iconAddSVG; 
             document.getElementById('btn-cancel-art').classList.add('hidden');
         }
 
@@ -983,12 +1041,11 @@
 
             const btn = document.getElementById('btn-registrar-submit');
             btn.disabled = true;
-            btn.innerText = 'Registrando...';
+            btn.innerHTML = 'Registrando...'; // innerHTML para que se vea bien
 
             try {
                 let promises = [];
                 for (const art of articulosSeleccionados) {
-                    // Formatear el nombre del artículo con su variante si existe
                     const articuloNombre = art.variant ? 
                         `[${art.num}] - ${art.nom} (Talla: ${art.variant})` : 
                         `[${art.num}] - ${art.nom}`;
@@ -1014,7 +1071,7 @@
                 showToast('Error al registrar', 'error'); 
             } finally {
                 btn.disabled = false;
-                btn.innerText = 'Registrar Requisición(es)';
+                btn.innerHTML = 'Registrar Requisición(es)';
             }
         };
 
@@ -1060,7 +1117,7 @@
             }
         };
         
-        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (CON VARIANTES) ---
+        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (CON VARIANTES Y LISTA RÁPIDA) ---
         document.getElementById('form-add-articulo').onsubmit = async (e) => { 
             e.preventDefault(); 
             const num = e.target['admin-art-num'].value;
@@ -1069,6 +1126,7 @@
             const img = e.target['admin-art-img'].value;
             const hasVariants = e.target['admin-art-hasVariants'].checked;
             const variants = e.target['admin-art-variants'].value.trim();
+            const isDaily = e.target['admin-art-isDaily'].checked; // <-- NUEVO
 
             if(!cat) return showToast('Debes seleccionar una categoría', 'error');
             if(hasVariants && !variants) return showToast('Debes escribir las variantes separadas por coma', 'error');
@@ -1076,7 +1134,8 @@
             const artData = {
                 num, nom, cat, img, 
                 hasVariants, 
-                variants: hasVariants ? variants : null
+                variants: hasVariants ? variants : null,
+                isDaily // <-- NUEVO
             };
 
             if (editingArtId) {
@@ -1092,7 +1151,7 @@
                 try { 
                     await addDoc(colArts, artData); 
                     showToast('Agregado'); 
-                    cancelEditArticulo(); // Usar cancel para resetear el form completo
+                    cancelEditArticulo(); 
                 } catch(err){ 
                     showToast('Error', 'error'); 
                 }
