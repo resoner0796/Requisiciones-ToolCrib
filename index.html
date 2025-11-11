@@ -127,6 +127,7 @@
                                 <div id="cesta-placeholder" class="p-4 text-center text-gray-400 italic">Aún no has agregado artículos.</div>
                                 <div id="cesta-articulos" class="p-2 divide-y divide-gray-100 hidden"></div>
                             </div>
+                            <!-- CORRECCIÓN 3: Botón siempre azul (ya tenía btn-primary, así que estaba bien) -->
                             <button id="btn-registrar-submit" class="btn btn-primary w-full py-3 text-base font-bold shadow-lg hover:bg-primary-700 transition-all transform hover:-translate-y-0.5">Registrar Requisición(es)</button>
                         </div>
                     </div>
@@ -229,7 +230,8 @@
             <button type="button" data-dismiss="modal" class="w-full text-center text-gray-500 text-sm mt-4 hover:text-gray-700">Cancelar</button>
         </div>
     </div>
-    <div id="status-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <!-- CORRECCIÓN 2: z-index aumentado a z-[60] -->
+    <div id="status-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-xl p-6 w-full max-w-xs text-center transform transition-all scale-95 opacity-0">
             <h3 class="text-lg font-bold text-gray-900 mb-4">Cambiar Estatus</h3>
             <div class="space-y-2">
@@ -240,7 +242,8 @@
             <button data-dismiss="modal" class="mt-4 text-gray-400 hover:text-gray-600 text-sm">Cancelar</button>
         </div>
     </div>
-    <div id="confirm-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <!-- CORRECCIÓN 2: z-index aumentado a z-[60] -->
+    <div id="confirm-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-xl p-6 w-full max-w-sm text-center transform transition-all scale-95 opacity-0">
              <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-600"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg></div>
             <h3 id="confirm-title" class="text-lg font-bold text-gray-900">¿Estás seguro?</h3>
@@ -284,6 +287,7 @@
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- INICIO DE CONFIGURACIÓN ---
         const app = initializeApp({ apiKey: "AIzaSyDahnSPvBNTYot00JCn5CBjggAYFVGhbjE", authDomain: "panel-logistica-simple.firebaseapp.com", projectId: "panel-logistica-simple", storageBucket: "panel-logistica-simple.firebasestorage.app", messagingSenderId: "528779971851", appId: "1:528779971851:web:29ed933e7c7fd997a4e60e" });
         const auth = getAuth(app); const db = getFirestore(app);
         const colReqs = collection(db, 'requi_toolcrib', 'data', 'requisitions');
@@ -292,6 +296,7 @@
         const colCats = collection(db, 'requi_toolcrib', 'data', 'categories');
         const colLists = collection(db, 'requi_toolcrib', 'data', 'lists');
         
+        // --- VARIABLES GLOBALES ---
         let currentUser = null, currentReqId = null, confirmAction = null, reqsData = [], empsMap = new Map(), artsMap = new Map();
         let catsMap = new Map(), listsMap = new Map();
         let currentCategory = 'Todos', currentRegCategory = 'Todos', catalogoViewMode = 'grid';
@@ -302,6 +307,7 @@
         const iconAddSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>';
         const iconEditSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>';
 
+        // --- FUNCIONES UTILITARIAS (Modales, Toasts) ---
         const showToast = (msg, type = 'success') => {
             const t = document.createElement('div'); t.className = `toast toast-${type}`;
             t.innerHTML = `<div class="${type==='success'?'text-green-500':type==='error'?'text-red-500':'text-blue-500'} mr-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg></div><div class="text-sm font-medium">${msg}</div>`;
@@ -312,6 +318,7 @@
         window.closeModal = (id) => { const m = document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95','opacity-0'); setTimeout(() => m.classList.add('hidden'), 200); };
         const askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
         
+        // --- FUNCIONES DE ALCANCE LOCAL (para setStatus y copyToClipboard) ---
         const setStatus = async (newStatus) => {
             if (!currentReqId || !currentUser) return;
             const docIdToUpdate = currentReqId;
@@ -345,6 +352,7 @@
             });
         };
         
+        // --- NAVEGACIÓN ---
         const navigateTo = (screenId) => {
             document.querySelectorAll('.screen-content').forEach(s => s.classList.add('hidden'));
             document.getElementById(screenId).classList.remove('hidden');
@@ -358,6 +366,7 @@
             if (screenId === 'catalogo-screen') { currentListFilterId = 'Todos'; renderDynamicCategoryUI(); }
         };
 
+        // --- LÓGICA DE FIRESTORE (LISTENERS) ---
         onAuthStateChanged(auth, (u) => {
             currentUser = u;
             document.getElementById('btn-login-icon').classList.toggle('hidden', !!u); document.getElementById('btn-logout').classList.toggle('hidden', !u);
@@ -369,11 +378,14 @@
         });
         onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
         onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
-        onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderAdmin(); renderCatalogo(); renderRegistrarArticulos(); renderRegistrarListArticles(); });
+        onSnapshot(colArts, (s) => { 
+            artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); 
+            renderAdmin(); renderCatalogo(); renderRegistrarArticulos(); renderRegistrarListArticles(); 
+        });
         onSnapshot(colCats, (s) => { catsMap.clear(); s.forEach(d => catsMap.set(d.data().name, { ...d.data(), fbId: d.id })); renderDynamicCategoryUI(); }, (e) => console.error("Error al cargar categorías", e));
         onSnapshot(colLists, (s) => { listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); renderDynamicCategoryUI(); renderAdminLists(); renderRegistrarListDropdown(); }, (e) => console.error("Error al cargar listas", e));
 
-        // ======== RENDERIZADO DE HISTORIAL (AGRUPADO) ========
+        // --- LÓGICA DE RENDERIZADO ---
         function renderReqs() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const filtered = reqsData.filter(r => (r.nombre||'').toLowerCase().includes(term) || (r.empleadoId||'').toString().includes(term) || (r.articulo||'').toLowerCase().includes(term) || (r.numRequi||'').toLowerCase().includes(term));
@@ -381,30 +393,28 @@
             const reqGroups = new Map();
             for (const r of filtered) {
                 if (!r.numRequi) continue; 
-                if (!reqGroups.has(r.numRequi)) {
-                    reqGroups.set(r.numRequi, { numRequi: r.numRequi, fecha: r.fecha, empleadoId: r.empleadoId, nombre: r.nombre, items: [], statuses: new Set() });
-                }
+                if (!reqGroups.has(r.numRequi)) { reqGroups.set(r.numRequi, { numRequi: r.numRequi, fecha: r.fecha, empleadoId: r.empleadoId, nombre: r.nombre, items: [], statuses: new Set() }); }
                 const group = reqGroups.get(r.numRequi);
                 group.items.push(r); group.statuses.add(r.status);
             }
-
             const tbody = document.getElementById('tbody-requisiciones');
             if (reqGroups.size === 0) { tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>'; return; }
-
             tbody.innerHTML = Array.from(reqGroups.values()).sort((a,b) => b.fecha.localeCompare(a.fecha)).map(group => {
                 let statusHtml = '';
-                if (group.statuses.size === 1) {
+                // CORRECCIÓN 1: Si es 1 item, hacerlo clickeable.
+                if (group.items.length === 1) {
+                    const item = group.items[0];
+                    const statusClass = item.status==='Autorizada'?'bg-green-100 text-green-800':item.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800';
+                    statusHtml = `<span class="status-badge-modal ${currentUser ? 'cursor-pointer hover:scale-105' : ''} transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${statusClass}" data-doc-id="${item.id}">${item.status}</span>`;
+                } else if (group.statuses.size === 1) {
                     const status = group.statuses.values().next().value;
                     const statusClass = status==='Autorizada'?'bg-green-100 text-green-800':status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800';
                     statusHtml = `<span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">${status}</span>`;
-                } else { statusHtml = `<span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Mixto</span>`; }
-
-                const articuloHtml = group.items.length > 1 ?
-                    `<button class="btn-view-req-details btn btn-secondary py-1 px-3 text-sm" data-req-id="${group.numRequi}">Ver ${group.items.length} Artículos</button>` :
-                    (group.items[0]?.articulo || 'N/A');
-                
+                } else {
+                    statusHtml = `<span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Mixto</span>`;
+                }
+                const articuloHtml = group.items.length > 1 ? `<button class="btn-view-req-details btn btn-secondary py-1 px-3 text-sm" data-req-id="${group.numRequi}">Ver ${group.items.length} Artículos</button>` : (group.items[0]?.articulo || 'N/A');
                 const cobroFecha = group.items.length === 1 ? (group.items[0].fechaCobro || '-') : (group.statuses.size === 1 && group.statuses.has('Cobrada') ? 'Múltiple' : '-');
-
                 return `
                 <tr class="hover:bg-gray-50 transition">
                     <td data-label="# Requi" class="px-6 py-4 font-medium text-primary-900">${group.numRequi}</td>
@@ -413,26 +423,16 @@
                     <td data-label="Artículo" class="px-6 py-4">${articuloHtml}</td>
                     <td data-label="Estatus" class="px-6 py-4 text-center">${statusHtml}</td>
                     <td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">${cobroFecha}</td>
-                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}">
-                        <button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-req-id="${group.numRequi}" data-items-count="${group.items.length}" title="Eliminar requisición completa">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                        </button>
-                    </td>
+                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-req-id="${group.numRequi}" data-items-count="${group.items.length}" title="Eliminar requisición completa"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td>
                 </tr>`;
             }).join('');
         }
-        // ======== NUEVA FUNCIÓN PARA ACTUALIZAR MODAL DE DETALLES ========
         function refreshReqDetailsModal(reqId) {
             const groupItems = reqsData.filter(r => r.numRequi === reqId);
             if (groupItems.length > 0) {
                 document.getElementById('req-details-list').innerHTML = groupItems.map(item => {
                     const statusClass = item.status==='Autorizada'?'bg-green-100 text-green-800':item.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800';
-                    return `<div class="flex justify-between items-center p-3">
-                        <span class="text-sm font-medium text-gray-700">${item.articulo}</span>
-                        <span class="status-badge-modal ${currentUser ? 'cursor-pointer hover:scale-105' : ''} transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${statusClass}" data-doc-id="${item.id}">
-                            ${item.status}
-                        </span>
-                    </div>`;
+                    return `<div class="flex justify-between items-center p-3"><span class="text-sm font-medium text-gray-700">${item.articulo}</span><span class="status-badge-modal ${currentUser ? 'cursor-pointer hover:scale-105' : ''} transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${statusClass}" data-doc-id="${item.id}">${item.status}</span></div>`;
                 }).join('');
             }
         }
@@ -507,8 +507,7 @@
             sortedLists.forEach(l => { html += `<button data-list-id="${l.fbId}" class="btn-list-filter px-3 py-1 text-sm font-medium rounded-full transition border">${l.name}</button>`; });
             container.innerHTML = html;
             container.querySelectorAll('.btn-list-filter').forEach(btn => {
-                if (btn.dataset.listId === currentListFilterId) { btn.classList.add('bg-primary-600', 'text-white', 'border-primary-600'); btn.classList.remove('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); } 
-                else { btn.classList.add('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); btn.classList.remove('bg-primary-600', 'text-white', 'border-primary-600'); }
+                btn.classList.toggle('active', btn.dataset.listId === currentListFilterId);
             });
         }
         function renderRegistrarListDropdown() {
@@ -566,23 +565,22 @@
             const delCat = e.target.closest('.btn-del-cat'); if(delCat && currentUser) askConfirm('Eliminar Categoría', `¿Eliminar "${delCat.dataset.n}"? Esto no eliminará los artículos que ya la usan.`, async () => { await deleteDoc(doc(colCats, delCat.dataset.id)); showToast('Categoría eliminada'); });
             const delList = e.target.closest('.btn-del-list'); if(delList && currentUser) askConfirm('Eliminar Lista', `¿Eliminar "${delList.dataset.n}"? Esto no eliminará los artículos.`, async () => { await deleteDoc(doc(colLists, delList.dataset.id)); showToast('Lista eliminada'); });
             
-            // --- Lógica de Historial (NUEVA) ---
             const viewReq = e.target.closest('.btn-view-req-details');
             if (viewReq) {
-                const reqId = viewReq.dataset.reqId;
-                const groupItems = reqsData.filter(r => r.numRequi === reqId);
+                const reqId = viewReq.dataset.reqId; const groupItems = reqsData.filter(r => r.numRequi === reqId);
                 if (groupItems.length > 0) {
                     const base = groupItems[0];
                     document.getElementById('req-details-title').innerText = `Detalles: ${base.numRequi}`;
                     document.getElementById('req-details-num').innerText = base.numRequi;
                     document.getElementById('req-details-fecha').innerText = base.fecha;
                     document.getElementById('req-details-emp').innerText = `${base.empleadoId} - ${base.nombre}`;
-                    refreshReqDetailsModal(reqId);
-                    openModal('req-details-modal');
+                    refreshReqDetailsModal(reqId); openModal('req-details-modal');
                 }
             }
+            // CORRECCIÓN 1: El listener ahora también escucha '.status-badge-modal'
             const statusBadge = e.target.closest('.status-badge-modal');
             if (statusBadge && currentUser) { currentReqId = statusBadge.dataset.docId; openModal('status-modal'); }
+
             const delReq = e.target.closest('.btn-del-req'); 
             if(delReq && currentUser) {
                 const reqId = delReq.dataset.reqId, count = delReq.dataset.itemsCount;
