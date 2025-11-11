@@ -30,15 +30,11 @@
         .toast-success { @apply border-green-500; } .toast-error { @apply border-red-500; } .toast-info { @apply border-blue-500; } .toast.hiding { @apply animate-slide-out; }
         input:read-only { @apply bg-gray-100 text-gray-500 cursor-not-allowed; }
         .aspect-w-1 { position: relative; padding-bottom: 100%; } .aspect-w-1 > * { position: absolute; height: 100%; width: 100%; top: 0; right: 0; bottom: 0; left: 0; }
-        
-        /* --- ESTILOS DE BOTONES BASE --- */
         .btn { @apply px-4 py-2 rounded-lg font-medium shadow-sm transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2; }
         .btn-primary { @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500; }
         .btn-secondary { @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-300; }
         .btn-danger { @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500; }
-        /* Fix para botones de icono y cantidad */
         .btn.p-2\.5 { @apply p-2.5 leading-none; }
-
         @media (max-width: 640px) {
             .responsive-table thead { display: none; }
             .responsive-table tbody tr { @apply flex flex-col mb-4 bg-white rounded-xl shadow-sm border border-gray-200 p-5 mx-4; }
@@ -89,13 +85,12 @@
                 </div>
             </div>
 
-            <!-- ======== PANTALLA DE REGISTRO (NUEVO LAYOUT 2x2) ======== -->
+            <!-- ======== PANTALLA DE REGISTRO (LAYOUT 2x2) ======== -->
             <div id="registrar-screen" class="screen-content hidden animate-fade-in">
                 <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Crear Nueva Requisición</h1>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Columna Izquierda (Solicitante y Listas Rápidas) -->
                     <div class="flex flex-col gap-8">
-                        <!-- 1. Datos del Solicitante -->
                         <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
                             <h2 class="text-xl font-bold text-gray-900 mb-6">1. Datos del Solicitante</h2>
                             <form id="form-registrar" class="space-y-5">
@@ -107,14 +102,9 @@
                                 <input type="text" id="reg-nombre" readonly placeholder="Nombre del empleado..." class="bg-gray-50 w-full rounded-lg">
                             </form>
                         </div>
-                        <!-- 2. Listas Rápidas (Dinámicas) -->
                         <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
                             <div class="flex justify-between items-center mb-4">
-                                <h2 class="text-xl font-bold text-gray-900 flex items-center">
-                                    <!-- ======== ICONO DE ESTRELLA PULIDO ======== -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2 text-yellow-500"><path fill-rule="evenodd" d="M10.868 2.884c.321-.772 1.415-.772 1.736 0l1.681 4.062a.75.75 0 0 0 .564.41l4.47.652c.817.119 1.147 1.114.545 1.695l-3.235 3.152a.75.75 0 0 0-.216.66l.764 4.452c.138.809-.71.1.428-1.09l-3.996-2.1a.75.75 0 0 0-.69 0l-3.996 2.1c-.71.378-1.567-.281-1.428-1.09l.764-4.452a.75.75 0 0 0-.216-.66L.64 9.703c-.602-.581-.272-1.576.545-1.695l4.47-.652a.75.75 0 0 0 .564-.41L9.132 2.884Z" clip-rule="evenodd" /></svg>
-                                    Listas Rápidas
-                                </h2>
+                                <h2 class="text-xl font-bold text-gray-900 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2 text-yellow-500"><path fill-rule="evenodd" d="M10.868 2.884c.321-.772 1.415-.772 1.736 0l1.681 4.062a.75.75 0 0 0 .564.41l4.47.652c.817.119 1.147 1.114.545 1.695l-3.235 3.152a.75.75 0 0 0-.216.66l.764 4.452c.138.809-.71.1.428-1.09l-3.996-2.1a.75.75 0 0 0-.69 0l-3.996 2.1c-.71.378-1.567-.281-1.428-1.09l.764-4.452a.75.75 0 0 0-.216-.66L.64 9.703c-.602-.581-.272-1.576.545-1.695l4.47-.652a.75.75 0 0 0 .564-.41L9.132 2.884Z" clip-rule="evenodd" /></svg>Listas Rápidas</h2>
                                 <select id="reg-list-select" class="text-sm rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500"></select>
                             </div>
                             <div id="lista-diarios" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-2 divide-y divide-gray-200"></div>
@@ -122,7 +112,6 @@
                     </div>
                     <!-- Columna Derecha (Artículos y Cesta) -->
                     <div class="flex flex-col gap-8">
-                        <!-- 3. Todos los Artículos -->
                         <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
                             <h2 class="text-xl font-bold text-gray-900 mb-6">3. Todos los Artículos</h2>
                             <div class="relative mb-2">
@@ -132,14 +121,12 @@
                             <div id="filtros-reg-articulo" class="flex flex-wrap gap-2 mb-4 py-2 overflow-x-auto"></div>
                             <div id="lista-reg-articulo" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-2 divide-y divide-gray-200"></div>
                         </div>
-                        <!-- 4. Resumen y Cesta -->
                         <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
                             <h2 class="text-xl font-bold text-gray-900 mb-3">4. Resumen (<span id="cesta-conteo">0</span>)</h2>
                             <div class="h-40 overflow-y-auto border rounded-lg bg-white mb-6">
                                 <div id="cesta-placeholder" class="p-4 text-center text-gray-400 italic">Aún no has agregado artículos.</div>
                                 <div id="cesta-articulos" class="p-2 divide-y divide-gray-100 hidden"></div>
                             </div>
-                            <!-- ======== BOTÓN DE REGISTRAR CON ESTILO CORREGIDO ======== -->
                             <button id="btn-registrar-submit" class="btn btn-primary w-full py-3 text-base font-bold shadow-lg hover:bg-primary-700 transition-all transform hover:-translate-y-0.5">Registrar Requisición(es)</button>
                         </div>
                     </div>
@@ -157,7 +144,7 @@
                         </div>
                     </div>
                     <div class="sm:p-0 pt-4">
-                        <table class="responsive-table min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Requi</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empleado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobro</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th></tr></thead><tbody id="tbody-requisiciones" class="bg-white sm:divide-y divide-gray-200"></tbody></table>
+                        <table class="responsive-table min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Requi</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empleado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículos</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobro</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th></tr></thead><tbody id="tbody-requisiciones" class="bg-white sm:divide-y divide-gray-200"></tbody></table>
                     </div>
                 </div>
             </div>
@@ -197,7 +184,7 @@
                     <!-- Tarjeta de Categorías y Listas -->
                     <div class="flex flex-col gap-8">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-                            <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>Gestionar Categorías</h2>
+                            <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>Gestionar Categorías</h2>
                             <form id="form-add-categoria" class="flex gap-3 mb-6"><input type="text" id="admin-cat-name" placeholder="Nombre de categoría" required class="w-full rounded-lg"><button type="submit" class="btn btn-primary flex-shrink-0" title="Agregar Categoría"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button></form>
                             <div id="admin-list-categorias" class="flex-grow h-40 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                         </div>
@@ -216,10 +203,7 @@
                             <div class="flex gap-3"><input type="text" id="admin-art-img" placeholder="URL imagen o nombre archivo" class="w-full rounded-lg"></div>
                             <div class="flex items-center gap-2"><input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500"><label for="admin-art-hasVariants" class="text-sm font-medium text-gray-700">Tiene Variantes (ej. Tallas)</label></div>
                             <div id="admin-variants-container" class="hidden"><label class="block text-sm font-medium text-gray-700 mb-1">Variantes (separadas por coma)</label><input type="text" id="admin-art-variants" placeholder="Ej: S, M, L, XL" class="w-full rounded-lg"></div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas Rápidas:</label>
-                                <div id="admin-art-lists" class="space-y-2 h-24 overflow-y-auto border rounded-lg p-3 bg-gray-50"></div>
-                            </div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas Rápidas:</label><div id="admin-art-lists" class="space-y-2 h-24 overflow-y-auto border rounded-lg p-3 bg-gray-50"></div></div>
                             <div class="flex gap-3 mt-2">
                                 <button type="button" id="btn-cancel-art" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>
                                 <button type="submit" class="btn btn-primary flex-1" title="Guardar"><svg id="art-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 20 20" fill="currentColor"></svg></button>
@@ -264,8 +248,6 @@
             <div class="flex gap-3"><button onclick="closeModal('confirm-modal')" class="btn btn-secondary flex-1">No, cancelar</button><button id="btn-confirm-ok" class="btn btn-danger flex-1">Sí, eliminar</button></div>
         </div>
     </div>
-    
-    <!-- ======== MODAL UNIFICADO PARA TALLAS Y CANTIDAD (CON BOTONES +/-) ======== -->
     <div id="item-details-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all scale-95 opacity-0">
             <h2 id="item-details-title" class="text-xl font-bold mb-5 text-gray-900">Detalles del Artículo</h2>
@@ -273,14 +255,27 @@
                  <div id="variant-container" class="hidden"><label class="block text-sm font-medium text-gray-700 mb-1">Talla / Variante</label><select id="variant-select" class="focus:ring-primary-500 w-full rounded-lg"><option value="">Seleccione...</option></select></div>
                  <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
-                    <div class="flex items-center gap-2">
-                        <button type="button" id="btn-qty-minus" class="btn btn-secondary p-2.5 rounded-lg leading-none flex-shrink-0" aria-label="Restar uno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" /></svg></button>
-                        <input type="number" id="item-qty" value="1" min="1" class="focus:ring-primary-500 w-full rounded-lg text-center font-bold">
-                        <button type="button" id="btn-qty-plus" class="btn btn-secondary p-2.5 rounded-lg leading-none flex-shrink-0" aria-label="Sumar uno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg></button>
-                    </div>
+                    <div class="flex items-center gap-2"><button type="button" id="btn-qty-minus" class="btn btn-secondary p-2.5 rounded-lg leading-none flex-shrink-0" aria-label="Restar uno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" /></svg></button><input type="number" id="item-qty" value="1" min="1" class="focus:ring-primary-500 w-full rounded-lg text-center font-bold"><button type="button" id="btn-qty-plus" class="btn btn-secondary p-2.5 rounded-lg leading-none flex-shrink-0" aria-label="Sumar uno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg></button></div>
                 </div>
                  <div class="flex justify-end space-x-3 mt-6"><button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button><button type="button" id="btn-item-details-submit" class="btn btn-primary px-8">Aceptar</button></div>
             </div>
+        </div>
+    </div>
+    
+    <!-- ======== NUEVO MODAL PARA DETALLES DE REQUISICIÓN ======== -->
+    <div id="req-details-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 transform transition-all scale-95 opacity-0">
+            <h2 id="req-details-title" class="text-2xl font-bold mb-4 text-gray-900">Detalles de Requisición</h2>
+            <div class="grid grid-cols-3 gap-4 mb-4 text-sm">
+                <div><span class="font-medium text-gray-500 block"># Requisición</span><span id="req-details-num" class="font-bold"></span></div>
+                <div><span class="font-medium text-gray-500 block">Fecha</span><span id="req-details-fecha" class="font-bold"></span></div>
+                <div><span class="font-medium text-gray-500 block">Empleado</span><span id="req-details-emp" class="font-bold"></span></div>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-3">Artículos</h3>
+            <div id="req-details-list" class="h-64 overflow-y-auto border rounded-lg bg-gray-50 p-2 divide-y divide-gray-200">
+                <!-- Artículos se inyectarán aquí -->
+            </div>
+            <div class="flex justify-end mt-6"><button type="button" data-dismiss="modal" class="btn btn-secondary">Cerrar</button></div>
         </div>
     </div>
 
@@ -289,7 +284,6 @@
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- INICIO DE CONFIGURACIÓN ---
         const app = initializeApp({ apiKey: "AIzaSyDahnSPvBNTYot00JCn5CBjggAYFVGhbjE", authDomain: "panel-logistica-simple.firebaseapp.com", projectId: "panel-logistica-simple", storageBucket: "panel-logistica-simple.firebasestorage.app", messagingSenderId: "528779971851", appId: "1:528779971851:web:29ed933e7c7fd997a4e60e" });
         const auth = getAuth(app); const db = getFirestore(app);
         const colReqs = collection(db, 'requi_toolcrib', 'data', 'requisitions');
@@ -298,21 +292,16 @@
         const colCats = collection(db, 'requi_toolcrib', 'data', 'categories');
         const colLists = collection(db, 'requi_toolcrib', 'data', 'lists');
         
-        // --- VARIABLES GLOBALES ---
         let currentUser = null, currentReqId = null, confirmAction = null, reqsData = [], empsMap = new Map(), artsMap = new Map();
         let catsMap = new Map(), listsMap = new Map();
         let currentCategory = 'Todos', currentRegCategory = 'Todos', catalogoViewMode = 'grid';
         let currentListFilterId = 'Todos', currentRegListId = 'Todos';
-        let articulosSeleccionados = []; // Cesta: { ...artData, variant: 'M', qty: 5 }
-        let currentItemForDetails = null;
+        let articulosSeleccionados = []; let currentItemForDetails = null;
         const PLACEHOLDER_IMG = "https://placehold.co/400x400/f1f5f9/94a3b8?text=Sin+Imagen";
-
-        // --- VARIABLES CRUD ---
         let editingEmpId = null, editingArtId = null; 
         const iconAddSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>';
         const iconEditSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>';
 
-        // --- FUNCIONES UTILITARIAS (Modales, Toasts) ---
         const showToast = (msg, type = 'success') => {
             const t = document.createElement('div'); t.className = `toast toast-${type}`;
             t.innerHTML = `<div class="${type==='success'?'text-green-500':type==='error'?'text-red-500':'text-blue-500'} mr-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg></div><div class="text-sm font-medium">${msg}</div>`;
@@ -323,14 +312,26 @@
         window.closeModal = (id) => { const m = document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95','opacity-0'); setTimeout(() => m.classList.add('hidden'), 200); };
         const askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
         
-        // --- FUNCIONES DE ALCANCE LOCAL (para setStatus y copyToClipboard) ---
         const setStatus = async (newStatus) => {
             if (!currentReqId || !currentUser) return;
+            const docIdToUpdate = currentReqId;
             try {
                 const updateData = { status: newStatus };
                 if (newStatus === 'Cobrada') { updateData.fechaCobro = new Date().toISOString().split('T')[0]; } else { updateData.fechaCobro = null; }
-                await updateDoc(doc(colReqs, currentReqId), updateData);
-                showToast(`Estatus: ${newStatus}`); closeModal('status-modal');
+                await updateDoc(doc(colReqs, docIdToUpdate), updateData);
+                showToast(`Estatus: ${newStatus}`);
+                closeModal('status-modal');
+                const itemIndex = reqsData.findIndex(r => r.id === docIdToUpdate);
+                if (itemIndex > -1) {
+                    reqsData[itemIndex].status = newStatus;
+                    reqsData[itemIndex].fechaCobro = updateData.fechaCobro || null;
+                }
+                const modal = document.getElementById('req-details-modal');
+                if (!modal.classList.contains('hidden')) {
+                    const reqId = reqsData[itemIndex].numRequi;
+                    refreshReqDetailsModal(reqId);
+                }
+                renderReqs();
             } catch (e) { console.error(e); showToast('Error al actualizar', 'error'); }
         };
         const copyToClipboard = (text) => {
@@ -344,7 +345,6 @@
             });
         };
         
-        // --- NAVEGACIÓN ---
         const navigateTo = (screenId) => {
             document.querySelectorAll('.screen-content').forEach(s => s.classList.add('hidden'));
             document.getElementById(screenId).classList.remove('hidden');
@@ -358,7 +358,6 @@
             if (screenId === 'catalogo-screen') { currentListFilterId = 'Todos'; renderDynamicCategoryUI(); }
         };
 
-        // --- LÓGICA DE FIRESTORE (LISTENERS) ---
         onAuthStateChanged(auth, (u) => {
             currentUser = u;
             document.getElementById('btn-login-icon').classList.toggle('hidden', !!u); document.getElementById('btn-logout').classList.toggle('hidden', !u);
@@ -368,17 +367,74 @@
             document.querySelectorAll('.col-acciones').forEach(e => e.classList.toggle('hidden', !u));
             renderReqs(); renderAdmin(); renderCatalogo();
         });
-        onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); reqsData.sort((a,b) => b.fecha.localeCompare(a.fecha)); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
+        onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
         onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
         onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderAdmin(); renderCatalogo(); renderRegistrarArticulos(); renderRegistrarListArticles(); });
         onSnapshot(colCats, (s) => { catsMap.clear(); s.forEach(d => catsMap.set(d.data().name, { ...d.data(), fbId: d.id })); renderDynamicCategoryUI(); }, (e) => console.error("Error al cargar categorías", e));
         onSnapshot(colLists, (s) => { listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); renderDynamicCategoryUI(); renderAdminLists(); renderRegistrarListDropdown(); }, (e) => console.error("Error al cargar listas", e));
 
-        // --- LÓGICA DE RENDERIZADO ---
+        // ======== RENDERIZADO DE HISTORIAL (AGRUPADO) ========
         function renderReqs() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const filtered = reqsData.filter(r => (r.nombre||'').toLowerCase().includes(term) || (r.empleadoId||'').toString().includes(term) || (r.articulo||'').toLowerCase().includes(term) || (r.numRequi||'').toLowerCase().includes(term));
-            document.getElementById('tbody-requisiciones').innerHTML = filtered.length ? filtered.map(r => `<tr class="hover:bg-gray-50 transition"><td data-label="# Requi" class="px-6 py-4 font-medium text-primary-900">${r.numRequi || '-'}</td><td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td><td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td><td data-label="Artículo" class="px-6 py-4"><div class="text-sm text-gray-900 font-medium">${r.articulo}</div></td><td data-label="Estatus" class="px-6 py-4 text-center"><span class="status-badge cursor-pointer hover:scale-105 transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${r.status==='Autorizada'?'bg-green-100 text-green-800':r.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800'}" data-id="${r.id}">${r.status}</span></td><td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">${r.fechaCobro || '-'}</td><td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-id="${r.id}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td></tr>`).join('') : '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>';
+            
+            const reqGroups = new Map();
+            for (const r of filtered) {
+                if (!r.numRequi) continue; 
+                if (!reqGroups.has(r.numRequi)) {
+                    reqGroups.set(r.numRequi, { numRequi: r.numRequi, fecha: r.fecha, empleadoId: r.empleadoId, nombre: r.nombre, items: [], statuses: new Set() });
+                }
+                const group = reqGroups.get(r.numRequi);
+                group.items.push(r); group.statuses.add(r.status);
+            }
+
+            const tbody = document.getElementById('tbody-requisiciones');
+            if (reqGroups.size === 0) { tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>'; return; }
+
+            tbody.innerHTML = Array.from(reqGroups.values()).sort((a,b) => b.fecha.localeCompare(a.fecha)).map(group => {
+                let statusHtml = '';
+                if (group.statuses.size === 1) {
+                    const status = group.statuses.values().next().value;
+                    const statusClass = status==='Autorizada'?'bg-green-100 text-green-800':status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800';
+                    statusHtml = `<span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">${status}</span>`;
+                } else { statusHtml = `<span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Mixto</span>`; }
+
+                const articuloHtml = group.items.length > 1 ?
+                    `<button class="btn-view-req-details btn btn-secondary py-1 px-3 text-sm" data-req-id="${group.numRequi}">Ver ${group.items.length} Artículos</button>` :
+                    (group.items[0]?.articulo || 'N/A');
+                
+                const cobroFecha = group.items.length === 1 ? (group.items[0].fechaCobro || '-') : (group.statuses.size === 1 && group.statuses.has('Cobrada') ? 'Múltiple' : '-');
+
+                return `
+                <tr class="hover:bg-gray-50 transition">
+                    <td data-label="# Requi" class="px-6 py-4 font-medium text-primary-900">${group.numRequi}</td>
+                    <td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${group.fecha}</td>
+                    <td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${group.empleadoId}</div><div class="text-xs text-gray-500">${group.nombre}</div></td>
+                    <td data-label="Artículo" class="px-6 py-4">${articuloHtml}</td>
+                    <td data-label="Estatus" class="px-6 py-4 text-center">${statusHtml}</td>
+                    <td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">${cobroFecha}</td>
+                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}">
+                        <button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-req-id="${group.numRequi}" data-items-count="${group.items.length}" title="Eliminar requisición completa">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+        // ======== NUEVA FUNCIÓN PARA ACTUALIZAR MODAL DE DETALLES ========
+        function refreshReqDetailsModal(reqId) {
+            const groupItems = reqsData.filter(r => r.numRequi === reqId);
+            if (groupItems.length > 0) {
+                document.getElementById('req-details-list').innerHTML = groupItems.map(item => {
+                    const statusClass = item.status==='Autorizada'?'bg-green-100 text-green-800':item.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800';
+                    return `<div class="flex justify-between items-center p-3">
+                        <span class="text-sm font-medium text-gray-700">${item.articulo}</span>
+                        <span class="status-badge-modal ${currentUser ? 'cursor-pointer hover:scale-105' : ''} transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${statusClass}" data-doc-id="${item.id}">
+                            ${item.status}
+                        </span>
+                    </div>`;
+                }).join('');
+            }
         }
         function renderAdmin() {
             document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a,b)=>a.id-b.id).map(e => `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><div class="flex gap-3"><button class="btn-edit-emp text-gray-400 hover:text-blue-600 transition" data-id="${e.fbId}" data-emp-id="${e.id}" data-n="${e.nombre}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg></button><button class="btn-del-emp text-gray-400 hover:text-red-600 transition" data-id="${e.fbId}" data-n="${e.nombre}" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
@@ -404,8 +460,6 @@
                 grid.innerHTML = articles.map(a => `<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-between gap-4"><div class="flex-grow"><div class="text-xs font-medium text-gray-500">${a.cat || 'Sin Categoría'}</div><div class="text-sm font-medium text-gray-900" title="${a.nom}">${a.nom}</div>${a.hasVariants ? `<div class="text-xs font-medium text-blue-500 mt-1">Tallas: ${a.variants}</div>` : ''}</div><div class="flex-shrink-0 text-right"><div class="text-sm font-bold text-primary-600">${a.num}</div></div><button class="btn-copy-part btn btn-secondary flex-shrink-0" data-num="${a.num}" title="Copiar No. Parte"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" /></svg></button></div>`).join('');
             }
         }
-        
-        // --- RENDERIZADO DE UI DINÁMICA (CATEGORÍAS, LISTAS) ---
         function renderDynamicCategoryUI() {
             renderAdminCategorias(); renderArticuloCategoryDropdown();
             renderCatalogoFiltros('catalogo-filtros', currentCategory, 'btn-cat-filter');
@@ -436,7 +490,6 @@
                 else { btn.classList.add('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); btn.classList.remove('bg-primary-600', 'text-white', 'border-primary-600'); }
             });
         }
-        // FUNCIONES DE LISTAS DINÁMICAS
         function renderAdminLists() {
             const list = document.getElementById('admin-list-lists');
             const sortedLists = Array.from(listsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
@@ -453,7 +506,6 @@
             let html = `<button data-list-id="Todos" class="btn-list-filter px-3 py-1 text-sm font-medium rounded-full transition border">Todas</button>`;
             sortedLists.forEach(l => { html += `<button data-list-id="${l.fbId}" class="btn-list-filter px-3 py-1 text-sm font-medium rounded-full transition border">${l.name}</button>`; });
             container.innerHTML = html;
-            // ======== LÓGICA DE ESTILO DE FILTRO CORREGIDA ========
             container.querySelectorAll('.btn-list-filter').forEach(btn => {
                 if (btn.dataset.listId === currentListFilterId) { btn.classList.add('bg-primary-600', 'text-white', 'border-primary-600'); btn.classList.remove('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); } 
                 else { btn.classList.add('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); btn.classList.remove('bg-primary-600', 'text-white', 'border-primary-600'); }
@@ -508,13 +560,38 @@
         document.addEventListener('click', e => {
             const navBtn = e.target.closest('[data-navigate-to]'); if (navBtn) navigateTo(navBtn.dataset.navigateTo);
             if(e.target.closest('[data-dismiss="modal"]')) closeModal(e.target.closest('.modal').id);
-            const statusBadge = e.target.closest('.status-badge'); if (statusBadge && currentUser) { currentReqId = statusBadge.dataset.id; openModal('status-modal'); }
             const copyBtn = e.target.closest('.btn-copy-part'); if (copyBtn) { copyToClipboard(copyBtn.dataset.num); }
-            const delReq = e.target.closest('.btn-del-req'); if(delReq && currentUser) askConfirm('Eliminar Requi', '¿Seguro?', async () => { await deleteDoc(doc(colReqs, delReq.dataset.id)); showToast('Eliminado'); });
             const delEmp = e.target.closest('.btn-del-emp'); if(delEmp && currentUser) askConfirm('Eliminar Empleado', `¿Eliminar a ${delEmp.dataset.n}?`, async () => { await deleteDoc(doc(colEmps, delEmp.dataset.id)); showToast('Eliminado'); });
             const delArt = e.target.closest('.btn-del-art'); if(delArt && currentUser) askConfirm('Eliminar Artículo', `¿Eliminar ${delArt.dataset.n}?`, async () => { await deleteDoc(doc(colArts, delArt.dataset.id)); showToast('Eliminado'); });
             const delCat = e.target.closest('.btn-del-cat'); if(delCat && currentUser) askConfirm('Eliminar Categoría', `¿Eliminar "${delCat.dataset.n}"? Esto no eliminará los artículos que ya la usan.`, async () => { await deleteDoc(doc(colCats, delCat.dataset.id)); showToast('Categoría eliminada'); });
             const delList = e.target.closest('.btn-del-list'); if(delList && currentUser) askConfirm('Eliminar Lista', `¿Eliminar "${delList.dataset.n}"? Esto no eliminará los artículos.`, async () => { await deleteDoc(doc(colLists, delList.dataset.id)); showToast('Lista eliminada'); });
+            
+            // --- Lógica de Historial (NUEVA) ---
+            const viewReq = e.target.closest('.btn-view-req-details');
+            if (viewReq) {
+                const reqId = viewReq.dataset.reqId;
+                const groupItems = reqsData.filter(r => r.numRequi === reqId);
+                if (groupItems.length > 0) {
+                    const base = groupItems[0];
+                    document.getElementById('req-details-title').innerText = `Detalles: ${base.numRequi}`;
+                    document.getElementById('req-details-num').innerText = base.numRequi;
+                    document.getElementById('req-details-fecha').innerText = base.fecha;
+                    document.getElementById('req-details-emp').innerText = `${base.empleadoId} - ${base.nombre}`;
+                    refreshReqDetailsModal(reqId);
+                    openModal('req-details-modal');
+                }
+            }
+            const statusBadge = e.target.closest('.status-badge-modal');
+            if (statusBadge && currentUser) { currentReqId = statusBadge.dataset.docId; openModal('status-modal'); }
+            const delReq = e.target.closest('.btn-del-req'); 
+            if(delReq && currentUser) {
+                const reqId = delReq.dataset.reqId, count = delReq.dataset.itemsCount;
+                askConfirm(`Eliminar Requisición ${reqId}`, `¿Seguro que quieres eliminar esta requisición con ${count} artículo(s)? Esta acción es permanente.`, async () => { 
+                    const itemsToDelete = reqsData.filter(r => r.numRequi === reqId);
+                    const deletePromises = itemsToDelete.map(item => deleteDoc(doc(colReqs, item.id)));
+                    await Promise.all(deletePromises); showToast('Requisición eliminada'); 
+                });
+            }
             
             const catBtn = e.target.closest('.btn-cat-filter'); if (catBtn) { currentCategory = catBtn.dataset.category; renderCatalogoFiltros('catalogo-filtros', currentCategory, 'btn-cat-filter'); renderCatalogo(); }
             const regCatBtn = e.target.closest('.btn-reg-cat-filter'); if (regCatBtn) { currentRegCategory = regCatBtn.dataset.category; renderCatalogoFiltros('filtros-reg-articulo', currentRegCategory, 'btn-reg-cat-filter'); renderRegistrarArticulos(); }
@@ -525,7 +602,6 @@
             const viewGrid = e.target.closest('#btn-view-grid'); if (viewGrid) { catalogoViewMode = 'grid'; document.getElementById('btn-view-grid').classList.add('active'); document.getElementById('btn-view-list').classList.remove('active'); renderCatalogo(); }
             const viewList = e.target.closest('#btn-view-list'); if (viewList) { catalogoViewMode = 'list'; document.getElementById('btn-view-list').classList.add('active'); document.getElementById('btn-view-grid').classList.remove('active'); renderCatalogo(); }
 
-            // Clic para Añadir Artículo (Abre modal de detalles)
             const addArt = e.target.closest('.btn-add-articulo');
             if (addArt) {
                 const { num, nom, hasVariants, variants } = addArt.dataset;
@@ -538,9 +614,7 @@
                 } else { title.innerText = `Confirmar Cantidad: ${nom}`; variantContainer.style.display = 'none'; variantSelect.innerHTML = ''; }
                 openModal('item-details-modal');
             }
-            // Clic para Quitar Artículo de Cesta
             const removeArt = e.target.closest('.btn-remove-articulo'); if (removeArt) { const indexToRemove = parseInt(removeArt.dataset.index, 10); if (!isNaN(indexToRemove)) { articulosSeleccionados.splice(indexToRemove, 1); renderCestaArticulos(); } }
-            // ======== NUEVOS CLICS PARA BOTONES QTY +/- ========
             const qtyPlus = e.target.closest('#btn-qty-plus'); if (qtyPlus) { const input = document.getElementById('item-qty'); input.value = parseInt(input.value, 10) + 1; }
             const qtyMinus = e.target.closest('#btn-qty-minus'); if (qtyMinus) { const input = document.getElementById('item-qty'); const newVal = parseInt(input.value, 10) - 1; if (newVal >= 1) { input.value = newVal; } }
         });
@@ -559,7 +633,7 @@
             document.getElementById('emp-submit-icon').innerHTML = iconAddSVG; document.getElementById('btn-cancel-emp').classList.add('hidden');
         }
 
-        // --- FUNCIONES DE CRUD (ARTÍCULOS CON VARIANTES Y LISTA RÁPIDA) ---
+        // --- FUNCIONES DE CRUD (ARTÍCULOS) ---
         function startEditArticulo(art) {
             editingArtId = art.fbId; document.getElementById('admin-art-num').value = art.num;
             document.getElementById('admin-art-num').readOnly = true; document.getElementById('admin-art-nom').value = art.nom;
