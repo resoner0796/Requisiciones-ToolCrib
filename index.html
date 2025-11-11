@@ -66,6 +66,9 @@
         /* Botón de vista de catálogo activo */
         .btn-view.active { @apply bg-primary-100 text-primary-600; }
         .btn-view:not(.active) { @apply bg-white text-gray-400 hover:text-gray-600; }
+
+        /* Ocultar input de variantes por defecto */
+        #admin-variants-container { display: none; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
@@ -172,7 +175,6 @@
 
                         <!-- Cesta de Artículos Seleccionados -->
                         <h3 class="text-lg font-bold text-gray-800 mb-3">Artículos Seleccionados (<span id="cesta-conteo">0</span>)</h3>
-                        <!-- ======== CORRECCIÓN DEL BUG: Contenedor padre para la cesta y el placeholder ======== -->
                         <div class="h-40 overflow-y-auto border rounded-lg bg-white mb-6">
                             <div id="cesta-placeholder" class="p-4 text-center text-gray-400 italic">
                                 Aún no has agregado artículos.
@@ -181,9 +183,9 @@
                                 <!-- Artículos seleccionados van aquí -->
                             </div>
                         </div>
-                        <!-- ================================================================================== -->
 
-                        <button id="btn-registrar-submit" class="btn btn-primary w-full py-3 text-base font-bold">
+                        <!-- ======== BOTÓN DE REGISTRAR (CON ESTILOS) ======== -->
+                        <button id="btn-registrar-submit" class="btn btn-primary w-full py-3 text-base font-bold shadow-lg hover:bg-primary-700 transition-all transform hover:-translate-y-0.5">
                             Registrar Requisición(es)
                         </button>
                     </div>
@@ -281,7 +283,7 @@
                         <div id="admin-list-empleados" class="flex-grow h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
                     
-                    <!-- NUEVA TARJETA DE CATEGORÍAS -->
+                    <!-- TARJETA DE CATEGORÍAS -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                         <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>Gestionar Categorías</h2>
                         <form id="form-add-categoria" class="flex gap-3 mb-6">
@@ -296,13 +298,14 @@
                     <!-- Tarjeta de Artículos -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                         <h2 id="art-form-title" class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
+                        
+                        <!-- ======== FORMULARIO DE ARTÍCULO (CON VARIANTES) ======== -->
                         <form id="form-add-articulo" class="flex flex-col gap-3 mb-6">
                             <div class="flex gap-3">
                                 <input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/2 rounded-lg">
                                 <input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-1/2 rounded-lg">
                             </div>
                             <div class="flex gap-3">
-                                <!-- DROPDOWN DE CATEGORÍA (DINÁMICO) -->
                                 <select id="admin-art-cat" required class="w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
                                     <option value="">Seleccione Categoría...</option>
                                     <!-- Opciones generadas por JS -->
@@ -310,16 +313,30 @@
                             </div>
                             <div class="flex gap-3">
                                 <input type="text" id="admin-art-img" placeholder="URL imagen o nombre archivo" class="w-full rounded-lg">
+                            </div>
+                            <!-- Nuevos campos de Variantes -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500">
+                                <label for="admin-art-hasVariants" class="text-sm font-medium text-gray-700">Tiene Variantes (ej. Tallas)</label>
+                            </div>
+                            <div id="admin-variants-container" class="hidden">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Variantes (separadas por coma)</label>
+                                <input type="text" id="admin-art-variants" placeholder="Ej: S, M, L, XL" class="w-full rounded-lg">
+                            </div>
+                            <!-- Botones de Acción -->
+                            <div class="flex gap-3 mt-2">
                                 <button type="button" id="btn-cancel-art" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                                 </button>
-                                <button type="submit" class="btn btn-primary flex-shrink-0" title="Guardar">
-                                    <svg id="art-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <button type="submit" class="btn btn-primary flex-1" title="Guardar">
+                                    <svg id="art-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 20 20" fill="currentColor">
                                         <!-- El path se cambiará dinámicamente -->
                                     </svg>
                                 </button>
                             </div>
                         </form>
+                        <!-- ======================================================= -->
+
                         <div id="admin-list-articulos" class="flex-grow h-80 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
                 </div>
@@ -359,6 +376,28 @@
             <div class="flex gap-3"><button onclick="closeModal('confirm-modal')" class="btn btn-secondary flex-1">No, cancelar</button><button id="btn-confirm-ok" class="btn btn-danger flex-1">Sí, eliminar</button></div>
         </div>
     </div>
+    
+    <!-- ======== NUEVO MODAL PARA VARIANTES (TALLAS) ======== -->
+    <div id="variant-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all scale-95 opacity-0">
+            <h2 id="variant-modal-title" class="text-xl font-bold mb-5 text-gray-900">Seleccionar Talla</h2>
+            <div class="space-y-4">
+                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Talla / Variante</label>
+                    <select id="variant-select" required class="focus:ring-primary-500 w-full rounded-lg">
+                        <option value="">Seleccione...</option>
+                        <!-- Opciones generadas por JS -->
+                    </select>
+                </div>
+               <div class="flex justify-end space-x-3 mt-6">
+                   <button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button>
+                   <button type="button" id="btn-variant-submit" class="btn btn-primary px-8">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ======================================================== -->
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -382,6 +421,7 @@
         let currentRegCategory = 'Todos'; // Para el catálogo de registro
         let catalogoViewMode = 'grid'; // 'grid' o 'list'
         let articulosSeleccionados = []; // Cesta de artículos
+        let currentArticleForVariant = null; // Para guardar el artículo al abrir el modal de variantes
         const PLACEHOLDER_IMG = "https://placehold.co/400x400/f1f5f9/94a3b8?text=Sin+Imagen";
 
         // --- VARIABLES CRUD ---
@@ -401,7 +441,7 @@
         window.closeModal = (id) => { const m = document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95','opacity-0'); setTimeout(() => m.classList.add('hidden'), 200); }; // Dejar en window por si acaso
         const askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
         
-        // --- CORRECCIÓN DE BUGS: Funciones ahora definidas localmente ---
+        // --- FUNCIONES DE ALCANCE LOCAL (para setStatus y copyToClipboard) ---
         const setStatus = async (newStatus) => {
             if (!currentReqId || !currentUser) return;
             try {
@@ -430,7 +470,7 @@
                 document.body.removeChild(textArea);
             });
         };
-        // --- FIN DE CORRECCIÓN DE BUGS ---
+        // --- FIN DE FUNCIONES DE ALCANCE ---
 
         // --- NAVEGACIÓN ---
         const navigateTo = (screenId) => {
@@ -438,19 +478,17 @@
             document.getElementById(screenId).classList.remove('hidden');
             document.getElementById('main-back-btn').classList.toggle('hidden', screenId === 'home-screen');
             
-            // Acciones al navegar a una pantalla específica
             if (screenId === 'registrar-screen') {
-                // Resetear la pantalla de registro
                 document.getElementById('form-registrar').reset();
                 document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0];
                 articulosSeleccionados = [];
                 currentRegCategory = 'Todos';
-                renderRegistrarArticulos(); // Renderiza la lista de artículos
-                renderCestaArticulos(); // Renderiza la cesta vacía
-                renderDynamicCategoryUI(); // Asegura que los filtros estén actualizados
+                renderRegistrarArticulos(); 
+                renderCestaArticulos(); 
+                renderDynamicCategoryUI(); 
             }
             if (screenId === 'catalogo-screen') {
-                renderDynamicCategoryUI(); // Asegura que los filtros estén actualizados
+                renderDynamicCategoryUI(); 
             }
         };
 
@@ -468,7 +506,16 @@
 
         onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); reqsData.sort((a,b) => b.fecha.localeCompare(a.fecha)); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
         onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
-        onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderArtsDropdown(); renderAdmin(); renderCatalogo(); renderRegistrarArticulos(); });
+        
+        // Listener de Artículos actualizado para incluir variantes
+        onSnapshot(colArts, (s) => { 
+            artsMap.clear(); 
+            s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); 
+            // renderArtsDropdown(); // Ya no se usa
+            renderAdmin(); 
+            renderCatalogo(); 
+            renderRegistrarArticulos(); 
+        });
         
         onSnapshot(colCats, (s) => {
             catsMap.clear();
@@ -488,6 +535,7 @@
                     <td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td>
                     <td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td>
                     <td data-label="Artículo" class="px-6 py-4">
+                        <!-- Artículo ahora puede mostrar variante -->
                         <div class="text-sm text-gray-900 font-medium">${r.articulo}</div>
                     </td>
                     <td data-label="Estatus" class="px-6 py-4 text-center">
@@ -521,6 +569,7 @@
                     <div>
                         <span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span>
                         <span>${a.nom}</span>
+                        ${a.hasVariants ? `<span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full ml-2 font-medium">Variantes</span>` : ''}
                     </div>
                     <div class="flex gap-3">
                         <button class="btn-edit-art text-gray-400 hover:text-blue-600 transition" data-id="${a.fbId}" title="Editar">
@@ -563,6 +612,7 @@
                             </button>
                             <div class="text-sm font-medium text-gray-900 line-clamp-2" title="${a.nom}">${a.nom}</div>
                             <div class="text-xs font-medium text-gray-500 mt-1">${a.cat || 'Sin Categoría'}</div>
+                            ${a.hasVariants ? `<div class="text-xs font-medium text-blue-500 mt-1">Tallas: ${a.variants}</div>` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -574,6 +624,7 @@
                         <div class="flex-grow">
                             <div class="text-xs font-medium text-gray-500">${a.cat || 'Sin Categoría'}</div>
                             <div class="text-sm font-medium text-gray-900" title="${a.nom}">${a.nom}</div>
+                             ${a.hasVariants ? `<div class="text-xs font-medium text-blue-500 mt-1">Tallas: ${a.variants}</div>` : ''}
                         </div>
                         <div class="flex-shrink-0 text-right">
                             <div class="text-sm font-bold text-primary-600">${a.num}</div>
@@ -586,13 +637,8 @@
             }
         }
 
-        // Dropdown de Artículos para el formulario de Requisición (el viejo, ahora obsoleto)
-        function renderArtsDropdown() {
-             const s = document.getElementById('reg-articulo');
-             if (s) { // El dropdown ya no existe
-                s.innerHTML = '';
-             }
-        }
+        // Dropdown de Artículos (Obsoleto, la pantalla de registro ya no lo usa)
+        function renderArtsDropdown() { }
 
         // --- RENDERIZADO DE CATEGORÍAS (DINÁMICO) ---
         function renderDynamicCategoryUI() {
@@ -600,8 +646,8 @@
             renderArticuloCategoryDropdown();
             renderCatalogoFiltros('catalogo-filtros', currentCategory, 'btn-cat-filter');
             renderCatalogoFiltros('filtros-reg-articulo', currentRegCategory, 'btn-reg-cat-filter');
-            renderCatalogo(); // Actualiza el catálogo principal
-            renderRegistrarArticulos(); // Actualiza la lista de artículos en registro
+            renderCatalogo(); 
+            renderRegistrarArticulos(); 
         }
 
         function renderAdminCategorias() {
@@ -662,7 +708,8 @@
             articles.sort((a,b) => a.num.localeCompare(b.num));
 
             list.innerHTML = articles.length ? articles.map(a => {
-                const isAdded = articulosSeleccionados.some(art => art.num === a.num);
+                // Deshabilitar botón si es un artículo con variantes y ya se agregó (lógica simple, se puede mejorar)
+                const isAdded = articulosSeleccionados.some(art => art.num === a.num && !a.hasVariants);
                 return `
                 <div class="flex justify-between items-center p-3 hover:bg-white transition">
                     <div>
@@ -670,7 +717,13 @@
                         <div class="font-medium text-gray-800">${a.nom}</div>
                         <div class="text-sm text-primary-600 font-medium">${a.num}</div>
                     </div>
-                    <button class="btn-add-articulo btn ${isAdded ? 'btn-secondary' : 'btn-primary'} flex-shrink-0" data-num="${a.num}" ${isAdded ? 'disabled' : ''}>
+                    <!-- El botón ahora guarda datos sobre las variantes -->
+                    <button class="btn-add-articulo btn ${isAdded ? 'btn-secondary' : 'btn-primary'} flex-shrink-0" 
+                            data-num="${a.num}" 
+                            data-nom="${a.nom}"
+                            data-has-variants="${a.hasVariants || false}"
+                            data-variants="${a.variants || ''}"
+                            ${isAdded ? 'disabled' : ''}>
                         ${isAdded ? 
                             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" /></svg>' : 
                             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg>'}
@@ -679,37 +732,37 @@
             `}).join('') : '<div class="p-4 text-center text-gray-400 italic">No se encontraron artículos.</div>';
         }
 
-        // ======== FUNCIÓN DE RENDER CESTA (CORREGIDA) ========
+        // ======== FUNCIÓN DE RENDER CESTA (ACTUALIZADA CON VARIANTES) ========
         function renderCestaArticulos() {
             const cesta = document.getElementById('cesta-articulos');
             const placeholder = document.getElementById('cesta-placeholder');
             const conteo = document.getElementById('cesta-conteo');
             
-            if (!cesta || !placeholder || !conteo) return; // Guardia de seguridad
+            if (!cesta || !placeholder || !conteo) return; 
 
             conteo.innerText = articulosSeleccionados.length;
             
             if (articulosSeleccionados.length === 0) {
-                cesta.innerHTML = ''; // Limpia la lista
-                cesta.classList.add('hidden'); // Oculta el contenedor de la lista
-                placeholder.classList.remove('hidden'); // Muestra el placeholder
+                cesta.innerHTML = ''; 
+                cesta.classList.add('hidden'); 
+                placeholder.classList.remove('hidden'); 
             } else {
-                cesta.classList.remove('hidden'); // Muestra el contenedor de la lista
-                placeholder.classList.add('hidden'); // Oculta el placeholder
-                cesta.innerHTML = articulosSeleccionados.map(art => `
+                cesta.classList.remove('hidden'); 
+                placeholder.classList.add('hidden'); 
+                // Se usa el ÍNDICE del array para el borrado, para permitir duplicados con diferentes tallas
+                cesta.innerHTML = articulosSeleccionados.map((art, index) => `
                 <div class="flex justify-between items-center p-3">
                     <div>
-                        <div class="font-medium text-gray-800">${art.nom}</div>
+                        <div class="font-medium text-gray-800">${art.nom} ${art.variant ? `<span class="font-bold text-gray-900">(Talla: ${art.variant})</span>` : ''}</div>
                         <div class="text-sm text-primary-600 font-medium">${art.num}</div>
                     </div>
-                    <button class="btn-remove-articulo text-red-500 hover:text-red-700 p-1" data-num="${art.num}" title="Quitar">
+                    <button class="btn-remove-articulo text-red-500 hover:text-red-700 p-1" data-index="${index}" title="Quitar">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" /></svg>
                     </button>
                 </div>
                 `).join('');
             }
             
-            // Actualizar botones en la lista de artículos
             renderRegistrarArticulos();
         }
 
@@ -722,7 +775,6 @@
             // Modales
             if(e.target.closest('[data-dismiss="modal"]')) closeModal(e.target.closest('.modal').id);
 
-            // --- CORRECCIÓN DE BUGS: Delegación de eventos ---
             const statusBadge = e.target.closest('.status-badge');
             if (statusBadge && currentUser) { 
                 currentReqId = statusBadge.dataset.id; 
@@ -733,7 +785,6 @@
             if (copyBtn) {
                 copyToClipboard(copyBtn.dataset.num);
             }
-            // --- FIN CORRECCIÓN ---
 
             // Acciones de Borrado (con confirmación)
             const delReq = e.target.closest('.btn-del-req'); if(delReq && currentUser) askConfirm('Eliminar Requi', '¿Seguro?', async () => { await deleteDoc(doc(colReqs, delReq.dataset.id)); showToast('Eliminado'); });
@@ -745,8 +796,8 @@
             const catBtn = e.target.closest('.btn-cat-filter');
             if (catBtn) {
                 currentCategory = catBtn.dataset.category;
-                renderCatalogoFiltros('catalogo-filtros', currentCategory, 'btn-cat-filter'); // Re-renderiza para actualizar estilos
-                renderCatalogo(); // Re-renderiza la cuadrícula
+                renderCatalogoFiltros('catalogo-filtros', currentCategory, 'btn-cat-filter'); 
+                renderCatalogo(); 
             }
 
             // Filtros de Categoría (Pantalla Registro)
@@ -783,19 +834,44 @@
                 renderCatalogo();
             }
 
-            // --- Clics para Cesta de Artículos ---
+            // --- Clics para Cesta de Artículos (CON LÓGICA DE VARIANTES) ---
             const addArt = e.target.closest('.btn-add-articulo');
             if (addArt) {
-                const artData = artsMap.get(addArt.dataset.num);
-                if (artData) {
-                    articulosSeleccionados.push(artData);
-                    renderCestaArticulos();
+                const { num, nom, hasVariants, variants } = addArt.dataset;
+                
+                if (hasVariants === 'true' && variants) {
+                    // 1. Artículo TIENE variantes
+                    currentArticleForVariant = { num, nom }; // Guardar datos del artículo
+                    
+                    // Llenar el modal
+                    document.getElementById('variant-modal-title').innerText = `Seleccionar Talla para: ${nom}`;
+                    const variantSelect = document.getElementById('variant-select');
+                    variantSelect.innerHTML = '<option value="">Seleccione...</option>'; // Limpiar
+                    variants.split(',').forEach(v => {
+                        const variant = v.trim();
+                        if (variant) {
+                            variantSelect.innerHTML += `<option value="${variant}">${variant}</option>`;
+                        }
+                    });
+                    openModal('variant-modal'); // Abrir modal
+                } else {
+                    // 2. Artículo NO tiene variantes
+                    const artData = artsMap.get(num);
+                    if (artData) {
+                        articulosSeleccionados.push({ ...artData, variant: null }); // Guardar con variante nula
+                        renderCestaArticulos();
+                    }
                 }
             }
+            
+            // --- LÓGICA DE BORRADO DE CESTA (ACTUALIZADA) ---
             const removeArt = e.target.closest('.btn-remove-articulo');
             if (removeArt) {
-                articulosSeleccionados = articulosSeleccionados.filter(art => art.num !== removeArt.dataset.num);
-                renderCestaArticulos();
+                const indexToRemove = parseInt(removeArt.dataset.index, 10);
+                if (!isNaN(indexToRemove)) {
+                    articulosSeleccionados.splice(indexToRemove, 1); // Eliminar por índice
+                    renderCestaArticulos();
+                }
             }
         });
 
@@ -820,7 +896,7 @@
             document.getElementById('btn-cancel-emp').classList.add('hidden');
         }
 
-        // --- FUNCIONES DE CRUD (ARTÍCULOS) ---
+        // --- FUNCIONES DE CRUD (ARTÍCULOS CON VARIANTES) ---
         function startEditArticulo(art) {
             editingArtId = art.fbId; // Firestore Document ID
             document.getElementById('admin-art-num').value = art.num;
@@ -828,8 +904,24 @@
             document.getElementById('admin-art-nom').value = art.nom;
             document.getElementById('admin-art-cat').value = art.cat || '';
             document.getElementById('admin-art-img').value = art.img || '';
+            
+            // Lógica de Variantes
+            const hasVariantsCheck = document.getElementById('admin-art-hasVariants');
+            const variantsContainer = document.getElementById('admin-variants-container');
+            const variantsInput = document.getElementById('admin-art-variants');
+            
+            if (art.hasVariants) {
+                hasVariantsCheck.checked = true;
+                variantsInput.value = art.variants || '';
+                variantsContainer.style.display = 'block';
+            } else {
+                hasVariantsCheck.checked = false;
+                variantsInput.value = '';
+                variantsContainer.style.display = 'none';
+            }
+
             document.getElementById('art-form-title').innerText = "Editar Artículo";
-            document.getElementById('art-submit-icon').outerHTML = iconEditSVG;
+            document.getElementById('art-submit-icon').innerHTML = iconEditSVG; // innerHTML para SVG
             document.getElementById('btn-cancel-art').classList.remove('hidden');
             document.getElementById('admin-art-nom').focus();
         }
@@ -838,8 +930,13 @@
             editingArtId = null;
             document.getElementById('form-add-articulo').reset();
             document.getElementById('admin-art-num').readOnly = false;
+            
+            // Resetear Variantes
+            document.getElementById('admin-variants-container').style.display = 'none';
+            document.getElementById('admin-art-hasVariants').checked = false;
+            
             document.getElementById('art-form-title').innerText = "Catálogo Artículos";
-            document.getElementById('art-submit-icon').outerHTML = iconAddSVG;
+            document.getElementById('art-submit-icon').innerHTML = iconAddSVG; // innerHTML para SVG
             document.getElementById('btn-cancel-art').classList.add('hidden');
         }
 
@@ -861,10 +958,18 @@
         document.getElementById('btn-cancel-emp').onclick = cancelEditEmpleado;
         document.getElementById('btn-cancel-art').onclick = cancelEditArticulo;
 
+        // Listener para el checkbox de variantes
+        document.getElementById('admin-art-hasVariants').onchange = (e) => {
+            document.getElementById('admin-variants-container').style.display = e.target.checked ? 'block' : 'none';
+            if (!e.target.checked) {
+                document.getElementById('admin-art-variants').value = '';
+            }
+        };
+
         // --- FORMULARIO DE LOGIN ---
         document.getElementById('form-login').onsubmit = async (e) => { e.preventDefault(); document.getElementById('btn-login-submit').disabled=true; try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal'); e.target.reset(); showToast('Bienvenido'); } catch(err) { showToast('Credenciales incorrectas', 'error'); } finally { document.getElementById('btn-login-submit').disabled=false; } };
         
-        // --- NUEVO SUBMIT DE REGISTRO (MÚLTIPLE) ---
+        // --- SUBMIT DE REGISTRO (MÚLTIPLE Y CON VARIANTES) ---
         document.getElementById('btn-registrar-submit').onclick = async () => {
             const form = document.getElementById('form-registrar');
             const numRequi = form['reg-num-requi'].value;
@@ -874,6 +979,7 @@
 
             if (!nombre) return showToast('Empleado no válido', 'error');
             if (articulosSeleccionados.length === 0) return showToast('No has seleccionado ningún artículo', 'error');
+            if (!numRequi) return showToast('Ingresa un # de Requisición', 'error');
 
             const btn = document.getElementById('btn-registrar-submit');
             btn.disabled = true;
@@ -882,11 +988,16 @@
             try {
                 let promises = [];
                 for (const art of articulosSeleccionados) {
+                    // Formatear el nombre del artículo con su variante si existe
+                    const articuloNombre = art.variant ? 
+                        `[${art.num}] - ${art.nom} (Talla: ${art.variant})` : 
+                        `[${art.num}] - ${art.nom}`;
+
                     const reqData = {
                         numRequi: numRequi, 
                         empleadoId: empleadoId, 
                         nombre: nombre, 
-                        articulo: `[${art.num}] - ${art.nom}`, 
+                        articulo: articuloNombre, 
                         fecha: fecha, 
                         status: 'Pendiente'
                     };
@@ -904,6 +1015,22 @@
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Registrar Requisición(es)';
+            }
+        };
+
+        // --- SUBMIT DE MODAL DE VARIANTES ---
+        document.getElementById('btn-variant-submit').onclick = () => {
+            const selectedVariant = document.getElementById('variant-select').value;
+            if (!selectedVariant) {
+                showToast('Debes seleccionar una talla o variante', 'error');
+                return;
+            }
+            if (currentArticleForVariant) {
+                const artData = artsMap.get(currentArticleForVariant.num);
+                articulosSeleccionados.push({ ...artData, variant: selectedVariant });
+                renderCestaArticulos();
+                closeModal('variant-modal');
+                currentArticleForVariant = null;
             }
         };
         
@@ -933,18 +1060,28 @@
             }
         };
         
-        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO ---
+        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (CON VARIANTES) ---
         document.getElementById('form-add-articulo').onsubmit = async (e) => { 
             e.preventDefault(); 
             const num = e.target['admin-art-num'].value;
             const nom = e.target['admin-art-nom'].value;
             const cat = e.target['admin-art-cat'].value;
             const img = e.target['admin-art-img'].value;
+            const hasVariants = e.target['admin-art-hasVariants'].checked;
+            const variants = e.target['admin-art-variants'].value.trim();
+
+            if(!cat) return showToast('Debes seleccionar una categoría', 'error');
+            if(hasVariants && !variants) return showToast('Debes escribir las variantes separadas por coma', 'error');
+
+            const artData = {
+                num, nom, cat, img, 
+                hasVariants, 
+                variants: hasVariants ? variants : null
+            };
 
             if (editingArtId) {
-                if(!cat) return showToast('Debes seleccionar una categoría', 'error');
                 try {
-                    await updateDoc(doc(colArts, editingArtId), { num, nom, cat, img });
+                    await updateDoc(doc(colArts, editingArtId), artData);
                     showToast('Artículo actualizado');
                     cancelEditArticulo();
                 } catch(err) {
@@ -952,18 +1089,17 @@
                 }
             } else {
                 if(artsMap.has(num)) return showToast('No. Parte duplicado', 'error'); 
-                if(!cat) return showToast('Debes seleccionar una categoría', 'error');
                 try { 
-                    await addDoc(colArts, {num, nom, cat, img}); 
+                    await addDoc(colArts, artData); 
                     showToast('Agregado'); 
-                    e.target.reset(); 
+                    cancelEditArticulo(); // Usar cancel para resetear el form completo
                 } catch(err){ 
                     showToast('Error', 'error'); 
                 }
             }
         };
         
-        // --- NUEVO FORMULARIO DE CATEGORÍA ---
+        // --- FORMULARIO DE CATEGORÍA ---
         document.getElementById('form-add-categoria').onsubmit = async (e) => {
             e.preventDefault();
             const catName = e.target['admin-cat-name'].value.trim();
