@@ -30,6 +30,15 @@
         .toast-success { @apply border-green-500; } .toast-error { @apply border-red-500; } .toast-info { @apply border-blue-500; } .toast.hiding { @apply animate-slide-out; }
         input:read-only { @apply bg-gray-100 text-gray-500 cursor-not-allowed; }
         .aspect-w-1 { position: relative; padding-bottom: 100%; } .aspect-w-1 > * { position: absolute; height: 100%; width: 100%; top: 0; right: 0; bottom: 0; left: 0; }
+        
+        /* --- ESTILOS DE BOTONES BASE --- */
+        .btn { @apply px-4 py-2 rounded-lg font-medium shadow-sm transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2; }
+        .btn-primary { @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500; }
+        .btn-secondary { @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-300; }
+        .btn-danger { @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500; }
+        /* Fix para botones de icono y cantidad */
+        .btn.p-2\.5 { @apply p-2.5 leading-none; }
+
         @media (max-width: 640px) {
             .responsive-table thead { display: none; }
             .responsive-table tbody tr { @apply flex flex-col mb-4 bg-white rounded-xl shadow-sm border border-gray-200 p-5 mx-4; }
@@ -45,29 +54,21 @@
         .btn-view.active { @apply bg-primary-100 text-primary-600; }
         .btn-view:not(.active) { @apply bg-white text-gray-400 hover:text-gray-600; }
         #admin-variants-container { display: none; }
-        /* Estilos para filtros de listas */
-        .btn-list-filter.active { @apply bg-yellow-100 text-yellow-800 border-yellow-300; }
-        .btn-list-filter:not(.active) { @apply bg-white text-gray-600 hover:bg-gray-50 border-gray-300; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
     <div id="toast-container"></div>
-
     <div class="min-h-screen flex flex-col">
         <!-- Header Principal -->
         <header class="bg-white shadow-sm sticky top-0 z-20 border-b border-gray-200 transition-all">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <button id="main-back-btn" class="hidden mr-2 sm:mr-3 p-2 text-gray-500 hover:text-primary-600 hover:bg-gray-100 rounded-full transition" title="Regresar al Inicio">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
-                    </button>
+                    <button id="main-back-btn" class="hidden mr-2 sm:mr-3 p-2 text-gray-500 hover:text-primary-600 hover:bg-gray-100 rounded-full transition" title="Regresar al Inicio"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg></button>
                     <span class="text-xl sm:text-2xl font-bold text-gray-900 truncate">ToolCrib <span class="text-primary-600">Requisiciones</span></span>
                 </div>
                 <div class="flex items-center space-x-2 sm:space-x-4">
                     <span id="user-email-display" class="text-sm text-gray-500 hidden md:inline-block font-medium"></span>
-                    <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Acceso Admin">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" /></svg>
-                    </button>
+                    <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Acceso Admin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" /></svg></button>
                     <button id="btn-logout" class="hidden px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition">Salir</button>
                 </div>
             </div>
@@ -80,26 +81,10 @@
                     <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Centro de Control</h1>
                     <p class="mt-2 text-lg text-gray-600">Selecciona una operación para comenzar.</p>
                     <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-                        <button data-navigate-to="registrar-screen" class="p-6 bg-primary-600 rounded-xl shadow-lg text-white hover:bg-primary-700 transition transform hover:-translate-y-1 flex flex-col items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                            <span class="text-xl font-bold">Nueva Requisición</span>
-                            <span class="text-primary-200 text-sm mt-1 text-left">Crear solicitud de material.</span>
-                        </button>
-                        <button data-navigate-to="consultar-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 1.875 1.875v12.75a1.875 1.875 0 0 1-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V6.375a1.875 1.875 0 0 1 1.875-1.875Z" /></svg>
-                             <span class="text-xl font-bold text-gray-900">Historial</span>
-                             <span class="text-gray-500 text-sm mt-1 text-left">Consultar estatus de solicitudes.</span>
-                        </button>
-                        <button data-navigate-to="catalogo-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25-9 5.25m18 0-9 5.25-9-5.25m18 0V21l-9 5.25-9-5.25V7.5m18 0V21l-9 5.25-9-5.25V7.5" /></svg>
-                             <span class="text-xl font-bold text-gray-900">Catálogo</span>
-                             <span class="text-gray-500 text-sm mt-1 text-left">Ver productos e imágenes.</span>
-                        </button>
-                        <button id="btn-admin-home" data-navigate-to="admin-screen" class="hidden p-6 bg-gray-800 rounded-xl shadow-md text-white hover:bg-gray-900 transition transform hover:-translate-y-1 flex flex-col items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
-                             <span class="text-xl font-bold">Administración</span>
-                             <span class="text-gray-300 text-sm mt-1 text-left">Gestionar base de datos.</span>
-                        </button>
+                        <button data-navigate-to="registrar-screen" class="p-6 bg-primary-600 rounded-xl shadow-lg text-white hover:bg-primary-700 transition transform hover:-translate-y-1 flex flex-col items-start"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg><span class="text-xl font-bold">Nueva Requisición</span><span class="text-primary-200 text-sm mt-1 text-left">Crear solicitud de material.</span></button>
+                        <button data-navigate-to="consultar-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 1.875 1.875v12.75a1.875 1.875 0 0 1-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V6.375a1.875 1.875 0 0 1 1.875-1.875Z" /></svg><span class="text-xl font-bold text-gray-900">Historial</span><span class="text-gray-500 text-sm mt-1 text-left">Consultar estatus de solicitudes.</span></button>
+                        <button data-navigate-to="catalogo-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25-9 5.25m18 0-9 5.25-9-5.25m18 0V21l-9 5.25-9-5.25V7.5m18 0V21l-9 5.25-9-5.25V7.5" /></svg><span class="text-xl font-bold text-gray-900">Catálogo</span><span class="text-gray-500 text-sm mt-1 text-left">Ver productos e imágenes.</span></button>
+                        <button id="btn-admin-home" data-navigate-to="admin-screen" class="hidden p-6 bg-gray-800 rounded-xl shadow-md text-white hover:bg-gray-900 transition transform hover:-translate-y-1 flex flex-col items-start"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg><span class="text-xl font-bold">Administración</span><span class="text-gray-300 text-sm mt-1 text-left">Gestionar base de datos.</span></button>
                     </div>
                 </div>
             </div>
@@ -107,7 +92,6 @@
             <!-- ======== PANTALLA DE REGISTRO (NUEVO LAYOUT 2x2) ======== -->
             <div id="registrar-screen" class="screen-content hidden animate-fade-in">
                 <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Crear Nueva Requisición</h1>
-                <!-- Grid principal 2x2 -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Columna Izquierda (Solicitante y Listas Rápidas) -->
                     <div class="flex flex-col gap-8">
@@ -127,6 +111,7 @@
                         <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
                             <div class="flex justify-between items-center mb-4">
                                 <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                                    <!-- ======== ICONO DE ESTRELLA PULIDO ======== -->
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2 text-yellow-500"><path fill-rule="evenodd" d="M10.868 2.884c.321-.772 1.415-.772 1.736 0l1.681 4.062a.75.75 0 0 0 .564.41l4.47.652c.817.119 1.147 1.114.545 1.695l-3.235 3.152a.75.75 0 0 0-.216.66l.764 4.452c.138.809-.71.1.428-1.09l-3.996-2.1a.75.75 0 0 0-.69 0l-3.996 2.1c-.71.378-1.567-.281-1.428-1.09l.764-4.452a.75.75 0 0 0-.216-.66L.64 9.703c-.602-.581-.272-1.576.545-1.695l4.47-.652a.75.75 0 0 0 .564-.41L9.132 2.884Z" clip-rule="evenodd" /></svg>
                                     Listas Rápidas
                                 </h2>
@@ -135,7 +120,6 @@
                             <div id="lista-diarios" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-2 divide-y divide-gray-200"></div>
                         </div>
                     </div>
-                    
                     <!-- Columna Derecha (Artículos y Cesta) -->
                     <div class="flex flex-col gap-8">
                         <!-- 3. Todos los Artículos -->
@@ -155,13 +139,14 @@
                                 <div id="cesta-placeholder" class="p-4 text-center text-gray-400 italic">Aún no has agregado artículos.</div>
                                 <div id="cesta-articulos" class="p-2 divide-y divide-gray-100 hidden"></div>
                             </div>
+                            <!-- ======== BOTÓN DE REGISTRAR CON ESTILO CORREGIDO ======== -->
                             <button id="btn-registrar-submit" class="btn btn-primary w-full py-3 text-base font-bold shadow-lg hover:bg-primary-700 transition-all transform hover:-translate-y-0.5">Registrar Requisición(es)</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Consultar Screen (Responsivo PRO) -->
+            <!-- Consultar Screen -->
             <div id="consultar-screen" class="screen-content hidden animate-fade-in">
                 <div class="bg-white sm:rounded-2xl shadow-sm border-y sm:border border-gray-100 overflow-hidden -mx-4 sm:mx-0">
                     <div class="p-4 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -172,20 +157,7 @@
                         </div>
                     </div>
                     <div class="sm:p-0 pt-4">
-                        <table class="responsive-table min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Requi</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empleado</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobro</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-requisiciones" class="bg-white sm:divide-y divide-gray-200"></tbody>
-                        </table>
+                        <table class="responsive-table min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Requi</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empleado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículo</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobro</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th></tr></thead><tbody id="tbody-requisiciones" class="bg-white sm:divide-y divide-gray-200"></tbody></table>
                     </div>
                 </div>
             </div>
@@ -205,17 +177,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- ======== NUEVOS FILTROS DE LISTAS (CATÁLOGO) ======== -->
-                <div class="mb-4">
-                    <label class="text-sm font-medium text-gray-700 mr-2">Filtrar por Lista:</label>
-                    <div id="catalogo-list-filtros" class="inline-flex flex-wrap gap-2"></div>
-                </div>
-                <!-- FILTROS DE CATEGORÍA (DINÁMICOS) -->
-                <div class="mb-6">
-                    <label class="text-sm font-medium text-gray-700 mr-2">Filtrar por Categoría:</label>
-                    <div id="catalogo-filtros" class="inline-flex flex-wrap gap-2"></div>
-                </div>
-                <!-- Contenedor de Catálogo (Grid o Lista) -->
+                <div class="mb-4"><label class="text-sm font-medium text-gray-700 mr-2">Filtrar por Lista:</label><div id="catalogo-list-filtros" class="inline-flex flex-wrap gap-2"></div></div>
+                <div class="mb-6"><label class="text-sm font-medium text-gray-700 mr-2">Filtrar por Categoría:</label><div id="catalogo-filtros" class="inline-flex flex-wrap gap-2"></div></div>
                 <div id="catalogo-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
             </div>
 
@@ -226,23 +189,18 @@
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                             <h2 id="emp-form-title" class="text-lg font-bold flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
-                            <div class="flex gap-2 w-full sm:w-auto">
-                                <input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden">
-                                <button onclick="document.getElementById('file-upload-emp').click()" class="flex-1 sm:flex-none px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Cargar Excel</button>
-                            </div>
+                            <div class="flex gap-2 w-full sm:w-auto"><input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden"><button onclick="document.getElementById('file-upload-emp').click()" class="flex-1 sm:flex-none px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Cargar Excel</button></div>
                         </div>
                         <form id="form-add-empleado" class="flex gap-3 mb-6"><input type="number" id="admin-emp-id" placeholder="ID" required class="w-1/3 rounded-lg"><input type="text" id="admin-emp-nombre" placeholder="Nombre" required class="w-full rounded-lg"><button type="button" id="btn-cancel-emp" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button><button type="submit" class="btn btn-primary flex-shrink-0" title="Guardar"><svg id="emp-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"></svg></button></form>
                         <div id="admin-list-empleados" class="flex-grow h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
-                    <!-- Tarjeta de Categorías y Listas (Combinada o separada... mejor separada) -->
+                    <!-- Tarjeta de Categorías y Listas -->
                     <div class="flex flex-col gap-8">
-                        <!-- Tarjeta de Categorías -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                             <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>Gestionar Categorías</h2>
                             <form id="form-add-categoria" class="flex gap-3 mb-6"><input type="text" id="admin-cat-name" placeholder="Nombre de categoría" required class="w-full rounded-lg"><button type="submit" class="btn btn-primary flex-shrink-0" title="Agregar Categoría"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button></form>
                             <div id="admin-list-categorias" class="flex-grow h-40 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                         </div>
-                        <!-- ======== NUEVA TARJETA GESTIONAR LISTAS ======== -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                             <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.31h5.362c.518 0 .73.684.34 1.002l-4.34 3.161a.562.562 0 0 0-.18.618l2.125 5.111a.563.563 0 0 1-.84.622l-4.34-3.161a.563.563 0 0 0-.65 0l-4.34 3.161a.563.563 0 0 1-.84-.622l2.125-5.111a.563.563 0 0 0-.18-.618l-4.34-3.161a.563.563 0 0 1 .34-1.002h5.362a.563.563 0 0 0 .475-.31l2.125-5.111Z" /></svg>Gestionar Listas Rápidas</h2>
                             <form id="form-add-list" class="flex gap-3 mb-6"><input type="text" id="admin-list-name" placeholder="Nombre de lista" required class="w-full rounded-lg"><button type="submit" class="btn btn-primary flex-shrink-0" title="Agregar Lista"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button></form>
@@ -251,21 +209,17 @@
                     </div>
                     <!-- Tarjeta de Artículos -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-                        <h2 id="art-form-title" class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
+                        <h2 id="art-form-title" class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
                         <form id="form-add-articulo" class="flex flex-col gap-3 mb-6">
                             <div class="flex gap-3"><input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/2 rounded-lg"><input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-1/2 rounded-lg"></div>
                             <div class="flex gap-3"><select id="admin-art-cat" required class="w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"><option value="">Seleccione Categoría...</option></select></div>
                             <div class="flex gap-3"><input type="text" id="admin-art-img" placeholder="URL imagen o nombre archivo" class="w-full rounded-lg"></div>
                             <div class="flex items-center gap-2"><input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500"><label for="admin-art-hasVariants" class="text-sm font-medium text-gray-700">Tiene Variantes (ej. Tallas)</label></div>
                             <div id="admin-variants-container" class="hidden"><label class="block text-sm font-medium text-gray-700 mb-1">Variantes (separadas por coma)</label><input type="text" id="admin-art-variants" placeholder="Ej: S, M, L, XL" class="w-full rounded-lg"></div>
-                            <!-- ======== CHECKBOXES DE LISTAS DINÁMICAS ======== -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas Rápidas:</label>
-                                <div id="admin-art-lists" class="space-y-2 h-24 overflow-y-auto border rounded-lg p-3 bg-gray-50">
-                                    <!-- Checkboxes generados por JS -->
-                                </div>
+                                <div id="admin-art-lists" class="space-y-2 h-24 overflow-y-auto border rounded-lg p-3 bg-gray-50"></div>
                             </div>
-                            <!-- Botones de Acción -->
                             <div class="flex gap-3 mt-2">
                                 <button type="button" id="btn-cancel-art" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>
                                 <button type="submit" class="btn btn-primary flex-1" title="Guardar"><svg id="art-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 20 20" fill="currentColor"></svg></button>
@@ -311,13 +265,20 @@
         </div>
     </div>
     
-    <!-- MODAL UNIFICADO PARA TALLAS Y CANTIDAD -->
+    <!-- ======== MODAL UNIFICADO PARA TALLAS Y CANTIDAD (CON BOTONES +/-) ======== -->
     <div id="item-details-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all scale-95 opacity-0">
             <h2 id="item-details-title" class="text-xl font-bold mb-5 text-gray-900">Detalles del Artículo</h2>
             <div class="space-y-4">
                  <div id="variant-container" class="hidden"><label class="block text-sm font-medium text-gray-700 mb-1">Talla / Variante</label><select id="variant-select" class="focus:ring-primary-500 w-full rounded-lg"><option value="">Seleccione...</option></select></div>
-                 <div><label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label><input type="number" id="item-qty" value="1" min="1" class="focus:ring-primary-500 w-full rounded-lg"></div>
+                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="btn-qty-minus" class="btn btn-secondary p-2.5 rounded-lg leading-none flex-shrink-0" aria-label="Restar uno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" /></svg></button>
+                        <input type="number" id="item-qty" value="1" min="1" class="focus:ring-primary-500 w-full rounded-lg text-center font-bold">
+                        <button type="button" id="btn-qty-plus" class="btn btn-secondary p-2.5 rounded-lg leading-none flex-shrink-0" aria-label="Sumar uno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg></button>
+                    </div>
+                </div>
                  <div class="flex justify-end space-x-3 mt-6"><button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button><button type="button" id="btn-item-details-submit" class="btn btn-primary px-8">Aceptar</button></div>
             </div>
         </div>
@@ -335,14 +296,13 @@
         const colEmps = collection(db, 'requi_toolcrib', 'data', 'employees');
         const colArts = collection(db, 'requi_toolcrib', 'data', 'articles');
         const colCats = collection(db, 'requi_toolcrib', 'data', 'categories');
-        const colLists = collection(db, 'requi_toolcrib', 'data', 'lists'); // NUEVA COLECCIÓN DE LISTAS
+        const colLists = collection(db, 'requi_toolcrib', 'data', 'lists');
         
         // --- VARIABLES GLOBALES ---
         let currentUser = null, currentReqId = null, confirmAction = null, reqsData = [], empsMap = new Map(), artsMap = new Map();
-        let catsMap = new Map(), listsMap = new Map(); // listsMap para las listas dinámicas
+        let catsMap = new Map(), listsMap = new Map();
         let currentCategory = 'Todos', currentRegCategory = 'Todos', catalogoViewMode = 'grid';
-        let currentListFilterId = 'Todos'; // Para filtro de catálogo
-        let currentRegListId = 'Todos'; // Para filtro de requisición
+        let currentListFilterId = 'Todos', currentRegListId = 'Todos';
         let articulosSeleccionados = []; // Cesta: { ...artData, variant: 'M', qty: 5 }
         let currentItemForDetails = null;
         const PLACEHOLDER_IMG = "https://placehold.co/400x400/f1f5f9/94a3b8?text=Sin+Imagen";
@@ -410,61 +370,31 @@
         });
         onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); reqsData.sort((a,b) => b.fecha.localeCompare(a.fecha)); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
         onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
-        onSnapshot(colArts, (s) => { 
-            artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); 
-            renderAdmin(); renderCatalogo(); renderRegistrarArticulos(); renderRegistrarListArticles(); 
-        });
+        onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); renderAdmin(); renderCatalogo(); renderRegistrarArticulos(); renderRegistrarListArticles(); });
         onSnapshot(colCats, (s) => { catsMap.clear(); s.forEach(d => catsMap.set(d.data().name, { ...d.data(), fbId: d.id })); renderDynamicCategoryUI(); }, (e) => console.error("Error al cargar categorías", e));
-        // NUEVO LISTENER PARA LISTAS
-        onSnapshot(colLists, (s) => { 
-            listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); 
-            renderDynamicCategoryUI(); renderAdminLists(); renderRegistrarListDropdown(); 
-        }, (e) => console.error("Error al cargar listas", e));
+        onSnapshot(colLists, (s) => { listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); renderDynamicCategoryUI(); renderAdminLists(); renderRegistrarListDropdown(); }, (e) => console.error("Error al cargar listas", e));
 
         // --- LÓGICA DE RENDERIZADO ---
         function renderReqs() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const filtered = reqsData.filter(r => (r.nombre||'').toLowerCase().includes(term) || (r.empleadoId||'').toString().includes(term) || (r.articulo||'').toLowerCase().includes(term) || (r.numRequi||'').toLowerCase().includes(term));
-            document.getElementById('tbody-requisiciones').innerHTML = filtered.length ? filtered.map(r => `
-                <tr class="hover:bg-gray-50 transition">
-                    <td data-label="# Requi" class="px-6 py-4 font-medium text-primary-900">${r.numRequi || '-'}</td>
-                    <td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td>
-                    <td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td>
-                    <td data-label="Artículo" class="px-6 py-4"><div class="text-sm text-gray-900 font-medium">${r.articulo}</div></td>
-                    <td data-label="Estatus" class="px-6 py-4 text-center"><span class="status-badge cursor-pointer hover:scale-105 transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${r.status==='Autorizada'?'bg-green-100 text-green-800':r.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800'}" data-id="${r.id}">${r.status}</span></td>
-                    <td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">${r.fechaCobro || '-'}</td>
-                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-id="${r.id}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td>
-                </tr>`).join('') : '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>';
+            document.getElementById('tbody-requisiciones').innerHTML = filtered.length ? filtered.map(r => `<tr class="hover:bg-gray-50 transition"><td data-label="# Requi" class="px-6 py-4 font-medium text-primary-900">${r.numRequi || '-'}</td><td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${r.fecha}</td><td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${r.empleadoId}</div><div class="text-xs text-gray-500">${r.nombre}</div></td><td data-label="Artículo" class="px-6 py-4"><div class="text-sm text-gray-900 font-medium">${r.articulo}</div></td><td data-label="Estatus" class="px-6 py-4 text-center"><span class="status-badge cursor-pointer hover:scale-105 transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${r.status==='Autorizada'?'bg-green-100 text-green-800':r.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800'}" data-id="${r.id}">${r.status}</span></td><td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">${r.fechaCobro || '-'}</td><td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-id="${r.id}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td></tr>`).join('') : '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>';
         }
         function renderAdmin() {
             document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a,b)=>a.id-b.id).map(e => `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><div class="flex gap-3"><button class="btn-edit-emp text-gray-400 hover:text-blue-600 transition" data-id="${e.fbId}" data-emp-id="${e.id}" data-n="${e.nombre}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg></button><button class="btn-del-emp text-gray-400 hover:text-red-600 transition" data-id="${e.fbId}" data-n="${e.nombre}" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
             document.getElementById('admin-list-articulos').innerHTML = artsMap.size ? Array.from(artsMap.values()).sort((a,b)=>a.nom.localeCompare(b.nom)).map(a => {
                 const listNames = (a.assignedLists || []).map(listId => listsMap.get(listId)?.name).filter(Boolean).join(', ');
-                return `<div class="flex justify-between items-center p-3 hover:bg-white transition">
-                    <div>
-                        <span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span>
-                        <span>${a.nom}</span>
-                        ${a.hasVariants ? `<span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full ml-2 font-medium">Variantes</span>` : ''}
-                        ${listNames ? `<span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full ml-2 font-medium" title="${listNames}">Listas</span>` : ''}
-                    </div>
-                    <div class="flex gap-3">
-                        <button class="btn-edit-art text-gray-400 hover:text-blue-600 transition" data-id="${a.fbId}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg></button>
-                        <button class="btn-del-art text-gray-400 hover:text-red-600 transition" data-id="${a.fbId}" data-n="${a.nom}" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button>
-                    </div>
-                </div>`
+                return `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><span class="font-mono text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded mr-2">${a.num}</span><span>${a.nom}</span>${a.hasVariants ? `<span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full ml-2 font-medium">Variantes</span>` : ''}${listNames ? `<span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full ml-2 font-medium" title="${listNames}">Listas</span>` : ''}</div><div class="flex gap-3"><button class="btn-edit-art text-gray-400 hover:text-blue-600 transition" data-id="${a.fbId}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg></button><button class="btn-del-art text-gray-400 hover:text-red-600 transition" data-id="${a.fbId}" data-n="${a.nom}" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div></div>`
             }).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
         }
         function renderCatalogo() {
             const term = document.getElementById('search-catalogo').value.toLowerCase();
             let articles = Array.from(artsMap.values());
-            // FILTRO DE LISTAS (NUEVO)
             if (currentListFilterId !== 'Todos') { articles = articles.filter(a => a.assignedLists && a.assignedLists.includes(currentListFilterId)); }
-            // FILTRO DE CATEGORÍAS
             if (currentCategory !== 'Todos') { articles = articles.filter(a => a.cat === currentCategory); }
             if (term) { articles = articles.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term)); }
             articles.sort((a,b) => a.num.localeCompare(b.num));
-            const grid = document.getElementById('catalogo-grid');
-            grid.className = ''; 
+            const grid = document.getElementById('catalogo-grid'); grid.className = ''; 
             if (articles.length === 0) { grid.innerHTML = '<div class="col-span-full p-8 text-center text-gray-500 italic">No se encontraron artículos.</div>'; return; }
             if (catalogoViewMode === 'grid') {
                 grid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6';
@@ -480,7 +410,7 @@
             renderAdminCategorias(); renderArticuloCategoryDropdown();
             renderCatalogoFiltros('catalogo-filtros', currentCategory, 'btn-cat-filter');
             renderCatalogoFiltros('filtros-reg-articulo', currentRegCategory, 'btn-reg-cat-filter');
-            renderCatalogoListFiltros(); // NUEVO
+            renderCatalogoListFiltros(); 
             renderCatalogo(); renderRegistrarArticulos(); renderRegistrarListArticles();
         }
         function renderAdminCategorias() {
@@ -502,14 +432,11 @@
             sortedCats.forEach(catName => { html += `<button data-category="${catName}" class="${btnClass} px-3 py-1 text-sm font-medium rounded-full transition border">${catName}</button>`; });
             container.innerHTML = html;
             container.querySelectorAll(`.${btnClass}`).forEach(btn => {
-                if (btn.dataset.category === activeCategory) {
-                    btn.classList.add('bg-primary-600', 'text-white', 'border-primary-600'); btn.classList.remove('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300');
-                } else {
-                    btn.classList.add('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); btn.classList.remove('bg-primary-600', 'text-white', 'border-primary-600');
-                }
+                if (btn.dataset.category === activeCategory) { btn.classList.add('bg-primary-600', 'text-white', 'border-primary-600'); btn.classList.remove('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); } 
+                else { btn.classList.add('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); btn.classList.remove('bg-primary-600', 'text-white', 'border-primary-600'); }
             });
         }
-        // NUEVAS FUNCIONES PARA LISTAS DINÁMICAS
+        // FUNCIONES DE LISTAS DINÁMICAS
         function renderAdminLists() {
             const list = document.getElementById('admin-list-lists');
             const sortedLists = Array.from(listsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
@@ -518,9 +445,7 @@
         function renderArticuloListsCheckboxes(assignedLists = []) {
             const container = document.getElementById('admin-art-lists');
             const sortedLists = Array.from(listsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
-            container.innerHTML = sortedLists.length ? sortedLists.map(l => `
-                <div class="flex items-center"><input id="list-${l.fbId}" value="${l.fbId}" type="checkbox" ${assignedLists.includes(l.fbId) ? 'checked' : ''} class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500"><label for="list-${l.fbId}" class="ml-2 text-sm text-gray-700">${l.name}</label></div>
-            `).join('') : '<div class="text-sm text-gray-400 italic">No hay listas creadas.</div>';
+            container.innerHTML = sortedLists.length ? sortedLists.map(l => `<div class="flex items-center"><input id="list-${l.fbId}" value="${l.fbId}" type="checkbox" ${assignedLists.includes(l.fbId) ? 'checked' : ''} class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500"><label for="list-${l.fbId}" class="ml-2 text-sm text-gray-700">${l.name}</label></div>`).join('') : '<div class="text-sm text-gray-400 italic">No hay listas creadas.</div>';
         }
         function renderCatalogoListFiltros() {
             const container = document.getElementById('catalogo-list-filtros'); if (!container) return;
@@ -528,8 +453,10 @@
             let html = `<button data-list-id="Todos" class="btn-list-filter px-3 py-1 text-sm font-medium rounded-full transition border">Todas</button>`;
             sortedLists.forEach(l => { html += `<button data-list-id="${l.fbId}" class="btn-list-filter px-3 py-1 text-sm font-medium rounded-full transition border">${l.name}</button>`; });
             container.innerHTML = html;
+            // ======== LÓGICA DE ESTILO DE FILTRO CORREGIDA ========
             container.querySelectorAll('.btn-list-filter').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.listId === currentListFilterId);
+                if (btn.dataset.listId === currentListFilterId) { btn.classList.add('bg-primary-600', 'text-white', 'border-primary-600'); btn.classList.remove('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); } 
+                else { btn.classList.add('bg-white', 'text-gray-600', 'hover:bg-gray-50', 'border-gray-300'); btn.classList.remove('bg-primary-600', 'text-white', 'border-primary-600'); }
             });
         }
         function renderRegistrarListDropdown() {
@@ -540,19 +467,14 @@
             select.value = currentRegListId;
         }
 
-        // --- RENDERIZADO PANTALLA REGISTRO (NUEVAS FUNCIONES) ---
-        function renderRegistrarListArticles() { // ANTES renderDailyConsumibles
+        // --- RENDERIZADO PANTALLA REGISTRO ---
+        function renderRegistrarListArticles() {
             const list = document.getElementById('lista-diarios'); if (!list) return; 
             let articles = Array.from(artsMap.values());
-            if (currentRegListId === 'Todos') {
-                articles = articles.filter(a => a.assignedLists && a.assignedLists.length > 0); // Mostrar todos los que estén en CUALQUIER lista
-            } else {
-                articles = articles.filter(a => a.assignedLists && a.assignedLists.includes(currentRegListId));
-            }
+            if (currentRegListId === 'Todos') { articles = articles.filter(a => a.assignedLists && a.assignedLists.length > 0); } 
+            else { articles = articles.filter(a => a.assignedLists && a.assignedLists.includes(currentRegListId)); }
             articles.sort((a,b) => a.nom.localeCompare(b.nom));
-            if (articles.length === 0) {
-                list.innerHTML = `<div class="p-4 text-center text-gray-400 italic">${currentRegListId === 'Todos' ? 'No hay artículos en listas.' : 'No hay artículos en esta lista.'}</div>`; return;
-            }
+            if (articles.length === 0) { list.innerHTML = `<div class="p-4 text-center text-gray-400 italic">${currentRegListId === 'Todos' ? 'No hay artículos en listas.' : 'No hay artículos en esta lista.'}</div>`; return; }
             list.innerHTML = articles.map(a => {
                 const isAdded = !a.hasVariants && articulosSeleccionados.some(art => art.num === a.num);
                 return `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><div class="font-medium text-gray-800">${a.nom}</div><div class="text-sm text-primary-600 font-medium">${a.num}</div></div><button class="btn-add-articulo btn ${isAdded ? 'btn-secondary' : 'btn-primary'} flex-shrink-0" data-num="${a.num}" data-nom="${a.nom}" data-has-variants="${a.hasVariants || false}" data-variants="${a.variants || ''}" ${isAdded ? 'disabled' : ''}>${isAdded ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" /></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg>'}</button></div>`;
@@ -574,21 +496,12 @@
             const cesta = document.getElementById('cesta-articulos'), placeholder = document.getElementById('cesta-placeholder'), conteo = document.getElementById('cesta-conteo');
             if (!cesta || !placeholder || !conteo) return; 
             conteo.innerText = articulosSeleccionados.length;
-            if (articulosSeleccionados.length === 0) {
-                cesta.innerHTML = ''; cesta.classList.add('hidden'); placeholder.classList.remove('hidden'); 
-            } else {
+            if (articulosSeleccionados.length === 0) { cesta.innerHTML = ''; cesta.classList.add('hidden'); placeholder.classList.remove('hidden'); } 
+            else {
                 cesta.classList.remove('hidden'); placeholder.classList.add('hidden'); 
-                cesta.innerHTML = articulosSeleccionados.map((art, index) => `
-                <div class="flex justify-between items-center p-3">
-                    <div>
-                        <div class="font-medium text-gray-800">${art.nom} ${art.variant ? `<span class="font-bold text-gray-900">(${art.variant})</span>` : ''}</div>
-                        <div class="flex items-center gap-2"><span class="text-sm text-primary-600 font-medium">${art.num}</span><span class="text-sm font-bold text-gray-900">x ${art.qty} pz</span></div>
-                    </div>
-                    <button class="btn-remove-articulo text-red-500 hover:text-red-700 p-1" data-index="${index}" title="Quitar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" /></svg></button>
-                </div>`).join('');
+                cesta.innerHTML = articulosSeleccionados.map((art, index) => `<div class="flex justify-between items-center p-3"><div><div class="font-medium text-gray-800">${art.nom} ${art.variant ? `<span class="font-bold text-gray-900">(${art.variant})</span>` : ''}</div><div class="flex items-center gap-2"><span class="text-sm text-primary-600 font-medium">${art.num}</span><span class="text-sm font-bold text-gray-900">x ${art.qty} pz</span></div></div><button class="btn-remove-articulo text-red-500 hover:text-red-700 p-1" data-index="${index}" title="Quitar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" /></svg></button></div>`).join('');
             }
-            renderRegistrarArticulos();
-            renderRegistrarListArticles(); 
+            renderRegistrarArticulos(); renderRegistrarListArticles(); 
         }
 
         // --- LÓGICA DE CLICS (Event Delegation) ---
@@ -605,7 +518,6 @@
             
             const catBtn = e.target.closest('.btn-cat-filter'); if (catBtn) { currentCategory = catBtn.dataset.category; renderCatalogoFiltros('catalogo-filtros', currentCategory, 'btn-cat-filter'); renderCatalogo(); }
             const regCatBtn = e.target.closest('.btn-reg-cat-filter'); if (regCatBtn) { currentRegCategory = regCatBtn.dataset.category; renderCatalogoFiltros('filtros-reg-articulo', currentRegCategory, 'btn-reg-cat-filter'); renderRegistrarArticulos(); }
-            
             const listFilterBtn = e.target.closest('.btn-list-filter'); if (listFilterBtn) { currentListFilterId = listFilterBtn.dataset.listId; renderCatalogoListFiltros(); renderCatalogo(); }
             
             const editEmp = e.target.closest('.btn-edit-emp'); if (editEmp) startEditEmpleado(editEmp.dataset);
@@ -617,21 +529,20 @@
             const addArt = e.target.closest('.btn-add-articulo');
             if (addArt) {
                 const { num, nom, hasVariants, variants } = addArt.dataset;
-                currentItemForDetails = { num, nom }; // Guardar datos del artículo
-                const title = document.getElementById('item-details-title'), variantContainer = document.getElementById('variant-container'), variantSelect = document.getElementById('variant-select');
-                document.getElementById('item-qty').value = "1"; // Reset QTY
+                currentItemForDetails = { num, nom }; const title = document.getElementById('item-details-title'), variantContainer = document.getElementById('variant-container'), variantSelect = document.getElementById('variant-select');
+                document.getElementById('item-qty').value = "1";
                 if (hasVariants === 'true' && variants) {
                     title.innerText = `Detalles de: ${nom}`; variantContainer.style.display = 'block';
                     variantSelect.innerHTML = '<option value="">Seleccione Talla...</option>';
                     variants.split(',').forEach(v => { const variant = v.trim(); if (variant) { variantSelect.innerHTML += `<option value="${variant}">${variant}</option>`; } });
-                } else {
-                    title.innerText = `Confirmar Cantidad: ${nom}`; variantContainer.style.display = 'none'; variantSelect.innerHTML = '';
-                }
+                } else { title.innerText = `Confirmar Cantidad: ${nom}`; variantContainer.style.display = 'none'; variantSelect.innerHTML = ''; }
                 openModal('item-details-modal');
             }
             // Clic para Quitar Artículo de Cesta
-            const removeArt = e.target.closest('.btn-remove-articulo');
-            if (removeArt) { const indexToRemove = parseInt(removeArt.dataset.index, 10); if (!isNaN(indexToRemove)) { articulosSeleccionados.splice(indexToRemove, 1); renderCestaArticulos(); } }
+            const removeArt = e.target.closest('.btn-remove-articulo'); if (removeArt) { const indexToRemove = parseInt(removeArt.dataset.index, 10); if (!isNaN(indexToRemove)) { articulosSeleccionados.splice(indexToRemove, 1); renderCestaArticulos(); } }
+            // ======== NUEVOS CLICS PARA BOTONES QTY +/- ========
+            const qtyPlus = e.target.closest('#btn-qty-plus'); if (qtyPlus) { const input = document.getElementById('item-qty'); input.value = parseInt(input.value, 10) + 1; }
+            const qtyMinus = e.target.closest('#btn-qty-minus'); if (qtyMinus) { const input = document.getElementById('item-qty'); const newVal = parseInt(input.value, 10) - 1; if (newVal >= 1) { input.value = newVal; } }
         });
 
         // --- FUNCIONES DE CRUD (EMPLEADOS) ---
@@ -656,7 +567,7 @@
             const hasVariantsCheck = document.getElementById('admin-art-hasVariants'), variantsContainer = document.getElementById('admin-variants-container'), variantsInput = document.getElementById('admin-art-variants');
             if (art.hasVariants) { hasVariantsCheck.checked = true; variantsInput.value = art.variants || ''; variantsContainer.style.display = 'block'; } 
             else { hasVariantsCheck.checked = false; variantsInput.value = ''; variantsContainer.style.display = 'none'; }
-            renderArticuloListsCheckboxes(art.assignedLists); // Renderiza y marca las listas
+            renderArticuloListsCheckboxes(art.assignedLists);
             document.getElementById('art-form-title').innerText = "Editar Artículo";
             document.getElementById('art-submit-icon').innerHTML = iconEditSVG; 
             document.getElementById('btn-cancel-art').classList.remove('hidden'); document.getElementById('admin-art-nom').focus();
@@ -666,7 +577,7 @@
             document.getElementById('admin-art-num').readOnly = false;
             document.getElementById('admin-variants-container').style.display = 'none';
             document.getElementById('admin-art-hasVariants').checked = false;
-            renderArticuloListsCheckboxes(); // Limpia los checkboxes
+            renderArticuloListsCheckboxes();
             document.getElementById('art-form-title').innerText = "Catálogo Artículos";
             document.getElementById('art-submit-icon').innerHTML = iconAddSVG; 
             document.getElementById('btn-cancel-art').classList.add('hidden');
@@ -686,23 +597,19 @@
         document.getElementById('btn-status-pen').onclick = () => setStatus('Pendiente');
         document.getElementById('btn-cancel-emp').onclick = cancelEditEmpleado;
         document.getElementById('btn-cancel-art').onclick = cancelEditArticulo;
-        document.getElementById('admin-art-hasVariants').onchange = (e) => {
-            document.getElementById('admin-variants-container').style.display = e.target.checked ? 'block' : 'none';
-            if (!e.target.checked) { document.getElementById('admin-art-variants').value = ''; }
-        };
+        document.getElementById('admin-art-hasVariants').onchange = (e) => { document.getElementById('admin-variants-container').style.display = e.target.checked ? 'block' : 'none'; if (!e.target.checked) { document.getElementById('admin-art-variants').value = ''; } };
         document.getElementById('reg-list-select').onchange = (e) => { currentRegListId = e.target.value; renderRegistrarListArticles(); };
 
         // --- FORMULARIO DE LOGIN ---
         document.getElementById('form-login').onsubmit = async (e) => { e.preventDefault(); document.getElementById('btn-login-submit').disabled=true; try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal'); e.target.reset(); showToast('Bienvenido'); } catch(err) { showToast('Credenciales incorrectas', 'error'); } finally { document.getElementById('btn-login-submit').disabled=false; } };
         
-        // --- SUBMIT DE REGISTRO (MÚLTIPLE, CON VARIANTES Y CANTIDAD) ---
+        // --- SUBMIT DE REGISTRO ---
         document.getElementById('btn-registrar-submit').onclick = async () => {
             const form = document.getElementById('form-registrar'), numRequi = form['reg-num-requi'].value, empleadoId = form['reg-empleado-id'].value, nombre = form['reg-nombre'].value, fecha = form['reg-fecha'].value;
             if (!nombre) return showToast('Empleado no válido', 'error');
             if (articulosSeleccionados.length === 0) return showToast('No has seleccionado ningún artículo', 'error');
             if (!numRequi) return showToast('Ingresa un # de Requisición', 'error');
-            const btn = document.getElementById('btn-registrar-submit');
-            btn.disabled = true; btn.innerHTML = 'Registrando...';
+            const btn = document.getElementById('btn-registrar-submit'); btn.disabled = true; btn.innerHTML = 'Registrando...';
             try {
                 let promises = [];
                 for (const art of articulosSeleccionados) {
@@ -711,13 +618,12 @@
                     promises.push(addDoc(colReqs, reqData));
                 }
                 await Promise.all(promises);
-                showToast(`${articulosSeleccionados.length} requisicion(es) registradas`);
-                navigateTo('home-screen'); 
+                showToast(`${articulosSeleccionados.length} requisicion(es) registradas`); navigateTo('home-screen'); 
             } catch(err) { console.error(err); showToast('Error al registrar', 'error'); 
             } finally { btn.disabled = false; btn.innerHTML = 'Registrar Requisición(es)'; }
         };
 
-        // --- SUBMIT DE MODAL DE DETALLES (VARIANTES Y CANTIDAD) ---
+        // --- SUBMIT DE MODAL DE DETALLES ---
         document.getElementById('btn-item-details-submit').onclick = () => {
             const qty = parseInt(document.getElementById('item-qty').value, 10);
             const variantSelect = document.getElementById('variant-select'), selectedVariant = variantSelect.value, needsVariant = document.getElementById('variant-container').style.display === 'block';
@@ -732,33 +638,22 @@
         
         // --- FORMULARIO AÑADIR/EDITAR EMPLEADO ---
         document.getElementById('form-add-empleado').onsubmit = async (e) => { 
-            e.preventDefault();
-            const empId = e.target['admin-emp-id'].value, empNombre = e.target['admin-emp-nombre'].value;
-            if (editingEmpId) {
-                try { await updateDoc(doc(colEmps, editingEmpId), { id: empId, nombre: empNombre }); showToast('Empleado actualizado'); cancelEditEmpleado(); } catch(err) { showToast('Error al actualizar', 'error'); }
-            } else {
-                if(empsMap.has(empId)) return showToast('ID duplicado', 'error'); 
-                try { await addDoc(colEmps, {id: empId, nombre: empNombre}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); }
-            }
+            e.preventDefault(); const empId = e.target['admin-emp-id'].value, empNombre = e.target['admin-emp-nombre'].value;
+            if (editingEmpId) { try { await updateDoc(doc(colEmps, editingEmpId), { id: empId, nombre: empNombre }); showToast('Empleado actualizado'); cancelEditEmpleado(); } catch(err) { showToast('Error al actualizar', 'error'); } } 
+            else { if(empsMap.has(empId)) return showToast('ID duplicado', 'error'); try { await addDoc(colEmps, {id: empId, nombre: empNombre}); showToast('Agregado'); e.target.reset(); } catch(err){ showToast('Error', 'error'); } }
         };
         
-        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (CON LISTAS DINÁMICAS) ---
+        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO ---
         document.getElementById('form-add-articulo').onsubmit = async (e) => { 
             e.preventDefault(); 
             const num = e.target['admin-art-num'].value, nom = e.target['admin-art-nom'].value, cat = e.target['admin-art-cat'].value, img = e.target['admin-art-img'].value;
             const hasVariants = e.target['admin-art-hasVariants'].checked, variants = e.target['admin-art-variants'].value.trim();
             if(!cat) return showToast('Debes seleccionar una categoría', 'error');
             if(hasVariants && !variants) return showToast('Debes escribir las variantes separadas por coma', 'error');
-            // NUEVO: Construir array de listas asignadas
-            const assignedLists = [];
-            document.querySelectorAll('#admin-art-lists input[type="checkbox"]:checked').forEach(cb => assignedLists.push(cb.value));
+            const assignedLists = []; document.querySelectorAll('#admin-art-lists input[type="checkbox"]:checked').forEach(cb => assignedLists.push(cb.value));
             const artData = { num, nom, cat, img, hasVariants, variants: hasVariants ? variants : null, assignedLists };
-            if (editingArtId) {
-                try { await updateDoc(doc(colArts, editingArtId), artData); showToast('Artículo actualizado'); cancelEditArticulo(); } catch(err) { showToast('Error al actualizar', 'error'); }
-            } else {
-                if(artsMap.has(num)) return showToast('No. Parte duplicado', 'error'); 
-                try { await addDoc(colArts, artData); showToast('Agregado'); cancelEditArticulo(); } catch(err){ showToast('Error', 'error'); }
-            }
+            if (editingArtId) { try { await updateDoc(doc(colArts, editingArtId), artData); showToast('Artículo actualizado'); cancelEditArticulo(); } catch(err) { showToast('Error al actualizar', 'error'); } } 
+            else { if(artsMap.has(num)) return showToast('No. Parte duplicado', 'error'); try { await addDoc(colArts, artData); showToast('Agregado'); cancelEditArticulo(); } catch(err){ showToast('Error', 'error'); } }
         };
         
         // --- FORMULARIO DE CATEGORÍA ---
@@ -768,7 +663,7 @@
             try { await addDoc(colCats, { name: catName }); showToast('Categoría agregada'); e.target.reset(); } catch (err) { console.error("Error al agregar categoría: ", err); showToast('Error al agregar', 'error'); }
         };
         
-        // --- NUEVO FORMULARIO DE LISTAS ---
+        // --- FORMULARIO DE LISTAS ---
         document.getElementById('form-add-list').onsubmit = async (e) => {
             e.preventDefault(); const listName = e.target['admin-list-name'].value.trim();
             if (!listName) return; if (Array.from(listsMap.values()).some(l => l.name === listName)) { return showToast('Esa lista ya existe', 'error'); }
@@ -781,8 +676,7 @@
             const reader = new FileReader();
             reader.onload = async (evt) => {
                 try {
-                    const wb = XLSX.read(evt.target.result, {type: 'binary'});
-                    const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1});
+                    const wb = XLSX.read(evt.target.result, {type: 'binary'}); const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1});
                     let count = 0;
                     for(let i=0; i<data.length; i++) { if(data[i][0] && data[i][1] && !empsMap.has(data[i][0].toString())) { await addDoc(colEmps, {id: data[i][0].toString(), nombre: data[i][1].toString()}); count++; } }
                     showToast(`Cargados ${count} empleados`);
