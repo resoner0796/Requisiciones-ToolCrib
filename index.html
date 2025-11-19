@@ -690,7 +690,6 @@
         document.getElementById('search-input').oninput = renderReqs;
         document.getElementById('search-catalogo').oninput = renderCatalogo;
         document.getElementById('search-reg-articulo').oninput = renderRegistrarArticulos;
-        document.getElementById('reg-empleado-id').oninput = (e) => { const emp = empsMap.get(e.target.value); document.getElementById('reg-nombre').value = emp ? emp.nombre : ''; };
         document.getElementById('btn-confirm-ok').onclick = () => { if(confirmAction) confirmAction(); closeModal('confirm-modal'); };
         document.getElementById('btn-status-auth').onclick = () => setStatus('Autorizada');
         document.getElementById('btn-status-cob').onclick = () => setStatus('Cobrada');
