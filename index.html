@@ -199,52 +199,73 @@
                 <div id="catalogo-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
             </div>
 
-            <!-- Admin Screen -->
-            <div id="admin-screen" class="screen-content hidden animate-fade-in">
-                <div id="admin-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Tarjeta de Empleados -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                            <h2 id="emp-form-title" class="text-lg font-bold flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
-                            <div class="flex gap-2 w-full sm:w-auto"><input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden"><button onclick="document.getElementById('file-upload-emp').click()" class="flex-1 sm:flex-none px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Cargar Excel</button></div>
-                        </div>
-                        <form id="form-add-empleado" class="flex gap-3 mb-6"><input type="number" id="admin-emp-id" placeholder="ID" required class="w-1/3 rounded-lg"><input type="text" id="admin-emp-nombre" placeholder="Nombre" required class="w-full rounded-lg"><button type="button" id="btn-cancel-emp" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button><button type="submit" class="btn btn-primary flex-shrink-0" title="Guardar"><svg id="emp-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"></svg></button></form>
-                        <div id="admin-list-empleados" class="flex-grow h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
-                    </div>
-                    <!-- Tarjeta de Categorías y Listas -->
-                    <div class="flex flex-col gap-8">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-                            <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>Gestionar Categorías</h2>
-                            <form id="form-add-categoria" class="flex gap-3 mb-6"><input type="text" id="admin-cat-name" placeholder="Nombre de categoría" required class="w-full rounded-lg"><button type="submit" class="btn btn-primary flex-shrink-0" title="Agregar Categoría"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button></form>
-                            <div id="admin-list-categorias" class="flex-grow h-40 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-                            <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.31h5.362c.518 0 .73.684.34 1.002l-4.34 3.161a.562.562 0 0 0-.18.618l2.125 5.111a.563.563 0 0 1-.84.622l-4.34-3.161a.563.563 0 0 0-.65 0l-4.34 3.161a.563.563 0 0 1-.84-.622l2.125-5.111a.563.563 0 0 0-.18-.618l-4.34-3.161a.563.563 0 0 1 .34-1.002h5.362a.563.563 0 0 0 .475-.31l2.125-5.111Z" /></svg>Gestionar Listas Rápidas</h2>
-                            <form id="form-add-list" class="flex gap-3 mb-6"><input type="text" id="admin-list-name" placeholder="Nombre de lista" required class="w-full rounded-lg"><button type="submit" class="btn btn-primary flex-shrink-0" title="Agregar Lista"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button></form>
-                            <div id="admin-list-lists" class="flex-grow h-40 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
-                        </div>
-                    </div>
-                    <!-- Tarjeta de Artículos -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-                        <h2 id="art-form-title" class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
-                        <form id="form-add-articulo" class="flex flex-col gap-3 mb-6">
-                            <div class="flex gap-3"><input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/2 rounded-lg"><input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-1/2 rounded-lg"></div>
-                            <div class="flex gap-3"><select id="admin-art-cat" required class="w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"><option value="">Seleccione Categoría...</option></select></div>
-                            <div class="flex gap-3"><input type="text" id="admin-art-img" placeholder="URL imagen o nombre archivo" class="w-full rounded-lg"></div>
-                            <div class="flex items-center gap-2"><input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500"><label for="admin-art-hasVariants" class="text-sm font-medium text-gray-700">Tiene Variantes (ej. Tallas)</label></div>
-                            <div id="admin-variants-container" class="hidden"><label class="block text-sm font-medium text-gray-700 mb-1">Variantes (separadas por coma)</label><input type="text" id="admin-art-variants" placeholder="Ej: S, M, L, XL" class="w-full rounded-lg"></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas Rápidas:</label><div id="admin-art-lists" class="space-y-2 h-24 overflow-y-auto border rounded-lg p-3 bg-gray-50"></div></div>
-                            <div class="flex gap-3 mt-2">
-                                <button type="button" id="btn-cancel-art" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>
-                                <button type="submit" class="btn btn-primary flex-1" title="Guardar"><svg id="art-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 20 20" fill="currentColor"></svg></button>
-                            </div>
-                        </form>
-                        <div id="admin-list-articulos" class="flex-grow h-80 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
-                    </div>
+           <div id="admin-screen" class="screen-content hidden animate-fade-in">
+    <div id="admin-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-32 h-32 text-primary-600"><path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.035-.84-1.875-1.875-1.875h-.75ZM9.75 8.625c0-1.035.84-1.875 1.875-1.875h.75c1.035 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 0 1-1.875-1.875V8.625ZM3 13.125c0-1.035.84-1.875 1.875-1.875h.75c1.035 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 0 1 3 19.875v-6.75Z" /></svg>
+            </div>
+
+            <h2 class="text-lg font-bold text-gray-900 mb-2 z-10 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-primary-600"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605" /></svg>
+                Tráfico del Catálogo
+            </h2>
+            <div class="text-5xl font-extrabold text-primary-600 mb-1 z-10 tracking-tight" id="stats-total">0</div>
+            <div class="text-sm text-gray-500 mb-6 z-10 font-medium">Visitas Totales</div>
+
+            <div class="w-full text-left border-t border-gray-100 pt-4 z-10">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Top Escaneos QR</h3>
+                    <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">En vivo</span>
+                </div>
+                <div id="stats-list" class="space-y-2 text-sm">
+                    <div class="text-gray-400 italic text-xs text-center py-2">Cargando datos...</div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <h2 id="emp-form-title" class="text-lg font-bold flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
+                <div class="flex gap-2 w-full sm:w-auto"><input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden"><button onclick="document.getElementById('file-upload-emp').click()" class="flex-1 sm:flex-none px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Cargar Excel</button></div>
+            </div>
+            <form id="form-add-empleado" class="flex gap-3 mb-6"><input type="number" id="admin-emp-id" placeholder="ID" required class="w-1/3 rounded-lg"><input type="text" id="admin-emp-nombre" placeholder="Nombre" required class="w-full rounded-lg"><button type="button" id="btn-cancel-emp" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button><button type="submit" class="btn btn-primary flex-shrink-0" title="Guardar"><svg id="emp-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"></svg></button></form>
+            <div id="admin-list-empleados" class="flex-grow h-96 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+        </div>
+
+        <div class="flex flex-col gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+                <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>Gestionar Categorías</h2>
+                <form id="form-add-categoria" class="flex gap-3 mb-6"><input type="text" id="admin-cat-name" placeholder="Nombre de categoría" required class="w-full rounded-lg"><button type="submit" class="btn btn-primary flex-shrink-0" title="Agregar Categoría"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button></form>
+                <div id="admin-list-categorias" class="flex-grow h-40 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+                <h2 class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.31h5.362c.518 0 .73.684.34 1.002l-4.34 3.161a.562.562 0 0 0-.18.618l2.125 5.111a.563.563 0 0 1-.84.622l-4.34-3.161a.563.563 0 0 0-.65 0l-4.34 3.161a.563.563 0 0 1-.84-.622l2.125-5.111a.563.563 0 0 0-.18-.618l-4.34-3.161a.563.563 0 0 1 .34-1.002h5.362a.563.563 0 0 0 .475-.31l2.125-5.111Z" /></svg>Gestionar Listas Rápidas</h2>
+                <form id="form-add-list" class="flex gap-3 mb-6"><input type="text" id="admin-list-name" placeholder="Nombre de lista" required class="w-full rounded-lg"><button type="submit" class="btn btn-primary flex-shrink-0" title="Agregar Lista"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg></button></form>
+                <div id="admin-list-lists" class="flex-grow h-40 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+            <h2 id="art-form-title" class="text-lg font-bold mb-6 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
+            <form id="form-add-articulo" class="flex flex-col gap-3 mb-6">
+                <div class="flex gap-3"><input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/2 rounded-lg"><input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-1/2 rounded-lg"></div>
+                <div class="flex gap-3"><select id="admin-art-cat" required class="w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"><option value="">Seleccione Categoría...</option></select></div>
+                <div class="flex gap-3"><input type="text" id="admin-art-img" placeholder="URL imagen o nombre archivo" class="w-full rounded-lg"></div>
+                <div class="flex items-center gap-2"><input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500"><label for="admin-art-hasVariants" class="text-sm font-medium text-gray-700">Tiene Variantes (ej. Tallas)</label></div>
+                <div id="admin-variants-container" class="hidden"><label class="block text-sm font-medium text-gray-700 mb-1">Variantes (separadas por coma)</label><input type="text" id="admin-art-variants" placeholder="Ej: S, M, L, XL" class="w-full rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas Rápidas:</label><div id="admin-art-lists" class="space-y-2 h-24 overflow-y-auto border rounded-lg p-3 bg-gray-50"></div></div>
+                <div class="flex gap-3 mt-2">
+                    <button type="button" id="btn-cancel-art" class="btn btn-secondary flex-shrink-0 hidden" title="Cancelar Edición"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>
+                    <button type="submit" class="btn btn-primary flex-1" title="Guardar"><svg id="art-submit-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 20 20" fill="currentColor"></svg></button>
+                </div>
+            </form>
+            <div id="admin-list-articulos" class="flex-grow h-80 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+        </div>
+
     </div>
+</div>
 
     <!-- Modales -->
     <div id="login-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -332,8 +353,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
+        import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection, setDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         // --- INICIO DE CONFIGURACIÓN ---
         const app = initializeApp({ apiKey: "AIzaSyDahnSPvBNTYot00JCn5CBjggAYFVGhbjE", authDomain: "panel-logistica-simple.firebaseapp.com", projectId: "panel-logistica-simple", storageBucket: "panel-logistica-simple.firebasestorage.app", messagingSenderId: "528779971851", appId: "1:528779971851:web:29ed933e7c7fd997a4e60e" });
         const auth = getAuth(app); const db = getFirestore(app);
@@ -413,25 +433,97 @@
             if (screenId === 'catalogo-screen') { currentListFilterId = 'Todos'; renderDynamicCategoryUI(); }
         };
 
-        // --- LÓGICA DE FIRESTORE (LISTENERS) ---
+       // --- LÓGICA DE FIRESTORE (LISTENERS) ---
+        
+        // 1. Listener de Autenticación (El Portero)
         onAuthStateChanged(auth, (u) => {
             currentUser = u;
-            document.getElementById('btn-login-icon').classList.toggle('hidden', !!u); document.getElementById('btn-logout').classList.toggle('hidden', !u);
+            
+            // Toggle de botones en el Header
+            document.getElementById('btn-login-icon').classList.toggle('hidden', !!u);
+            document.getElementById('btn-logout').classList.toggle('hidden', !u);
             document.getElementById('btn-admin-home').classList.toggle('hidden', !u);
-            if(u) { document.getElementById('user-email-display').innerText = u.email; } 
-            else { if(!document.getElementById('admin-screen').classList.contains('hidden')) navigateTo('home-screen'); }
+
+            if(u) {
+                document.getElementById('user-email-display').innerText = u.email;
+                
+                // === NUEVO: MONITOR DE TRÁFICO EN TIEMPO REAL (Solo para Admin) ===
+                onSnapshot(doc(db, 'requi_toolcrib', 'stats'), (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        
+                        // A. Actualizar Visitas Totales
+                        const totalEl = document.getElementById('stats-total');
+                        if (totalEl) totalEl.innerText = (data.totalVisits || 0).toLocaleString();
+
+                        // B. Actualizar Lista de Top Escaneos
+                        const listEl = document.getElementById('stats-list');
+                        if (listEl) {
+                            const scans = data.scans || {};
+                            // Convertir objeto a array, ordenar de mayor a menor y tomar el Top 5
+                            const topScans = Object.entries(scans)
+                                .sort(([,a], [,b]) => b - a)
+                                .slice(0, 5);
+
+                            listEl.innerHTML = topScans.length 
+                                ? topScans.map(([cat, count], idx) => `
+                                    <div class="flex justify-between items-center py-2 border-b border-gray-50 last:border-0 hover:bg-gray-50 px-2 rounded transition">
+                                        <div class="flex items-center gap-2 overflow-hidden">
+                                            <span class="text-xs font-bold text-gray-300 w-4">${idx + 1}.</span>
+                                            <span class="text-sm font-medium text-gray-700 truncate">${cat}</span>
+                                        </div>
+                                        <span class="text-xs font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded-full border border-primary-100">${count}</span>
+                                    </div>`).join('')
+                                : '<div class="text-gray-400 text-xs italic text-center py-4">Esperando primeros escaneos...</div>';
+                        }
+                    }
+                });
+                // =================================================================
+
+            } else {
+                // Si cierran sesión y estaban en admin, mandarlos al home
+                if(!document.getElementById('admin-screen').classList.contains('hidden')) navigateTo('home-screen');
+            }
+            
+            // Mostrar/Ocultar columnas de acciones (basura, editar) según login
             document.querySelectorAll('.col-acciones').forEach(e => e.classList.toggle('hidden', !u));
+            
+            // Re-renderizar todo para aplicar permisos visuales
             renderReqs(); renderAdmin(); renderCatalogo();
         });
-        onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); renderReqs(); }, (e) => { if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; });
-        onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); renderAdmin(); });
+
+        // 2. Listeners de Datos (Siempre activos para mantener la app viva)
+        onSnapshot(colReqs, (s) => { 
+            reqsData = []; 
+            s.forEach(d => reqsData.push({id: d.id, ...d.data()})); 
+            renderReqs(); 
+        }, (e) => { 
+            if(e.code==='permission-denied') document.getElementById('tbody-requisiciones').innerHTML='<tr><td colspan="7" class="p-8 text-center text-gray-500">Inicia sesión para ver datos.</td></tr>'; 
+        });
+
+        onSnapshot(colEmps, (s) => { 
+            empsMap.clear(); 
+            s.forEach(d => empsMap.set(d.data().id, {...d.data(), fbId: d.id})); 
+            renderAdmin(); 
+        });
+
         onSnapshot(colArts, (s) => { 
-            artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); 
+            artsMap.clear(); 
+            s.forEach(d => artsMap.set(d.data().num, {...d.data(), fbId: d.id})); 
             renderAdmin(); renderCatalogo(); renderRegistrarArticulos(); renderRegistrarListArticles(); 
         });
-        onSnapshot(colCats, (s) => { catsMap.clear(); s.forEach(d => catsMap.set(d.data().name, { ...d.data(), fbId: d.id })); renderDynamicCategoryUI(); }, (e) => console.error("Error al cargar categorías", e));
-        onSnapshot(colLists, (s) => { listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); renderDynamicCategoryUI(); renderAdminLists(); renderRegistrarListDropdown(); }, (e) => console.error("Error al cargar listas", e));
 
+        onSnapshot(colCats, (s) => { 
+            catsMap.clear(); 
+            s.forEach(d => catsMap.set(d.data().name, { ...d.data(), fbId: d.id })); 
+            renderDynamicCategoryUI(); 
+        }, (e) => console.error("Error al cargar categorías", e));
+
+        onSnapshot(colLists, (s) => { 
+            listsMap.clear(); 
+            s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); 
+            renderDynamicCategoryUI(); renderAdminLists(); renderRegistrarListDropdown(); 
+        }, (e) => console.error("Error al cargar listas", e));
         // --- LÓGICA DE RENDERIZADO ---
         function renderReqs() {
             const term = document.getElementById('search-input').value.toLowerCase();
@@ -1004,32 +1096,54 @@ function renderAdminCategorias() {
             }, 500);
         };
 
-        // D. DETECTOR DE URL (EL RECEPTOR)
-        // Esto revisa si alguien escaneó un QR al abrir la página
-        function checkURLForQR() {
+        // --- LÓGICA DE ESTADÍSTICAS (TRAFICO) ---
+        async function registrarTrafico(categoriaQR = null) {
+            const statsRef = doc(db, 'requi_toolcrib', 'stats'); // Documento único de stats
+            
+            try {
+                // 1. Preparamos los contadores
+                const updates = {
+                    totalVisits: increment(1), // Suma 1 a la visita general
+                    lastVisit: new Date().toISOString() // Guarda la hora
+                };
+
+                // 2. Si viene de un QR, sumamos a esa categoría específica
+                if (categoriaQR) {
+                    // Firestore permite actualizar campos anidados con puntos
+                    // Ej: "scans.TORNILLOS": increment(1)
+                    updates[`scans.${categoriaQR}`] = increment(1);
+                }
+
+                // 3. Mandamos la actualización (setDoc con merge:true crea el doc si no existe)
+                await setDoc(statsRef, updates, { merge: true });
+                console.log("📈 Tráfico registrado exitosamente.");
+            } catch (error) {
+                console.error("Error registrando tráfico (probablemente permisos):", error);
+            }
+        }
+       function checkURLForQR() {
             const params = new URLSearchParams(window.location.search);
             const qrCategory = params.get('categoria');
 
             if (qrCategory) {
                 console.log("🚀 Modo QR activado. Categoría:", qrCategory);
-                
-                // 1. Establecemos la variable GLOBAL de filtro
                 currentCategory = qrCategory;
-                
-                // 2. Forzamos la navegación al catálogo DIRECTO
                 navigateTo('catalogo-screen');
-                
-                // 3. Un pequeño delay para asegurar que los filtros visuales se pinten bien
-                // una vez que Firebase traiga los datos.
+
+                // --- NUEVO: REGISTRAR SCAN DE QR ---
+                registrarTrafico(qrCategory); 
+                // -----------------------------------
+
                 setTimeout(() => {
-                    renderDynamicCategoryUI(); // Refrescar filtros
-                    
-                    // Truco visual: Ocultar el botón de "Regresar" para que parezca app nativa de Kiosco
+                    renderDynamicCategoryUI();
                     const backBtn = document.getElementById('main-back-btn');
                     if(backBtn) backBtn.classList.add('hidden');
-                    
                     showToast(`Mostrando solo: ${qrCategory}`, 'info');
                 }, 800);
+            } else {
+                // --- NUEVO: REGISTRAR VISITA NORMAL (SIN QR) ---
+                registrarTrafico(null);
+                // -----------------------------------------------
             }
         }
 
