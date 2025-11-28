@@ -1358,12 +1358,13 @@ function renderAdminCategorias() {
             }, 500);
         };
 
-        // --- LÓGICA DE ESTADÍSTICAS (TRAFICO DETALLADO V2) ---
+        // --- LÓGICA DE ESTADÍSTICAS (TRAFICO DETALLADO CORREGIDO) ---
         async function registrarTrafico(categoriaQR = null) {
             const statsRef = doc(db, 'requi_toolcrib', 'stats');
-            // CORRECCIÓN: Ruta de 3 segmentos (requi_toolcrib -> data -> traffic_logs)
+            // Asegúrate que esta ruta coincida con la de tus reglas (3 segmentos)
             const logsRef = collection(db, 'requi_toolcrib', 'data', 'traffic_logs'); 
             
+            // AQUÍ DECLARAMOS LA VARIABLE 'ahora'
             const ahora = new Date();
             
             try {
@@ -1383,17 +1384,17 @@ function renderAdminCategorias() {
                 }
                 await updateDoc(statsRef, updates);
 
-                // ACCIÓN 2: Guardar el LOG
+                // ACCIÓN 2: Guardar el LOG (CORREGIDO: Usamos 'ahora' en lugar de 'now')
                 await addDoc(logsRef, {
-                    timestamp: now = new Date(),
-                    fecha: now.toLocaleDateString('es-MX'),
-                    hora: now.toLocaleTimeString('es-MX'),
+                    timestamp: ahora, // <--- CAMBIO AQUÍ
+                    fecha: ahora.toLocaleDateString('es-MX'), // <--- CAMBIO AQUÍ
+                    hora: ahora.toLocaleTimeString('es-MX'),  // <--- CAMBIO AQUÍ
                     tipo: categoriaQR ? 'QR' : 'Directo',
                     categoria: categoriaQR || 'N/A',
                     device: navigator.userAgent
                 });
                 
-                console.log("📈 Log registrado correctamente en 'data/traffic_logs'.");
+                console.log("📈 Log registrado correctamente.");
             } catch (error) {
                 console.error("Error registrando tráfico:", error);
             }
