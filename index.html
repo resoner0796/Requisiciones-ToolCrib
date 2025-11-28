@@ -595,6 +595,7 @@
             renderDynamicCategoryUI(); renderAdminLists(); renderRegistrarListDropdown(); 
         }, (e) => console.error("Error al cargar listas", e));
         // --- LÓGICA DE RENDERIZADO ---
+        // --- RENDERIZADO DEL HISTORIAL (TABLA TUNEADA) ---
         function renderReqs() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const filtered = reqsData.filter(r => (r.nombre||'').toLowerCase().includes(term) || (r.empleadoId||'').toString().includes(term) || (r.articulo||'').toLowerCase().includes(term) || (r.numRequi||'').toLowerCase().includes(term));
@@ -606,36 +607,108 @@
                 const group = reqGroups.get(r.numRequi);
                 group.items.push(r); group.statuses.add(r.status);
             }
+            
             const tbody = document.getElementById('tbody-requisiciones');
-            if (reqGroups.size === 0) { tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-gray-500 italic">Sin resultados.</td></tr>'; return; }
+            
+            if (reqGroups.size === 0) { 
+                tbody.innerHTML = `<tr><td colspan="7" class="p-12 text-center text-gray-400 italic">
+                    <div class="flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Sin resultados en el historial.
+                    </div>
+                </td></tr>`; 
+                return; 
+            }
+
             tbody.innerHTML = Array.from(reqGroups.values()).sort((a,b) => b.fecha.localeCompare(a.fecha)).map(group => {
                 let statusHtml = '';
-                // CORRECCIÓN 1: Si es 1 item, hacerlo clickeable.
+                
+                // Diseño de Badges de Estatus (Más modernos)
+                const getStatusBadge = (status, itemId) => {
+                    const colors = {
+                        'Autorizada': 'bg-green-100 text-green-700 border-green-200',
+                        'Cobrada': 'bg-blue-100 text-blue-700 border-blue-200',
+                        'Pendiente': 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                    };
+                    const css = colors[status] || 'bg-gray-100 text-gray-600 border-gray-200';
+                    // Interactividad solo si hay usuario logueado
+                    const interactive = currentUser ? 'cursor-pointer hover:shadow-sm hover:scale-105 active:scale-95' : '';
+                    
+                    return `<span class="status-badge-modal ${interactive} transition-all inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${css}" data-doc-id="${itemId}">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5 opacity-50"></span>
+                                ${status}
+                            </span>`;
+                };
+
                 if (group.items.length === 1) {
                     const item = group.items[0];
-                    const statusClass = item.status==='Autorizada'?'bg-green-100 text-green-800':item.status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800';
-                    statusHtml = `<span class="status-badge-modal ${currentUser ? 'cursor-pointer hover:scale-105' : ''} transition inline-flex px-3 py-1 text-xs font-semibold rounded-full ${statusClass}" data-doc-id="${item.id}">${item.status}</span>`;
+                    statusHtml = getStatusBadge(item.status, item.id);
                 } else if (group.statuses.size === 1) {
                     const status = group.statuses.values().next().value;
-                    const statusClass = status==='Autorizada'?'bg-green-100 text-green-800':status==='Cobrada'?'bg-blue-100 text-blue-800':'bg-yellow-100 text-yellow-800';
-                    statusHtml = `<span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">${status}</span>`;
+                    statusHtml = getStatusBadge(status, null); // Sin ID específico porque son varios
                 } else {
-                    statusHtml = `<span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Mixto</span>`;
+                    statusHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" /></svg>
+                                    Mixto
+                                  </span>`;
                 }
-                const articuloHtml = group.items.length > 1 ? `<button class="btn-view-req-details btn btn-secondary py-1 px-3 text-sm" data-req-id="${group.numRequi}">Ver ${group.items.length} Artículos</button>` : (group.items[0]?.articulo || 'N/A');
+
+                // Diseño de Artículo (Texto o Botón Ver Detalles)
+                const articuloHtml = group.items.length > 1 
+                    ? `<button class="btn-view-req-details inline-flex items-center gap-1.5 bg-white border border-gray-300 text-gray-700 hover:text-primary-600 hover:border-primary-300 px-3 py-1.5 rounded-lg text-sm font-medium transition shadow-sm" data-req-id="${group.numRequi}">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                         Ver ${group.items.length} Artículos
+                       </button>` 
+                    : `<span class="font-medium text-gray-700 text-sm">${group.items[0]?.articulo || 'N/A'}</span>`;
+
                 const cobroFecha = group.items.length === 1 ? (group.items[0].fechaCobro || '-') : (group.statuses.size === 1 && group.statuses.has('Cobrada') ? 'Múltiple' : '-');
+
                 return `
-                <tr class="hover:bg-gray-50 transition">
-                    <td data-label="# Requi" class="px-6 py-4 font-medium text-primary-900">${group.numRequi}</td>
-                    <td data-label="Fecha" class="px-6 py-4 text-sm text-gray-600">${group.fecha}</td>
-                    <td data-label="Empleado" class="px-6 py-4"><div class="font-medium text-gray-900">${group.empleadoId}</div><div class="text-xs text-gray-500">${group.nombre}</div></td>
-                    <td data-label="Artículo" class="px-6 py-4">${articuloHtml}</td>
-                    <td data-label="Estatus" class="px-6 py-4 text-center">${statusHtml}</td>
-                    <td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">${cobroFecha}</td>
-                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}"><button class="btn-del-req text-gray-400 hover:text-red-600 transition" data-req-id="${group.numRequi}" data-items-count="${group.items.length}" title="Eliminar requisición completa"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button></td>
+                <tr class="hover:bg-gray-50 transition border-b border-gray-100 last:border-0 group">
+                    <td data-label="# Requi" class="px-6 py-4">
+                        <span class="font-mono text-sm font-bold text-primary-700 bg-primary-50 px-2 py-1 rounded border border-primary-100">
+                            ${group.numRequi}
+                        </span>
+                    </td>
+                    
+                    <td data-label="Fecha" class="px-6 py-4 text-sm text-gray-500 font-medium">
+                        ${group.fecha}
+                    </td>
+                    
+                    <td data-label="Empleado" class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-bold mr-3 border border-gray-200">
+                                ${group.nombre.charAt(0)}
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-800 text-sm">${group.nombre}</div>
+                                <div class="text-xs text-gray-400 font-mono">${group.empleadoId}</div>
+                            </div>
+                        </div>
+                    </td>
+                    
+                    <td data-label="Artículo" class="px-6 py-4">
+                        ${articuloHtml}
+                    </td>
+                    
+                    <td data-label="Estatus" class="px-6 py-4 text-center">
+                        ${statusHtml}
+                    </td>
+                    
+                    <td data-label="Cobro" class="px-6 py-4 text-sm text-gray-500">
+                        ${cobroFecha}
+                    </td>
+                    
+                    <td class="px-6 py-4 text-center col-acciones ${currentUser?'':'hidden'}">
+                        <button class="btn-del-req text-gray-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition" 
+                            data-req-id="${group.numRequi}" data-items-count="${group.items.length}" title="Eliminar requisición completa">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                        </button>
+                    </td>
                 </tr>`;
             }).join('');
         }
+        
         function refreshReqDetailsModal(reqId) {
             const groupItems = reqsData.filter(r => r.numRequi === reqId);
             if (groupItems.length > 0) {
@@ -916,40 +989,152 @@ function renderAdminCategorias() {
         // --- RENDERIZADO PANTALLA REGISTRO ---
         function renderRegistrarListArticles() {
             const list = document.getElementById('lista-diarios'); if (!list) return; 
+            
             let articles = Array.from(artsMap.values());
+            
+            // Filtro de lista seleccionada
             if (currentRegListId === 'Todos') { articles = articles.filter(a => a.assignedLists && a.assignedLists.length > 0); } 
             else { articles = articles.filter(a => a.assignedLists && a.assignedLists.includes(currentRegListId)); }
+            
+            // Orden Alfabético
             articles.sort((a,b) => a.nom.localeCompare(b.nom));
-            if (articles.length === 0) { list.innerHTML = `<div class="p-4 text-center text-gray-400 italic">${currentRegListId === 'Todos' ? 'No hay artículos en listas.' : 'No hay artículos en esta lista.'}</div>`; return; }
+            
+            if (articles.length === 0) { 
+                list.innerHTML = `<div class="p-8 text-center text-gray-400 italic flex flex-col items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                    ${currentRegListId === 'Todos' ? 'No hay artículos en listas.' : 'Lista vacía.'}
+                </div>`; 
+                return; 
+            }
+
             list.innerHTML = articles.map(a => {
                 const isAdded = !a.hasVariants && articulosSeleccionados.some(art => art.num === a.num);
-                return `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><div class="font-medium text-gray-800">${a.nom}</div><div class="text-sm text-primary-600 font-medium">${a.num}</div></div><button class="btn-add-articulo btn ${isAdded ? 'btn-secondary' : 'btn-primary'} flex-shrink-0" data-num="${a.num}" data-nom="${a.nom}" data-has-variants="${a.hasVariants || false}" data-variants="${a.variants || ''}" ${isAdded ? 'disabled' : ''}>${isAdded ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" /></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg>'}</button></div>`;
+                
+                // Lógica de Imagen
+                let imgSrc = a.img || PLACEHOLDER_IMG;
+                if (a.img && !a.img.startsWith('http') && !a.img.startsWith('https')) { imgSrc = `./catalogo/${a.img}`; }
+
+                return `
+                <div class="flex items-center p-3 hover:bg-white transition border-b border-gray-100 last:border-0 group">
+                    <div class="h-12 w-12 flex-shrink-0 bg-gray-50 rounded-lg border border-gray-100 overflow-hidden mr-3">
+                        <img src="${imgSrc}" alt="${a.nom}" class="h-full w-full object-contain p-1" onerror="this.src='${PLACEHOLDER_IMG}'">
+                    </div>
+                    
+                    <div class="flex-grow min-w-0 mr-2">
+                        <div class="font-bold text-gray-800 text-sm truncate" title="${a.nom}">${a.nom}</div>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span class="font-mono text-xs font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">${a.num}</span>
+                            ${a.hasVariants ? '<span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded">Tallas</span>' : ''}
+                        </div>
+                    </div>
+
+                    <button class="btn-add-articulo flex-shrink-0 h-9 w-9 flex items-center justify-center rounded-lg transition-all shadow-sm ${isAdded ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border border-gray-200 text-primary-600 hover:bg-primary-50 hover:border-primary-200 hover:scale-105'}" 
+                        data-num="${a.num}" data-nom="${a.nom}" data-has-variants="${a.hasVariants || false}" data-variants="${a.variants || ''}" ${isAdded ? 'disabled' : ''} title="${isAdded ? 'Ya agregado' : 'Agregar a la cesta'}">
+                        ${isAdded 
+                            ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>' 
+                            : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>'}
+                    </button>
+                </div>`;
             }).join('');
         }
+        
         function renderRegistrarArticulos() {
             const list = document.getElementById('lista-reg-articulo'); if (!list) return; 
             const term = document.getElementById('search-reg-articulo').value.toLowerCase();
+            
             let articles = Array.from(artsMap.values());
+            
+            // Filtros
             if (currentRegCategory !== 'Todos') articles = articles.filter(a => a.cat === currentRegCategory);
             if (term) articles = articles.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
-            articles.sort((a,b) => a.num.localeCompare(b.num));
-            list.innerHTML = articles.length ? articles.map(a => {
+            
+            // Orden Alfabético
+            articles.sort((a,b) => a.nom.localeCompare(b.nom));
+            
+            if (articles.length === 0) { 
+                list.innerHTML = `<div class="p-8 text-center text-gray-400 italic flex flex-col items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    No se encontraron artículos.
+                </div>`; 
+                return; 
+            }
+
+            list.innerHTML = articles.map(a => {
                 const isAdded = !a.hasVariants && articulosSeleccionados.some(art => art.num === a.num);
-                return `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><div class="text-xs text-gray-500">${a.cat || 'N/A'}</div><div class="font-medium text-gray-800">${a.nom}</div><div class="text-sm text-primary-600 font-medium">${a.num}</div></div><button class="btn-add-articulo btn ${isAdded ? 'btn-secondary' : 'btn-primary'} flex-shrink-0" data-num="${a.num}" data-nom="${a.nom}" data-has-variants="${a.hasVariants || false}" data-variants="${a.variants || ''}" ${isAdded ? 'disabled' : ''}>${isAdded ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" /></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg>'}</button></div>`;
-            }).join('') : '<div class="p-4 text-center text-gray-400 italic">No se encontraron artículos.</div>';
+                
+                // Lógica de Imagen
+                let imgSrc = a.img || PLACEHOLDER_IMG;
+                if (a.img && !a.img.startsWith('http') && !a.img.startsWith('https')) { imgSrc = `./catalogo/${a.img}`; }
+
+                return `
+                <div class="flex items-center p-3 hover:bg-white transition border-b border-gray-100 last:border-0 group">
+                    <div class="h-12 w-12 flex-shrink-0 bg-gray-50 rounded-lg border border-gray-100 overflow-hidden mr-3">
+                        <img src="${imgSrc}" alt="${a.nom}" class="h-full w-full object-contain p-1" onerror="this.src='${PLACEHOLDER_IMG}'">
+                    </div>
+
+                    <div class="flex-grow min-w-0 mr-2">
+                        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">${a.cat || 'General'}</div>
+                        <div class="font-bold text-gray-800 text-sm truncate" title="${a.nom}">${a.nom}</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="font-mono text-xs font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">${a.num}</span>
+                            ${a.hasVariants ? '<span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded">Tallas</span>' : ''}
+                        </div>
+                    </div>
+
+                    <button class="btn-add-articulo flex-shrink-0 h-9 w-9 flex items-center justify-center rounded-lg transition-all shadow-sm ${isAdded ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border border-gray-200 text-primary-600 hover:bg-primary-50 hover:border-primary-200 hover:scale-105'}" 
+                        data-num="${a.num}" data-nom="${a.nom}" data-has-variants="${a.hasVariants || false}" data-variants="${a.variants || ''}" ${isAdded ? 'disabled' : ''} title="${isAdded ? 'Ya agregado' : 'Agregar a la cesta'}">
+                        ${isAdded 
+                            ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>' 
+                            : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>'}
+                    </button>
+                </div>`;
+            }).join('');
         }
+        
         function renderCestaArticulos() {
             const cesta = document.getElementById('cesta-articulos'), placeholder = document.getElementById('cesta-placeholder'), conteo = document.getElementById('cesta-conteo');
             if (!cesta || !placeholder || !conteo) return; 
+            
             conteo.innerText = articulosSeleccionados.length;
-            if (articulosSeleccionados.length === 0) { cesta.innerHTML = ''; cesta.classList.add('hidden'); placeholder.classList.remove('hidden'); } 
-            else {
+            
+            if (articulosSeleccionados.length === 0) { 
+                cesta.innerHTML = ''; cesta.classList.add('hidden'); placeholder.classList.remove('hidden'); 
+            } else {
                 cesta.classList.remove('hidden'); placeholder.classList.add('hidden'); 
-                cesta.innerHTML = articulosSeleccionados.map((art, index) => `<div class="flex justify-between items-center p-3"><div><div class="font-medium text-gray-800">${art.nom} ${art.variant ? `<span class="font-bold text-gray-900">(${art.variant})</span>` : ''}</div><div class="flex items-center gap-2"><span class="text-sm text-primary-600 font-medium">${art.num}</span><span class="text-sm font-bold text-gray-900">x ${art.qty} pz</span></div></div><button class="btn-remove-articulo text-red-500 hover:text-red-700 p-1" data-index="${index}" title="Quitar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" /></svg></button></div>`).join('');
-            }
-            renderRegistrarArticulos(); renderRegistrarListArticles(); 
-        }
+                
+                cesta.innerHTML = articulosSeleccionados.map((art, index) => {
+                    // Lógica de Imagen (Para mostrarla en la cesta también)
+                    let imgSrc = art.img || PLACEHOLDER_IMG;
+                    if (art.img && !art.img.startsWith('http') && !art.img.startsWith('https')) { imgSrc = `./catalogo/${art.img}`; }
 
+                    return `
+                    <div class="flex justify-between items-center p-3 animate-fade-in hover:bg-gray-50 transition rounded-lg">
+                        <div class="flex items-center overflow-hidden">
+                            <div class="h-10 w-10 flex-shrink-0 bg-white rounded border border-gray-200 overflow-hidden mr-3">
+                                <img src="${imgSrc}" alt="${art.nom}" class="h-full w-full object-contain p-0.5" onerror="this.src='${PLACEHOLDER_IMG}'">
+                            </div>
+                            
+                            <div class="min-w-0">
+                                <div class="font-bold text-gray-800 text-sm truncate pr-2 leading-tight">${art.nom}</div>
+                                <div class="flex items-center gap-2 text-xs mt-0.5">
+                                    <span class="font-mono font-medium text-gray-500">${art.num}</span>
+                                    ${art.variant ? `<span class="bg-blue-100 text-blue-700 px-1.5 rounded font-bold">${art.variant}</span>` : ''}
+                                    <span class="bg-green-100 text-green-700 px-1.5 rounded font-bold">x${art.qty}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-remove-articulo h-8 w-8 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition ml-2 flex-shrink-0" 
+                            data-index="${index}" title="Quitar de la cesta">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>`;
+                }).join('');
+            }
+            // Importante: Volver a renderizar las listas para actualizar los botones de "Agregado"
+            renderRegistrarArticulos(); 
+            renderRegistrarListArticles(); 
+        }
         // --- LÓGICA DE CLICS (Event Delegation) ---
         document.addEventListener('click', e => {
             const navBtn = e.target.closest('[data-navigate-to]'); if (navBtn) navigateTo(navBtn.dataset.navigateTo);
