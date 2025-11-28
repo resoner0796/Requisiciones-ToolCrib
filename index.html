@@ -1131,29 +1131,34 @@ function renderAdminCategorias() {
         };
 
         // --- LÓGICA DE ESTADÍSTICAS (TRAFICO) ---
-      // --- LÓGICA DE ESTADÍSTICAS (TRAFICO MEJORADO) ---
+      // --- LÓGICA DE ESTADÍSTICAS (TRAFICO CORREGIDO) ---
         async function registrarTrafico(categoriaQR = null) {
             const statsRef = doc(db, 'requi_toolcrib', 'stats');
             
             try {
-                // 1. Siempre sumamos 1 a la visita total
+                // PASO 1: Asegurar que el documento 'stats' exista
+                // Si no existe, lo crea vacío. Si existe, no hace nada malo.
+                await setDoc(statsRef, { lastUpdateCheck: new Date().toISOString() }, { merge: true });
+
+                // PASO 2: Preparar los contadores
                 const updates = {
                     totalVisits: increment(1),
                     lastVisit: new Date().toISOString()
                 };
 
-                // 2. Diferenciar fuente de tráfico
                 if (categoriaQR) {
-                    // SI ES QR:
-                    updates[`scans.${categoriaQR}`] = increment(1); // +1 a la categoría específica
-                    updates['sources.qr'] = increment(1);           // +1 al contador general de QRs
+                    // AL USAR updateDoc ABAJO, ESTOS PUNTOS (.) SE VUELVEN CARPETAS
+                    // scans.TORNILLOS crea el mapa 'scans' y mete 'TORNILLOS' dentro
+                    updates[`scans.${categoriaQR}`] = increment(1); 
+                    updates['sources.qr'] = increment(1);           
                 } else {
-                    // SI ES DIRECTO (Sin QR):
-                    updates['sources.direct'] = increment(1);       // +1 al contador de visitas normales
+                    updates['sources.direct'] = increment(1);       
                 }
 
-                await setDoc(statsRef, updates, { merge: true });
-                console.log("📈 Tráfico registrado:", categoriaQR ? "QR" : "Directo");
+                // PASO 3: Actualizar (Aquí ocurre la magia de los puntos)
+                await updateDoc(statsRef, updates);
+                
+                console.log("📈 Tráfico registrado correctamente:", categoriaQR ? "QR ("+categoriaQR+")" : "Directo");
             } catch (error) {
                 console.error("Error registrando tráfico:", error);
             }
