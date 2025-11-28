@@ -758,9 +758,9 @@
                 return; 
             }
 
-            // --- VISTA DE GALERÍA (GRID) MAMALONA ---
+            // --- VISTA DE GALERÍA (GRID) MAMALONA V3 ---
             if (catalogoViewMode === 'grid') {
-                grid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'; // Gap más amplio para que respiren
+                grid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6';
                 grid.innerHTML = articles.map(a => {
                     
                     // Lógica de ruta de imagen
@@ -776,25 +776,22 @@
                             <img src="${imgSrc}" alt="${a.nom}" 
                                  class="object-contain w-full h-full p-6 transition-transform duration-500 group-hover:scale-110" 
                                  onerror="this.src='${PLACEHOLDER_IMG}'">
-                            
-                            <button class="btn-copy-part absolute top-3 right-3 p-2 bg-white/90 backdrop-blur rounded-xl text-gray-400 hover:text-primary-600 shadow-sm border border-gray-100 transition active:scale-90" 
-                                data-num="${a.num}" title="Copiar Número">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" /></svg>
-                            </button>
                         </div>
 
                         <div class="p-5 flex flex-col flex-grow">
                             
-                            <div class="flex justify-between items-start mb-2">
+                            <div class="mb-2">
                                 <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">
                                     ${a.cat || 'GENERAL'}
                                 </span>
                             </div>
 
                             <div class="mb-3">
-                                <span class="inline-block font-mono text-base font-black text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 select-all tracking-tight">
-                                    ${a.num}
-                                </span>
+                                <button class="btn-copy-part group/btn w-full flex items-center justify-center gap-2 font-mono text-base font-black text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-primary-800 hover:border-primary-300 px-3 py-2 rounded-xl border border-slate-200 transition-all active:scale-95" 
+                                        data-num="${a.num}" title="Clic para copiar">
+                                    <span class="tracking-tight">${a.num}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-opacity text-primary-600 translate-y-[1px]"><path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" /><path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a3 3 0 00-.879-2.121l-3.12-3.122A3 3 0 006.879 6H4.5z" /></svg>
+                                </button>
                             </div>
 
                             <h3 class="text-sm font-medium text-gray-600 leading-relaxed flex-grow">
@@ -811,7 +808,7 @@
                 }).join('');
             
             } else {
-                // --- VISTA DE LISTA (LIST) LIMPIA ---
+                // --- VISTA DE LISTA (LIST) ACTUALIZADA ---
                 grid.className = 'flex flex-col gap-3';
                 grid.innerHTML = articles.map(a => {
                     return `
@@ -822,16 +819,15 @@
                                 <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider border border-gray-200 px-1.5 py-0.5 rounded">${a.cat || 'GENERAL'}</span>
                                 ${a.hasVariants ? `<span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded">VARIOS</span>` : ''}
                             </div>
-                            <div class="text-gray-800 font-medium">${a.nom}</div>
+                            <div class="text-gray-800 font-medium leading-snug">${a.nom}</div>
                         </div>
                         
-                        <div class="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 border-gray-50 pt-3 sm:pt-0 mt-2 sm:mt-0 min-w-[200px]">
-                            <span class="font-mono text-sm font-black text-slate-700 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 select-all">
-                                ${a.num}
-                            </span>
-                            <button class="btn-copy-part btn btn-secondary flex-shrink-0 p-2 text-gray-400 hover:text-primary-600" data-num="${a.num}" title="Copiar">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" /></svg>
-                            </button>
+                        <div class="mt-2 sm:mt-0 min-w-[180px]">
+                             <button class="btn-copy-part group/btn w-full flex items-center justify-center gap-2 font-mono text-sm font-black text-slate-700 bg-slate-50 hover:bg-slate-100 hover:text-primary-800 hover:border-primary-300 px-3 py-2 rounded-lg border border-slate-200 transition-all active:scale-95" 
+                                        data-num="${a.num}" title="Clic para copiar">
+                                    <span class="tracking-tight">${a.num}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-opacity text-primary-600 translate-y-[1px]"><path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" /><path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a3 3 0 00-.879-2.121l-3.12-3.122A3 3 0 006.879 6H4.5z" /></svg>
+                                </button>
                         </div>
                     </div>`;
                 }).join('');
