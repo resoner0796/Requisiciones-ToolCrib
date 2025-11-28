@@ -1011,22 +1011,25 @@ function renderAdminCategorias() {
             const qrCategory = params.get('categoria');
 
             if (qrCategory) {
-                console.log("🚀 Modo QR activado para:", qrCategory);
+                console.log("🚀 Modo QR activado. Categoría:", qrCategory);
                 
-                // 1. Navegar directo al catálogo
-                navigateTo('catalogo-screen');
-                
-                // 2. Establecer el filtro global
+                // 1. Establecemos la variable GLOBAL de filtro
                 currentCategory = qrCategory;
                 
-                // 3. Forzar actualización de UI (Un pequeño delay para asegurar que carguen las categorías de Firebase)
+                // 2. Forzamos la navegación al catálogo DIRECTO
+                navigateTo('catalogo-screen');
+                
+                // 3. Un pequeño delay para asegurar que los filtros visuales se pinten bien
+                // una vez que Firebase traiga los datos.
                 setTimeout(() => {
-                    renderDynamicCategoryUI();
-                    showToast(`Filtrado por: ${qrCategory}`, 'info');
+                    renderDynamicCategoryUI(); // Refrescar filtros
                     
-                    // Opcional: Ocultar botón de regresar para que se sientan en una "App de Kiosco"
-                    document.getElementById('main-back-btn').classList.add('hidden');
-                }, 1000);
+                    // Truco visual: Ocultar el botón de "Regresar" para que parezca app nativa de Kiosco
+                    const backBtn = document.getElementById('main-back-btn');
+                    if(backBtn) backBtn.classList.add('hidden');
+                    
+                    showToast(`Mostrando solo: ${qrCategory}`, 'info');
+                }, 800);
             }
         }
 
@@ -1040,12 +1043,24 @@ function renderAdminCategorias() {
             navigateTo('home-screen');
         }
         // --- INICIALIZACIÓN DE LA APP ---
+        // --- INICIALIZACIÓN DE LA APP ---
         function setInitialIcons() {
             document.getElementById('emp-submit-icon').innerHTML = iconAddSVG;
             document.getElementById('art-submit-icon').innerHTML = iconAddSVG;
         }
+        
+        // 1. Configuramos íconos iniciales
         setInitialIcons();
-        navigateTo('home-screen');
+
+        // 2. LOGICA MAESTRA DE ARRANQUE
+        const paramsInit = new URLSearchParams(window.location.search);
+        if (paramsInit.get('categoria')) {
+            // A) SI HAY QR: Ejecutamos la función del QR y NO vamos al home
+            checkURLForQR();
+        } else {
+            // B) SI NO HAY QR: Comportamiento normal (ir al Home)
+            navigateTo('home-screen');
+        }
     </script>
 </body>
 </html>
