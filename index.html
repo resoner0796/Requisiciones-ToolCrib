@@ -1097,84 +1097,82 @@ function renderAdminCategorias() {
         };
 
         // --- LÓGICA DE ESTADÍSTICAS (TRAFICO) ---
+      // --- LÓGICA DE ESTADÍSTICAS (TRAFICO MEJORADO) ---
         async function registrarTrafico(categoriaQR = null) {
-            const statsRef = doc(db, 'requi_toolcrib', 'stats'); // Documento único de stats
+            const statsRef = doc(db, 'requi_toolcrib', 'stats');
             
             try {
-                // 1. Preparamos los contadores
+                // 1. Siempre sumamos 1 a la visita total
                 const updates = {
-                    totalVisits: increment(1), // Suma 1 a la visita general
-                    lastVisit: new Date().toISOString() // Guarda la hora
+                    totalVisits: increment(1),
+                    lastVisit: new Date().toISOString()
                 };
 
-                // 2. Si viene de un QR, sumamos a esa categoría específica
+                // 2. Diferenciar fuente de tráfico
                 if (categoriaQR) {
-                    // Firestore permite actualizar campos anidados con puntos
-                    // Ej: "scans.TORNILLOS": increment(1)
-                    updates[`scans.${categoriaQR}`] = increment(1);
+                    // SI ES QR:
+                    updates[`scans.${categoriaQR}`] = increment(1); // +1 a la categoría específica
+                    updates['sources.qr'] = increment(1);           // +1 al contador general de QRs
+                } else {
+                    // SI ES DIRECTO (Sin QR):
+                    updates['sources.direct'] = increment(1);       // +1 al contador de visitas normales
                 }
 
-                // 3. Mandamos la actualización (setDoc con merge:true crea el doc si no existe)
                 await setDoc(statsRef, updates, { merge: true });
-                console.log("📈 Tráfico registrado exitosamente.");
+                console.log("📈 Tráfico registrado:", categoriaQR ? "QR" : "Directo");
             } catch (error) {
-                console.error("Error registrando tráfico (probablemente permisos):", error);
+                console.error("Error registrando tráfico:", error);
             }
         }
+        
        function checkURLForQR() {
             const params = new URLSearchParams(window.location.search);
             const qrCategory = params.get('categoria');
 
             if (qrCategory) {
+                // CASO A: Vienen de un QR
                 console.log("🚀 Modo QR activado. Categoría:", qrCategory);
+                
+                // 1. Filtramos
                 currentCategory = qrCategory;
+                
+                // 2. Vamos directo al catálogo
                 navigateTo('catalogo-screen');
 
-                // --- NUEVO: REGISTRAR SCAN DE QR ---
+                // 3. Registramos como "QR Scan"
                 registrarTrafico(qrCategory); 
-                // -----------------------------------
-
+                
+                // 4. Ajustes visuales (Toast y ocultar botón de regresar)
                 setTimeout(() => {
                     renderDynamicCategoryUI();
                     const backBtn = document.getElementById('main-back-btn');
                     if(backBtn) backBtn.classList.add('hidden');
-                    showToast(`Mostrando solo: ${qrCategory}`, 'info');
+                    showToast(`Categoría filtrada: ${qrCategory}`, 'info');
                 }, 800);
+
             } else {
-                // --- NUEVO: REGISTRAR VISITA NORMAL (SIN QR) ---
+                // CASO B: Visita Normal (Teclearon la página o refrescaron)
+                console.log("🏠 Visita Normal detectada");
+                
+                // 1. Registramos como "Directo"
                 registrarTrafico(null);
-                // -----------------------------------------------
+                
+                // 2. Vamos al Home
+                navigateTo('home-screen');
             }
         }
 
-        // --- FINALIZACIÓN ---
-        setInitialIcons();
-        checkURLForQR(); // <--- AGREGAMOS ESTA LLAMADA AQUÍ
-        // La navegación inicial a home-screen se hace dentro de checkURLForQR si NO hay params,
-        // o modificamos la lógica de abajo:
-        
-        if (!new URLSearchParams(window.location.search).get('categoria')) {
-            navigateTo('home-screen');
-        }
-        // --- INICIALIZACIÓN DE LA APP ---
         // --- INICIALIZACIÓN DE LA APP ---
         function setInitialIcons() {
             document.getElementById('emp-submit-icon').innerHTML = iconAddSVG;
             document.getElementById('art-submit-icon').innerHTML = iconAddSVG;
         }
         
-        // 1. Configuramos íconos iniciales
+        // 1. Cargamos íconos
         setInitialIcons();
 
-        // 2. LOGICA MAESTRA DE ARRANQUE
-        const paramsInit = new URLSearchParams(window.location.search);
-        if (paramsInit.get('categoria')) {
-            // A) SI HAY QR: Ejecutamos la función del QR y NO vamos al home
-            checkURLForQR();
-        } else {
-            // B) SI NO HAY QR: Comportamiento normal (ir al Home)
-            navigateTo('home-screen');
-        }
+        // 2. EJECUTAMOS EL ARRANQUE (Una sola vez)
+        checkURLForQR();
     </script>
 </body>
 </html>
