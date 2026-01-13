@@ -731,69 +731,76 @@
             }
         }
         function renderAdmin() {
-            // 1. Render Empleados (Igual que antes)
-            document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a,b)=>a.id-b.id).map(e => `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><div class="flex gap-3"><button class="btn-edit-emp text-gray-400 hover:text-blue-600 transition" data-id="${e.fbId}" data-emp-id="${e.id}" data-n="${e.nombre}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg></button><button class="btn-del-emp text-gray-400 hover:text-red-600 transition" data-id="${e.fbId}" data-n="${e.nombre}" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
+    // 1. Render Empleados (Igual que antes)
+    document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a, b) => a.id - b.id).map(e => `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><div class="flex gap-3"><button class="btn-edit-emp text-gray-400 hover:text-blue-600 transition" data-id="${e.fbId}" data-emp-id="${e.id}" data-n="${e.nombre}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg></button><button class="btn-del-emp text-gray-400 hover:text-red-600 transition" data-id="${e.fbId}" data-n="${e.nombre}" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
 
-            // 2. Render Artículos (CORREGIDO: Agrupación Flexible)
-            const listContainer = document.getElementById('admin-list-articulos');
-            const term = document.getElementById('admin-art-search').value.toLowerCase();
-            
-            // Obtener todos los artículos y filtrarlos
-            let articles = Array.from(artsMap.values());
-            if (term) {
-                articles = articles.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
-            }
+    // 2. Render Artículos (CORREGIDO: Agrupación Flexible + PRECIO)
+    const listContainer = document.getElementById('admin-list-articulos');
+    const term = document.getElementById('admin-art-search').value.toLowerCase();
 
-            if (articles.length === 0) {
-                listContainer.innerHTML = '<div class="p-8 text-center text-gray-400 italic">No se encontraron artículos.</div>';
-                return;
-            }
+    // Obtener todos los artículos y filtrarlos
+    let articles = Array.from(artsMap.values());
+    if (term) {
+        articles = articles.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
+    }
 
-            // Agrupar por categoría (LÓGICA NUEVA)
-            const grouped = {};
-            
-            // Primero aseguramos que existan grupos para las categorías oficiales (para mantener orden)
-            const officialCats = Array.from(catsMap.keys()).sort();
-            officialCats.forEach(cat => grouped[cat] = []);
+    if (articles.length === 0) {
+        listContainer.innerHTML = '<div class="p-8 text-center text-gray-400 italic">No se encontraron artículos.</div>';
+        return;
+    }
 
-            // Repartir artículos
-            articles.forEach(a => {
-                // AQUÍ EL CAMBIO: Usamos la categoría del artículo tal cual. 
-                // Si está vacío, va a 'Sin Categoría'.
-                const catKey = a.cat || 'Sin Categoría';
-                
-                if (!grouped[catKey]) grouped[catKey] = []; // Si es una categoría "huérfana", creamos el grupo
-                grouped[catKey].push(a);
-            });
+    // Agrupar por categoría (LÓGICA NUEVA)
+    const grouped = {};
 
-            // Generar HTML recorriendo TODOS los grupos creados
-            let html = '';
-            // Obtenemos todas las claves de grupos que tienen algo o son oficiales, ordenadas alfabéticamente
-            const allGroupKeys = Object.keys(grouped).sort();
+    // Primero aseguramos que existan grupos para las categorías oficiales (para mantener orden)
+    const officialCats = Array.from(catsMap.keys()).sort();
+    officialCats.forEach(cat => grouped[cat] = []);
 
-            allGroupKeys.forEach(catName => {
-                const items = grouped[catName];
-                // Solo mostramos si tiene items
-                if (items && items.length > 0) {
-                    items.sort((a,b) => a.nom.localeCompare(b.nom));
+    // Repartir artículos
+    articles.forEach(a => {
+        // AQUÍ EL CAMBIO: Usamos la categoría del artículo tal cual. 
+        // Si está vacío, va a 'Sin Categoría'.
+        const catKey = a.cat || 'Sin Categoría';
 
-                    // Header de la Categoría
-                    html += `<div class="sticky top-0 bg-gray-100 px-4 py-2 font-bold text-gray-700 text-sm border-y border-gray-200 z-10 flex justify-between items-center shadow-sm">
+        if (!grouped[catKey]) grouped[catKey] = []; // Si es una categoría "huérfana", creamos el grupo
+        grouped[catKey].push(a);
+    });
+
+    // Generar HTML recorriendo TODOS los grupos creados
+    let html = '';
+    // Obtenemos todas las claves de grupos que tienen algo o son oficiales, ordenadas alfabéticamente
+    const allGroupKeys = Object.keys(grouped).sort();
+
+    allGroupKeys.forEach(catName => {
+        const items = grouped[catName];
+        // Solo mostramos si tiene items
+        if (items && items.length > 0) {
+            items.sort((a, b) => a.nom.localeCompare(b.nom));
+
+            // Header de la Categoría
+            html += `<div class="sticky top-0 bg-gray-100 px-4 py-2 font-bold text-gray-700 text-sm border-y border-gray-200 z-10 flex justify-between items-center shadow-sm">
                                 <span>${catName}</span>
                                 <span class="bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full text-xs font-bold">${items.length}</span>
                              </div>`;
-                    
-                    // Lista de items
-                    html += items.map(a => {
-                        const listNames = (a.assignedLists || []).map(listId => listsMap.get(listId)?.name).filter(Boolean).join(', ');
-                        return `
+
+            // Lista de items
+            html += items.map(a => {
+                const listNames = (a.assignedLists || []).map(listId => listsMap.get(listId)?.name).filter(Boolean).join(', ');
+                
+                // Formateamos el precio. Si no existe, es 0.
+                const precioDisplay = (Number(a.precio) || 0).toFixed(2);
+
+                return `
                         <div class="flex justify-between items-center p-3 hover:bg-primary-50 transition border-b border-gray-50 last:border-0 group bg-white">
                             <div class="flex-grow">
                                 <div class="flex items-center gap-2">
                                     <span class="font-mono text-xs sm:text-sm bg-white border border-gray-200 text-primary-700 px-2 py-0.5 rounded font-bold">${a.num}</span>
                                     <span class="font-medium text-gray-800 text-sm sm:text-base">${a.nom}</span>
                                 </div>
-                                <div class="mt-1 flex gap-2">
+                                
+                                <div class="mt-1 flex flex-wrap gap-2 items-center">
+                                    <span class="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-100">$${precioDisplay}</span>
+                                    
                                     ${a.hasVariants ? `<span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100">Variantes: ${a.variants}</span>` : ''}
                                     ${listNames ? `<span class="text-xs bg-yellow-50 text-yellow-600 px-2 py-0.5 rounded border border-yellow-100" title="${listNames}">En listas</span>` : ''}
                                 </div>
@@ -809,12 +816,12 @@
                                 </button>
                             </div>
                         </div>`;
-                    }).join('');
-                }
-            });
-
-            listContainer.innerHTML = html;
+            }).join('');
         }
+    });
+
+    listContainer.innerHTML = html;
+}
         
        function renderCatalogo() {
             const term = document.getElementById('search-catalogo').value.toLowerCase();
@@ -1229,72 +1236,77 @@ function renderAdminCategorias() {
         });
 
         // --- FUNCIONES DE CRUD (ARTÍCULOS) ---
-        function startEditArticulo(art) {
-            editingArtId = art.fbId; 
-            
-            // Llenar campos
-            document.getElementById('admin-art-num').value = art.num;
-            document.getElementById('admin-art-original-num').value = art.num; // Guardamos original para comparar
-            
-            // AHORA SÍ PERMITIMOS EDITAR EL NO. PARTE
-            document.getElementById('admin-art-num').readOnly = false; 
-            
-            document.getElementById('admin-art-nom').value = art.nom;
-            document.getElementById('admin-art-cat').value = art.cat || ''; 
-            document.getElementById('admin-art-img').value = art.img || '';
-            
-            const hasVariantsCheck = document.getElementById('admin-art-hasVariants');
-            const variantsContainer = document.getElementById('admin-variants-container');
-            const variantsInput = document.getElementById('admin-art-variants');
-            
-            if (art.hasVariants) { 
-                hasVariantsCheck.checked = true; 
-                variantsInput.value = art.variants || ''; 
-                variantsContainer.style.display = 'block'; 
-            } else { 
-                hasVariantsCheck.checked = false; 
-                variantsInput.value = ''; 
-                variantsContainer.style.display = 'none'; 
-            }
-            
-            renderArticuloListsCheckboxes(art.assignedLists);
-            
-            // Cambiar título y botón visualmente
-            const title = document.getElementById('art-form-title');
-            title.innerText = "Editar Artículo";
-            title.classList.add('text-primary-600'); 
-            
-            const submitBtn = document.querySelector('#form-add-articulo button[type="submit"]');
-            submitBtn.innerHTML = `${iconEditSVG} Actualizar`;
-            submitBtn.title = "Guardar Cambios";
-            
-            document.getElementById('btn-cancel-art').classList.remove('hidden'); 
-            
-            // Scroll hacia el formulario y enfocar
-            document.getElementById('form-add-articulo').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            document.getElementById('admin-art-num').focus();
-        }
+       // --- FUNCIONES DE CRUD (ARTÍCULOS) ---
+function startEditArticulo(art) {
+    editingArtId = art.fbId; 
+    
+    // Llenar campos existentes
+    document.getElementById('admin-art-num').value = art.num;
+    document.getElementById('admin-art-original-num').value = art.num;
+    document.getElementById('admin-art-num').readOnly = false; 
+    document.getElementById('admin-art-nom').value = art.nom;
+    document.getElementById('admin-art-cat').value = art.cat || ''; 
+    
+    // --- NUEVO: Cargar Precio ---
+    document.getElementById('admin-art-precio').value = art.precio || ''; 
+    // ----------------------------
 
-        function cancelEditArticulo() {
-            editingArtId = null; 
-            document.getElementById('form-add-articulo').reset();
-            document.getElementById('admin-art-original-num').value = ""; // Limpiar original
-            
-            document.getElementById('admin-art-num').readOnly = false;
-            document.getElementById('admin-variants-container').style.display = 'none';
-            document.getElementById('admin-art-hasVariants').checked = false;
-            renderArticuloListsCheckboxes();
-            
-            const title = document.getElementById('art-form-title');
-            title.innerText = "Catálogo Artículos";
-            title.classList.remove('text-primary-600');
-            
-            const submitBtn = document.querySelector('#form-add-articulo button[type="submit"]');
-            submitBtn.innerHTML = `${iconAddSVG}`; // Regresar al ícono de +
-            submitBtn.title = "Guardar";
-            
-            document.getElementById('btn-cancel-art').classList.add('hidden');
-        }
+    document.getElementById('admin-art-img').value = art.img || '';
+    
+    const hasVariantsCheck = document.getElementById('admin-art-hasVariants');
+    const variantsContainer = document.getElementById('admin-variants-container');
+    const variantsInput = document.getElementById('admin-art-variants');
+    
+    if (art.hasVariants) { 
+        hasVariantsCheck.checked = true; 
+        variantsInput.value = art.variants || ''; 
+        variantsContainer.style.display = 'block'; 
+    } else { 
+        hasVariantsCheck.checked = false; 
+        variantsInput.value = ''; 
+        variantsContainer.style.display = 'none'; 
+    }
+    
+    renderArticuloListsCheckboxes(art.assignedLists);
+    
+    // Cambios visuales
+    const title = document.getElementById('art-form-title');
+    title.innerText = "Editar Artículo";
+    title.classList.add('text-primary-600'); 
+    
+    const submitBtn = document.querySelector('#form-add-articulo button[type="submit"]');
+    submitBtn.innerHTML = `${iconEditSVG} Actualizar`;
+    submitBtn.title = "Guardar Cambios";
+    
+    document.getElementById('btn-cancel-art').classList.remove('hidden'); 
+    document.getElementById('form-add-articulo').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('admin-art-num').focus();
+}
+
+function cancelEditArticulo() {
+    editingArtId = null; 
+    document.getElementById('form-add-articulo').reset();
+    document.getElementById('admin-art-original-num').value = ""; 
+    
+    // --- NUEVO: Asegurar que el precio se limpie visualmente (aunque el reset lo hace, reforzamos) ---
+    document.getElementById('admin-art-precio').value = "";
+    // ------------------------------------------------------------------------------------------------
+
+    document.getElementById('admin-art-num').readOnly = false;
+    document.getElementById('admin-variants-container').style.display = 'none';
+    document.getElementById('admin-art-hasVariants').checked = false;
+    renderArticuloListsCheckboxes();
+    
+    const title = document.getElementById('art-form-title');
+    title.innerText = "Catálogo Artículos";
+    title.classList.remove('text-primary-600');
+    
+    const submitBtn = document.querySelector('#form-add-articulo button[type="submit"]');
+    submitBtn.innerHTML = `${iconAddSVG}`; 
+    submitBtn.title = "Guardar";
+    
+    document.getElementById('btn-cancel-art').classList.add('hidden');
+}
 
         // --- LISTENERS DE EVENTOS DE FORMULARIO Y OTROS ---
         document.getElementById('main-back-btn').onclick = () => navigateTo('home-screen');
@@ -1422,58 +1434,58 @@ function renderAdminCategorias() {
         };
         
         // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (ACTUALIZADO) ---
-        document.getElementById('form-add-articulo').onsubmit = async (e) => { 
-            e.preventDefault(); 
-            const num = e.target['admin-art-num'].value.trim();
-            const originalNum = document.getElementById('admin-art-original-num').value; // Valor original para comparar
-            const nom = e.target['admin-art-nom'].value.trim();
-            const cat = e.target['admin-art-cat'].value;
-            const img = e.target['admin-art-img'].value.trim();
-            const hasVariants = e.target['admin-art-hasVariants'].checked;
-            const variants = e.target['admin-art-variants'].value.trim();
+        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (ACTUALIZADO CON PRECIO) ---
+document.getElementById('form-add-articulo').onsubmit = async (e) => { 
+    e.preventDefault(); 
+    const num = e.target['admin-art-num'].value.trim();
+    const originalNum = document.getElementById('admin-art-original-num').value;
+    const nom = e.target['admin-art-nom'].value.trim();
+    const cat = e.target['admin-art-cat'].value;
+    
+    // --- NUEVO: Capturar Precio ---
+    const precioRaw = e.target['admin-art-precio'].value;
+    const precio = precioRaw ? parseFloat(precioRaw) : 0;
+    // ------------------------------
 
-            if(!cat) return showToast('Debes seleccionar una categoría', 'error');
-            if(hasVariants && !variants) return showToast('Debes escribir las variantes separadas por coma', 'error');
-            
-            const assignedLists = []; 
-            document.querySelectorAll('#admin-art-lists input[type="checkbox"]:checked').forEach(cb => assignedLists.push(cb.value));
-            
-            const artData = { num, nom, cat, img, hasVariants, variants: hasVariants ? variants : null, assignedLists };
-            
-            if (editingArtId) { 
-                // MODO EDICIÓN
-                // Verificar si cambió el Número de Parte
-                if (num !== originalNum) {
-                    // Si cambió, verificar que el NUEVO no exista ya
-                    if (artsMap.has(num)) {
-                        return showToast('El nuevo No. Parte ya existe en otro artículo', 'error');
-                    }
-                }
+    const img = e.target['admin-art-img'].value.trim();
+    const hasVariants = e.target['admin-art-hasVariants'].checked;
+    const variants = e.target['admin-art-variants'].value.trim();
 
-                try { 
-                    await updateDoc(doc(colArts, editingArtId), artData); 
-                    showToast('Artículo actualizado correctamente'); 
-                    cancelEditArticulo(); 
-                } catch(err) { 
-                    console.error(err);
-                    showToast('Error al actualizar', 'error'); 
-                } 
-            } else { 
-                // MODO CREACIÓN
-                if(artsMap.has(num)) return showToast('Ese No. Parte ya existe', 'error'); 
-                
-                try { 
-                    await addDoc(colArts, artData); 
-                    showToast('Artículo agregado'); 
-                    // No limpiamos todo, solo el num y nombre por si quieren agregar otro similar rápido
-                    document.getElementById('admin-art-num').value = "";
-                    document.getElementById('admin-art-nom').value = "";
-                    document.getElementById('admin-art-num').focus();
-                } catch(err){ 
-                    showToast('Error al crear', 'error'); 
-                } 
-            } 
-        };
+    if(!cat) return showToast('Debes seleccionar una categoría', 'error');
+    if(hasVariants && !variants) return showToast('Debes escribir las variantes separadas por coma', 'error');
+    
+    const assignedLists = []; 
+    document.querySelectorAll('#admin-art-lists input[type="checkbox"]:checked').forEach(cb => assignedLists.push(cb.value));
+    
+    // Agregamos precio al objeto
+    const artData = { num, nom, cat, precio, img, hasVariants, variants: hasVariants ? variants : null, assignedLists };
+    
+    if (editingArtId) { 
+        if (num !== originalNum) {
+            if (artsMap.has(num)) return showToast('El nuevo No. Parte ya existe en otro artículo', 'error');
+        }
+        try { 
+            await updateDoc(doc(colArts, editingArtId), artData); 
+            showToast('Artículo actualizado correctamente'); 
+            cancelEditArticulo(); 
+        } catch(err) { 
+            console.error(err);
+            showToast('Error al actualizar', 'error'); 
+        } 
+    } else { 
+        if(artsMap.has(num)) return showToast('Ese No. Parte ya existe', 'error'); 
+        try { 
+            await addDoc(colArts, artData); 
+            showToast('Artículo agregado'); 
+            document.getElementById('admin-art-num').value = "";
+            document.getElementById('admin-art-nom').value = "";
+            document.getElementById('admin-art-precio').value = ""; // Limpiar precio
+            document.getElementById('admin-art-num').focus();
+        } catch(err){ 
+            showToast('Error al crear', 'error'); 
+        } 
+    } 
+};
         
         // --- FORMULARIO DE CATEGORÍA ---
         document.getElementById('form-add-categoria').onsubmit = async (e) => {
