@@ -381,11 +381,27 @@ document.getElementById('btn-add-variant-item').onclick = () => {
 
 
         function renderAdmin() {
-    // 1. Render Empleados (Igual que antes)
-    document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a, b) => a.id - b.id).map(e => `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><div class="flex gap-3"><button class="btn-edit-emp text-gray-400 hover:text-blue-600 transition" data-id="${e.fbId}" data-emp-id="${e.id}" data-n="${e.nombre}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg></button><button class="btn-del-emp text-gray-400 hover:text-red-600 transition" data-id="${e.fbId}" data-n="${e.nombre}" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
+    // 1. Render Empleados (Esto se queda igual)
+    const empList = document.getElementById('admin-list-empleados');
+    if (empList) {
+        empList.innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a, b) => a.id - b.id).map(e => `
+            <div class="flex justify-between items-center p-3 hover:bg-white transition">
+                <div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div>
+                <div class="flex gap-3">
+                    <button class="btn-edit-emp text-gray-400 hover:text-blue-600 transition" data-id="${e.fbId}" data-emp-id="${e.id}" data-n="${e.nombre}" title="Editar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
+                    </button>
+                    <button class="btn-del-emp text-gray-400 hover:text-red-600 transition" data-id="${e.fbId}" data-n="${e.nombre}" title="Eliminar">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </button>
+                </div>
+            </div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
+    }
 
-    // 2. Render Artículos (CORREGIDO: Agrupación Flexible + PRECIO)
+    // 2. Render Artículos (AQUÍ ESTÁ LA CORRECCIÓN)
     const listContainer = document.getElementById('admin-list-articulos');
+    if (!listContainer) return;
+
     const term = document.getElementById('admin-art-search').value.toLowerCase();
 
     // Obtener todos los artículos y filtrarlos
@@ -399,73 +415,75 @@ document.getElementById('btn-add-variant-item').onclick = () => {
         return;
     }
 
-    // Agrupar por categoría (LÓGICA NUEVA)
+    // Agrupar por categoría
     const grouped = {};
-
-    // Primero aseguramos que existan grupos para las categorías oficiales (para mantener orden)
     const officialCats = Array.from(catsMap.keys()).sort();
     officialCats.forEach(cat => grouped[cat] = []);
 
-    // Repartir artículos
     articles.forEach(a => {
-        // AQUÍ EL CAMBIO: Usamos la categoría del artículo tal cual. 
-        // Si está vacío, va a 'Sin Categoría'.
         const catKey = a.cat || 'Sin Categoría';
-
-        if (!grouped[catKey]) grouped[catKey] = []; // Si es una categoría "huérfana", creamos el grupo
+        if (!grouped[catKey]) grouped[catKey] = [];
         grouped[catKey].push(a);
     });
 
-    // Generar HTML recorriendo TODOS los grupos creados
+    // Generar HTML
     let html = '';
-    // Obtenemos todas las claves de grupos que tienen algo o son oficiales, ordenadas alfabéticamente
     const allGroupKeys = Object.keys(grouped).sort();
 
     allGroupKeys.forEach(catName => {
         const items = grouped[catName];
-        // Solo mostramos si tiene items
         if (items && items.length > 0) {
             items.sort((a, b) => a.nom.localeCompare(b.nom));
 
-            // Header de la Categoría
+            // Header de Categoría
             html += `<div class="sticky top-0 bg-gray-100 px-4 py-2 font-bold text-gray-700 text-sm border-y border-gray-200 z-10 flex justify-between items-center shadow-sm">
-                                <span>${catName}</span>
-                                <span class="bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full text-xs font-bold">${items.length}</span>
-                             </div>`;
+                        <span>${catName}</span>
+                        <span class="bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full text-xs font-bold">${items.length}</span>
+                     </div>`;
 
             // Lista de items
             html += items.map(a => {
                 const listNames = (a.assignedLists || []).map(listId => listsMap.get(listId)?.name).filter(Boolean).join(', ');
-                
-                // Formateamos el precio. Si no existe, es 0.
                 const precioDisplay = (Number(a.precio) || 0).toFixed(2);
 
+                // --- CORRECCIÓN AQUÍ ---
+                // Extraemos solo los nombres de las variantes para mostrar texto limpio
+                let variantsDisplay = '';
+                if (a.hasVariants) {
+                    if (Array.isArray(a.variants)) {
+                        variantsDisplay = a.variants.map(v => v.name).join(', ');
+                    } else {
+                        variantsDisplay = a.variants; // Soporte legacy (string)
+                    }
+                }
+                // -----------------------
+
                 return `
-                        <div class="flex justify-between items-center p-3 hover:bg-primary-50 transition border-b border-gray-50 last:border-0 group bg-white">
-                            <div class="flex-grow">
-                                <div class="flex items-center gap-2">
-                                    <span class="font-mono text-xs sm:text-sm bg-white border border-gray-200 text-primary-700 px-2 py-0.5 rounded font-bold">${a.num}</span>
-                                    <span class="font-medium text-gray-800 text-sm sm:text-base">${a.nom}</span>
-                                </div>
+                    <div class="flex justify-between items-center p-3 hover:bg-primary-50 transition border-b border-gray-50 last:border-0 group bg-white">
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-xs sm:text-sm bg-white border border-gray-200 text-primary-700 px-2 py-0.5 rounded font-bold">${a.num}</span>
+                                <span class="font-medium text-gray-800 text-sm sm:text-base">${a.nom}</span>
+                            </div>
+                            
+                            <div class="mt-1 flex flex-wrap gap-2 items-center">
+                                <span class="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-100">$${precioDisplay}</span>
                                 
-                                <div class="mt-1 flex flex-wrap gap-2 items-center">
-                                    <span class="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-100">$${precioDisplay}</span>
-                                    
-                                    ${a.hasVariants ? `<span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100">Variantes: ${a.variants}</span>` : ''}
-                                    ${listNames ? `<span class="text-xs bg-yellow-50 text-yellow-600 px-2 py-0.5 rounded border border-yellow-100" title="${listNames}">En listas</span>` : ''}
-                                </div>
+                                ${a.hasVariants ? `<span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100" title="${variantsDisplay}">Variantes: ${variantsDisplay}</span>` : ''}
+                                ${listNames ? `<span class="text-xs bg-yellow-50 text-yellow-600 px-2 py-0.5 rounded border border-yellow-100" title="${listNames}">En listas</span>` : ''}
                             </div>
-                            <div class="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                <button class="btn-edit-art bg-white border border-gray-200 text-gray-500 hover:text-blue-600 hover:border-blue-300 p-2 rounded-lg shadow-sm transition" 
-                                    data-id="${a.fbId}" title="Editar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
-                                </button>
-                                <button class="btn-del-art bg-white border border-gray-200 text-gray-500 hover:text-red-600 hover:border-red-300 p-2 rounded-lg shadow-sm transition" 
-                                    data-id="${a.fbId}" data-n="${a.nom}" title="Eliminar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                                </button>
-                            </div>
-                        </div>`;
+                        </div>
+                        <div class="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                            <button class="btn-edit-art bg-white border border-gray-200 text-gray-500 hover:text-blue-600 hover:border-blue-300 p-2 rounded-lg shadow-sm transition" 
+                                data-id="${a.fbId}" title="Editar">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
+                            </button>
+                            <button class="btn-del-art bg-white border border-gray-200 text-gray-500 hover:text-red-600 hover:border-red-300 p-2 rounded-lg shadow-sm transition" 
+                                data-id="${a.fbId}" data-n="${a.nom}" title="Eliminar">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </div>
+                    </div>`;
             }).join('');
         }
     });
