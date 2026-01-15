@@ -201,17 +201,42 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
             renderDynamicCategoryUI(); renderAdminLists(); renderRegistrarListDropdown(); 
         }, (e) => console.error("Error al cargar listas", e));
         // --- LÓGICA DE RENDERIZADO ---
-        // --- RENDERIZADO DEL HISTORIAL (TABLA TUNEADA) ---
+        // --- RENDERIZADO DEL HISTORIAL (ACTUALIZADO: MUESTRA EMPLEADO DESTINO) ---
         function renderReqs() {
             const term = document.getElementById('search-input').value.toLowerCase();
-            const filtered = reqsData.filter(r => (r.nombre||'').toLowerCase().includes(term) || (r.empleadoId||'').toString().includes(term) || (r.articulo||'').toLowerCase().includes(term) || (r.numRequi||'').toLowerCase().includes(term));
+            
+            // Filtramos por todo un poco (nombre creador, id destino, id creador, requi, articulo)
+            const filtered = reqsData.filter(r => 
+                (r.nombre||'').toLowerCase().includes(term) || 
+                (r.empleadoId||'').toString().includes(term) || 
+                (r.robot_target_employee||'').toString().includes(term) || // Buscar por ID destino
+                (r.articulo||'').toLowerCase().includes(term) || 
+                (r.numRequi||'').toLowerCase().includes(term)
+            );
             
             const reqGroups = new Map();
             for (const r of filtered) {
                 if (!r.numRequi) continue; 
-                if (!reqGroups.has(r.numRequi)) { reqGroups.set(r.numRequi, { numRequi: r.numRequi, fecha: r.fecha, empleadoId: r.empleadoId, nombre: r.nombre, items: [], statuses: new Set() }); }
+                // Guardamos la info base del grupo
+                if (!reqGroups.has(r.numRequi)) { 
+                    reqGroups.set(r.numRequi, { 
+                        numRequi: r.numRequi, 
+                        fecha: r.fecha, 
+                        
+                        // DATOS DEL CREADOR (Quien usó la app)
+                        creadorId: r.empleadoId, 
+                        creadorNombre: r.nombre,
+                        
+                        // DATOS DEL DESTINO (Para quién es el material)
+                        targetId: r.robot_target_employee || null,
+                        
+                        items: [], 
+                        statuses: new Set() 
+                    }); 
+                }
                 const group = reqGroups.get(r.numRequi);
-                group.items.push(r); group.statuses.add(r.status);
+                group.items.push(r); 
+                group.statuses.add(r.status);
             }
             
             const tbody = document.getElementById('tbody-requisiciones');
@@ -229,7 +254,26 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
             tbody.innerHTML = Array.from(reqGroups.values()).sort((a,b) => b.fecha.localeCompare(a.fecha)).map(group => {
                 let statusHtml = '';
                 
-                // Diseño de Badges de Estatus (Más modernos)
+                // LÓGICA DE EMPLEADO (El ajuste clave)
+                let displayNombre = group.creadorNombre;
+                let displayId = group.creadorId;
+                let isTarget = false;
+
+                // Si hay un ID destino (robot_target_employee), ese es el importante
+                if (group.targetId) {
+                    isTarget = true;
+                    displayId = group.targetId;
+                    
+                    // Buscamos el nombre en el mapa de empleados cargado en Admin
+                    const empObj = empsMap.get(group.targetId.toString());
+                    if (empObj) {
+                        displayNombre = empObj.nombre;
+                    } else {
+                        displayNombre = "Empleado Externo / Nuevo"; // Si tiene ID pero no está en tu catálogo Admin
+                    }
+                }
+
+                // Diseño de Badges de Estatus
                 const getStatusBadge = (status, itemId) => {
                     const colors = {
                         'Autorizada': 'bg-green-100 text-green-700 border-green-200',
@@ -237,7 +281,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
                         'Pendiente': 'bg-yellow-50 text-yellow-700 border-yellow-200'
                     };
                     const css = colors[status] || 'bg-gray-100 text-gray-600 border-gray-200';
-                    // Interactividad solo si hay usuario logueado
                     const interactive = currentUser ? 'cursor-pointer hover:shadow-sm hover:scale-105 active:scale-95' : '';
                     
                     return `<span class="status-badge-modal ${interactive} transition-all inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${css}" data-doc-id="${itemId}">
@@ -251,7 +294,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
                     statusHtml = getStatusBadge(item.status, item.id);
                 } else if (group.statuses.size === 1) {
                     const status = group.statuses.values().next().value;
-                    statusHtml = getStatusBadge(status, null); // Sin ID específico porque son varios
+                    statusHtml = getStatusBadge(status, null); 
                 } else {
                     statusHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" /></svg>
@@ -259,7 +302,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
                                   </span>`;
                 }
 
-                // Diseño de Artículo (Texto o Botón Ver Detalles)
+                // Diseño de Artículo
                 const articuloHtml = group.items.length > 1 
                     ? `<button class="btn-view-req-details inline-flex items-center gap-1.5 bg-white border border-gray-300 text-gray-700 hover:text-primary-600 hover:border-primary-300 px-3 py-1.5 rounded-lg text-sm font-medium transition shadow-sm" data-req-id="${group.numRequi}">
                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
@@ -269,6 +312,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 
                 const cobroFecha = group.items.length === 1 ? (group.items[0].fechaCobro || '-') : (group.statuses.size === 1 && group.statuses.has('Cobrada') ? 'Múltiple' : '-');
 
+                // ESTILO DEL AVATAR: Si es "Tercero" (target) se ve morado, si es normal se ve gris.
+                const avatarClass = isTarget ? 'bg-purple-100 text-purple-600 border-purple-200' : 'bg-gray-100 text-gray-500 border-gray-200';
+                
                 return `
                 <tr class="hover:bg-gray-50 transition border-b border-gray-100 last:border-0 group">
                     <td data-label="# Requi" class="px-6 py-4">
@@ -283,12 +329,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
                     
                     <td data-label="Empleado" class="px-6 py-4">
                         <div class="flex items-center">
-                            <div class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-bold mr-3 border border-gray-200">
-                                ${group.nombre.charAt(0)}
+                            <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold mr-3 border ${avatarClass}">
+                                ${displayNombre.charAt(0)}
                             </div>
                             <div>
-                                <div class="font-bold text-gray-800 text-sm">${group.nombre}</div>
-                                <div class="text-xs text-gray-400 font-mono">${group.empleadoId}</div>
+                                <div class="font-bold text-gray-800 text-sm flex items-center gap-1">
+                                    ${displayNombre}
+                                    ${isTarget ? '<span class="text-[9px] bg-purple-50 text-purple-600 border border-purple-100 px-1 rounded uppercase tracking-wider">Destino</span>' : ''}
+                                </div>
+                                <div class="text-xs text-gray-400 font-mono">${displayId}</div>
+                                ${isTarget ? `<div class="text-[10px] text-gray-300 mt-0.5">Solicitó: ${group.creadorNombre}</div>` : ''}
                             </div>
                         </div>
                     </td>
