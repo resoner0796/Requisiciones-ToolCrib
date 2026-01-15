@@ -49,6 +49,7 @@
         @media (min-width: 1024px) { #admin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
         .btn-view.active { @apply bg-primary-100 text-primary-600; }
         .btn-view:not(.active) { @apply bg-white text-gray-400 hover:text-gray-600; }
+        /* El contenedor de variantes empieza oculto */
         #admin-variants-container { display: none; }
     </style>
 </head>
@@ -279,9 +280,20 @@
                                 <input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500">
                                 <label for="admin-art-hasVariants" class="text-sm font-medium text-gray-700">Tiene Variantes (ej. Tallas)</label>
                             </div>
-                            <div id="admin-variants-container" class="hidden mt-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Variantes (separadas por coma)</label>
-                                <input type="text" id="admin-art-variants" placeholder="Ej: S, M, L, XL" class="w-full rounded-lg border-gray-300">
+                            <div id="admin-variants-container" class="hidden mt-2 p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Configuración de Variantes</label>
+                                <div class="flex gap-2 mb-3">
+                                    <input type="text" id="new-var-name" placeholder="Ej: Talla 30" class="flex-1 rounded-lg border-gray-300 text-xs sm:text-sm focus:ring-primary-500 focus:border-primary-500">
+                                    <input type="text" id="new-var-code" placeholder="Cód: BTA-T30" class="flex-1 rounded-lg border-gray-300 text-xs sm:text-sm focus:ring-primary-500 focus:border-primary-500">
+                                    <button type="button" id="btn-add-variant-item" class="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition shadow-sm flex-shrink-0" title="Agregar Variante">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                                          <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div id="variants-list-display" class="space-y-2 max-h-40 overflow-y-auto pr-1 bg-gray-50 rounded border border-gray-100 p-2">
+                                    <div class="text-xs text-gray-400 italic text-center">Agrega variantes arriba.</div>
+                                </div>
                             </div>
                             <div class="mt-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas Rápidas:</label>
