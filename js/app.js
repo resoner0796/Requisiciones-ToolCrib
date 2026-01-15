@@ -500,7 +500,7 @@ document.getElementById('btn-add-variant-item').onclick = () => {
         return; 
     }
 
-    // Función auxiliar para formatear variantes (SOLUCIÓN DEL [object Object])
+    // Función auxiliar para formatear variantes de manera segura
     const getVariantString = (art) => {
         if (!art.hasVariants) return '';
         if (Array.isArray(art.variants)) {
@@ -521,7 +521,6 @@ document.getElementById('btn-add-variant-item').onclick = () => {
                 imgSrc = `./catalogo/${a.img}`;
             }
 
-            // Preparamos el string de variantes para mostrar y para el botón
             const displayVariants = getVariantString(a);
 
             return `
@@ -553,23 +552,14 @@ document.getElementById('btn-add-variant-item').onclick = () => {
                         ${a.nom}
                     </h3>
 
-                    <div class="mt-4 pt-3 border-t border-dashed border-gray-100 flex items-center justify-between gap-2">
-                         ${a.hasVariants ? `
-                            <div class="flex items-center gap-1 overflow-hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3 text-blue-400 flex-shrink-0"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13.5a.75.75 0 00-1.5 0v5H6.75a.75.75 0 000 1.5h3.25a.75.75 0 00.75-.75v-5.75z" clip-rule="evenodd" /></svg>
-                                <span class="text-xs font-semibold text-blue-600 truncate" title="${displayVariants}">Ops: ${displayVariants}</span>
-                            </div>
-                         ` : '<span class="text-xs text-gray-300">Estándar</span>'}
-                         
-                         <button class="btn-add-articulo h-8 w-8 flex items-center justify-center rounded-full bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white transition shadow-sm"
-                            data-num="${a.num}" 
-                            data-nom="${a.nom}" 
-                            data-has-variants="${a.hasVariants || false}" 
-                            data-variants="${displayVariants}" 
-                            title="Agregar a la cesta">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
-                         </button>
-                    </div>
+                    ${a.hasVariants ? `
+                    <div class="mt-4 pt-3 border-t border-dashed border-gray-100 flex items-center justify-center gap-2">
+                         <div class="flex items-center gap-1 overflow-hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3 text-blue-400 flex-shrink-0"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13.5a.75.75 0 00-1.5 0v5H6.75a.75.75 0 000 1.5h3.25a.75.75 0 00.75-.75v-5.75z" clip-rule="evenodd" /></svg>
+                            <span class="text-xs font-semibold text-blue-600 truncate" title="${displayVariants}">Ops: ${displayVariants}</span>
+                         </div>
+                    </div>` : ''}
+
                 </div>
             </div>`;
         }).join('');
@@ -599,15 +589,6 @@ document.getElementById('btn-add-variant-item').onclick = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-opacity text-primary-600 translate-y-[1px]"><path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" /><path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a3 3 0 00-.879-2.121l-3.12-3.122A3 3 0 006.879 6H4.5z" /></svg>
                         </button>
                      </div>
-                     
-                     <button class="btn-add-articulo h-10 w-10 flex items-center justify-center rounded-lg bg-primary-600 text-white hover:bg-primary-700 shadow-md transition-transform active:scale-95"
-                            data-num="${a.num}" 
-                            data-nom="${a.nom}" 
-                            data-has-variants="${a.hasVariants || false}" 
-                            data-variants="${displayVariants}" 
-                            title="Agregar a la cesta">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
-                     </button>
                 </div>
             </div>`;
         }).join('');
