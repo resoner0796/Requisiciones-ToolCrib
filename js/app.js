@@ -1342,3 +1342,4 @@ document.getElementById('form-add-articulo').onsubmit = async (e) => {
 
         // 2. EJECUTAMOS EL ARRANQUE (Una sola vez)
         checkURLForQR();
+
