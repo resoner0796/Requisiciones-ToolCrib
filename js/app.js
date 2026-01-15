@@ -474,108 +474,145 @@ document.getElementById('btn-add-variant-item').onclick = () => {
 }
         
        function renderCatalogo() {
-            const term = document.getElementById('search-catalogo').value.toLowerCase();
-            let articles = Array.from(artsMap.values());
-            
-            // --- FILTROS ---
-            if (currentListFilterId !== 'Todos') { articles = articles.filter(a => a.assignedLists && a.assignedLists.includes(currentListFilterId)); }
-            if (currentCategory !== 'Todos') { articles = articles.filter(a => a.cat === currentCategory); }
-            if (term) { articles = articles.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term)); }
-            
-            // --- ORDENAMIENTO (CAMBIO AQUÍ) ---
-            // Antes: a.num.localeCompare(b.num) -> Por Número
-            // Ahora: a.nom.localeCompare(b.nom) -> Alfabético por Descripción
-            articles.sort((a,b) => a.nom.localeCompare(b.nom));
-            
-            const grid = document.getElementById('catalogo-grid'); 
-            grid.className = ''; 
-            
-            // Si no hay resultados
-            if (articles.length === 0) { 
-                grid.innerHTML = `
-                    <div class="col-span-full flex flex-col items-center justify-center p-12 text-center">
-                        <div class="bg-gray-100 rounded-full p-4 mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-                        </div>
-                        <p class="text-gray-500 font-medium">No encontramos artículos con esa búsqueda.</p>
-                    </div>`; 
-                return; 
-            }
+    const term = document.getElementById('search-catalogo').value.toLowerCase();
+    let articles = Array.from(artsMap.values());
+    
+    // --- FILTROS ---
+    if (currentListFilterId !== 'Todos') { articles = articles.filter(a => a.assignedLists && a.assignedLists.includes(currentListFilterId)); }
+    if (currentCategory !== 'Todos') { articles = articles.filter(a => a.cat === currentCategory); }
+    if (term) { articles = articles.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term)); }
+    
+    // --- ORDENAMIENTO ---
+    articles.sort((a,b) => a.nom.localeCompare(b.nom));
+    
+    const grid = document.getElementById('catalogo-grid'); 
+    grid.className = ''; 
+    
+    // Si no hay resultados
+    if (articles.length === 0) { 
+        grid.innerHTML = `
+            <div class="col-span-full flex flex-col items-center justify-center p-12 text-center">
+                <div class="bg-gray-100 rounded-full p-4 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                </div>
+                <p class="text-gray-500 font-medium">No encontramos artículos con esa búsqueda.</p>
+            </div>`; 
+        return; 
+    }
 
-            // --- VISTA DE GALERÍA (GRID) ---
-            if (catalogoViewMode === 'grid') {
-                grid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6';
-                grid.innerHTML = articles.map(a => {
-                    
-                    let imgSrc = a.img || PLACEHOLDER_IMG;
-                    if (a.img && !a.img.startsWith('http') && !a.img.startsWith('https')) {
-                        imgSrc = `./catalogo/${a.img}`;
-                    }
-
-                    return `
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full relative">
-                        
-                        <div class="aspect-w-1 bg-white relative overflow-hidden border-b border-gray-50">
-                            <img src="${imgSrc}" alt="${a.nom}" 
-                                 class="object-contain w-full h-full p-6 transition-transform duration-500 group-hover:scale-110" 
-                                 onerror="this.src='${PLACEHOLDER_IMG}'">
-                        </div>
-
-                        <div class="p-5 flex flex-col flex-grow">
-                            
-                            <div class="mb-2 text-left">
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">
-                                    ${a.cat || 'GENERAL'}
-                                </span>
-                            </div>
-
-                            <div class="mb-3">
-                                <button class="btn-copy-part group/btn w-full flex items-center justify-center gap-2 font-mono text-base font-black text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-primary-800 hover:border-primary-300 px-3 py-2 rounded-xl border border-slate-200 transition-all active:scale-95" 
-                                        data-num="${a.num}" title="Clic para copiar">
-                                    <span class="tracking-tight">${a.num}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-opacity text-primary-600 translate-y-[1px]"><path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" /><path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a3 3 0 00-.879-2.121l-3.12-3.122A3 3 0 006.879 6H4.5z" /></svg>
-                                </button>
-                            </div>
-
-                            <h3 class="text-sm font-medium text-gray-600 leading-relaxed flex-grow text-center">
-                                ${a.nom}
-                            </h3>
-
-                            ${a.hasVariants ? `
-                            <div class="mt-4 pt-3 border-t border-dashed border-gray-100 flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-blue-400"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13.5a.75.75 0 00-1.5 0v5H6.75a.75.75 0 000 1.5h3.25a.75.75 0 00.75-.75v-5.75z" clip-rule="evenodd" /></svg>
-                                <span class="text-xs font-semibold text-blue-600">Opciones: ${a.variants}</span>
-                            </div>` : ''}
-                        </div>
-                    </div>`;
-                }).join('');
-            
-            } else {
-                // --- VISTA DE LISTA (LIST) ---
-                grid.className = 'flex flex-col gap-3';
-                grid.innerHTML = articles.map(a => {
-                    return `
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:border-primary-200 transition-colors group">
-                        
-                        <div class="flex-grow">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider border border-gray-200 px-1.5 py-0.5 rounded">${a.cat || 'GENERAL'}</span>
-                                ${a.hasVariants ? `<span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded">VARIOS</span>` : ''}
-                            </div>
-                            <div class="text-gray-800 font-medium leading-snug">${a.nom}</div>
-                        </div>
-                        
-                        <div class="mt-2 sm:mt-0 min-w-[180px]">
-                             <button class="btn-copy-part group/btn w-full flex items-center justify-center gap-2 font-mono text-sm font-black text-slate-700 bg-slate-50 hover:bg-slate-100 hover:text-primary-800 hover:border-primary-300 px-3 py-2 rounded-lg border border-slate-200 transition-all active:scale-95" 
-                                        data-num="${a.num}" title="Clic para copiar">
-                                    <span class="tracking-tight">${a.num}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-opacity text-primary-600 translate-y-[1px]"><path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" /><path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a3 3 0 00-.879-2.121l-3.12-3.122A3 3 0 006.879 6H4.5z" /></svg>
-                                </button>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
+    // Función auxiliar para formatear variantes (SOLUCIÓN DEL [object Object])
+    const getVariantString = (art) => {
+        if (!art.hasVariants) return '';
+        if (Array.isArray(art.variants)) {
+            // NUEVO SISTEMA: Sacamos solo los nombres separadas por coma
+            return art.variants.map(v => v.name).join(', ');
         }
+        // VIEJO SISTEMA: Devolvemos el string tal cual
+        return art.variants || '';
+    };
+
+    // --- VISTA DE GALERÍA (GRID) ---
+    if (catalogoViewMode === 'grid') {
+        grid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6';
+        grid.innerHTML = articles.map(a => {
+            
+            let imgSrc = a.img || PLACEHOLDER_IMG;
+            if (a.img && !a.img.startsWith('http') && !a.img.startsWith('https')) {
+                imgSrc = `./catalogo/${a.img}`;
+            }
+
+            // Preparamos el string de variantes para mostrar y para el botón
+            const displayVariants = getVariantString(a);
+
+            return `
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full relative">
+                
+                <div class="aspect-w-1 bg-white relative overflow-hidden border-b border-gray-50">
+                    <img src="${imgSrc}" alt="${a.nom}" 
+                         class="object-contain w-full h-full p-6 transition-transform duration-500 group-hover:scale-110" 
+                         onerror="this.src='${PLACEHOLDER_IMG}'">
+                </div>
+
+                <div class="p-5 flex flex-col flex-grow">
+                    
+                    <div class="mb-2 text-left">
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">
+                            ${a.cat || 'GENERAL'}
+                        </span>
+                    </div>
+
+                    <div class="mb-3">
+                        <button class="btn-copy-part group/btn w-full flex items-center justify-center gap-2 font-mono text-base font-black text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-primary-800 hover:border-primary-300 px-3 py-2 rounded-xl border border-slate-200 transition-all active:scale-95" 
+                                data-num="${a.num}" title="Clic para copiar">
+                            <span class="tracking-tight">${a.num}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-opacity text-primary-600 translate-y-[1px]"><path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" /><path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a3 3 0 00-.879-2.121l-3.12-3.122A3 3 0 006.879 6H4.5z" /></svg>
+                        </button>
+                    </div>
+
+                    <h3 class="text-sm font-medium text-gray-600 leading-relaxed flex-grow text-center">
+                        ${a.nom}
+                    </h3>
+
+                    <div class="mt-4 pt-3 border-t border-dashed border-gray-100 flex items-center justify-between gap-2">
+                         ${a.hasVariants ? `
+                            <div class="flex items-center gap-1 overflow-hidden">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3 text-blue-400 flex-shrink-0"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13.5a.75.75 0 00-1.5 0v5H6.75a.75.75 0 000 1.5h3.25a.75.75 0 00.75-.75v-5.75z" clip-rule="evenodd" /></svg>
+                                <span class="text-xs font-semibold text-blue-600 truncate" title="${displayVariants}">Ops: ${displayVariants}</span>
+                            </div>
+                         ` : '<span class="text-xs text-gray-300">Estándar</span>'}
+                         
+                         <button class="btn-add-articulo h-8 w-8 flex items-center justify-center rounded-full bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white transition shadow-sm"
+                            data-num="${a.num}" 
+                            data-nom="${a.nom}" 
+                            data-has-variants="${a.hasVariants || false}" 
+                            data-variants="${displayVariants}" 
+                            title="Agregar a la cesta">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+                         </button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    
+    } else {
+        // --- VISTA DE LISTA (LIST) ---
+        grid.className = 'flex flex-col gap-3';
+        grid.innerHTML = articles.map(a => {
+            const displayVariants = getVariantString(a);
+            
+            return `
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:border-primary-200 transition-colors group">
+                
+                <div class="flex-grow">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider border border-gray-200 px-1.5 py-0.5 rounded">${a.cat || 'GENERAL'}</span>
+                        ${a.hasVariants ? `<span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded" title="${displayVariants}">VARIOS</span>` : ''}
+                    </div>
+                    <div class="text-gray-800 font-medium leading-snug">${a.nom}</div>
+                </div>
+                
+                <div class="flex items-center gap-3 mt-2 sm:mt-0">
+                     <div class="min-w-[140px]">
+                         <button class="btn-copy-part group/btn w-full flex items-center justify-center gap-2 font-mono text-sm font-black text-slate-700 bg-slate-50 hover:bg-slate-100 hover:text-primary-800 hover:border-primary-300 px-3 py-2 rounded-lg border border-slate-200 transition-all active:scale-95" 
+                                data-num="${a.num}" title="Clic para copiar">
+                            <span class="tracking-tight">${a.num}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-opacity text-primary-600 translate-y-[1px]"><path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" /><path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a3 3 0 00-.879-2.121l-3.12-3.122A3 3 0 006.879 6H4.5z" /></svg>
+                        </button>
+                     </div>
+                     
+                     <button class="btn-add-articulo h-10 w-10 flex items-center justify-center rounded-lg bg-primary-600 text-white hover:bg-primary-700 shadow-md transition-transform active:scale-95"
+                            data-num="${a.num}" 
+                            data-nom="${a.nom}" 
+                            data-has-variants="${a.hasVariants || false}" 
+                            data-variants="${displayVariants}" 
+                            title="Agregar a la cesta">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+                     </button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+}
         
         function renderDynamicCategoryUI() {
             renderAdminCategorias(); renderArticuloCategoryDropdown();
