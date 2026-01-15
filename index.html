@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolCrib Requisiciones</title>
+    <title>ToolCrib Requisiciones Pro</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -23,263 +28,160 @@
             }
         }
     </script>
-    <style>
-        #toast-container { position: fixed !important; bottom: 1.5rem !important; right: 1.5rem !important; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; }
-        .toast { @apply flex items-center p-4 w-80 bg-white rounded-lg shadow-xl border-l-4 animate-slide-in; }
-        .toast-success { @apply border-green-500; } .toast-error { @apply border-red-500; } .toast-info { @apply border-blue-500; } .toast.hiding { @apply animate-slide-out; }
-        input:read-only { @apply bg-gray-100 text-gray-500 cursor-not-allowed; }
-        .aspect-w-1 { position: relative; padding-bottom: 100%; } .aspect-w-1 > * { position: absolute; height: 100%; width: 100%; top: 0; right: 0; bottom: 0; left: 0; }
-        .btn { @apply px-4 py-2 rounded-lg font-medium shadow-sm transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2; }
-        .btn-primary { @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500; }
-        .btn-secondary { @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-300; }
-        .btn-danger { @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500; }
-        .btn.p-2\.5 { @apply p-2.5 leading-none; }
-        
-        /* Estilos Variantes */
-        .variant-row { @apply flex gap-2 mb-2 items-center animate-fade-in; }
-        .variant-input { @apply w-1/2 rounded-lg border-gray-300 text-xs focus:ring-primary-500 focus:border-primary-500; }
-        .variant-btn-del { @apply text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition flex-shrink-0; }
 
+    <style>
+        /* Toast Notifications */
+        #toast-container { position: fixed !important; bottom: 1.5rem !important; right: 1.5rem !important; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; }
+        .toast { display: flex; align-items: center; padding: 1rem; width: 20rem; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-left: 4px solid; animation: slideIn 0.3s ease-out forwards; }
+        .toast-success { border-color: #22c55e; } 
+        .toast-error { border-color: #ef4444; } 
+        .toast.hiding { animation: slideOut 0.3s ease-in forwards; }
+
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+
+        /* Variantes Tabla */
+        .variant-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
+        .variant-input { width: 50%; border-radius: 0.5rem; border: 1px solid #d1d5db; font-size: 0.75rem; padding: 0.25rem 0.5rem; }
+        .variant-btn-del { color: #f87171; padding: 0.25rem; transition: 0.2s; }
+        .variant-btn-del:hover { color: #dc2626; background-color: #fef2f2; border-radius: 0.25rem; }
+
+        /* Responsive Table */
         @media (max-width: 640px) {
             .responsive-table thead { display: none; }
-            .responsive-table tbody tr { @apply flex flex-col mb-4 bg-white rounded-xl shadow-sm border border-gray-200 p-5 mx-4; }
-            .responsive-table td { @apply flex justify-between items-start py-3 px-0 border-b border-gray-100 last:border-0; }
-            .responsive-table td::before { content: attr(data-label); @apply font-medium text-gray-500 text-sm mr-4 flex-shrink-0 w-1/3; }
-            .responsive-table td > * { @apply text-right w-full; }
-            .responsive-table td { text-align: right; }
-            .responsive-table td.col-acciones { @apply justify-end mt-3 pt-3 border-t border-gray-100; }
+            .responsive-table tbody tr { display: flex; flex-direction: column; margin-bottom: 1rem; background-color: white; border-radius: 0.75rem; border: 1px solid #e5e7eb; padding: 1.25rem; margin-left: 1rem; margin-right: 1rem; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+            .responsive-table td { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f3f4f6; }
+            .responsive-table td::before { content: attr(data-label); font-weight: 500; color: #6b7280; font-size: 0.875rem; width: 33%; text-align: left; }
+            .responsive-table td > * { text-align: right; width: 100%; }
+            .responsive-table td.col-acciones { justify-content: flex-end; border-top: 1px solid #f3f4f6; }
             .responsive-table td.col-acciones::before { display: none; }
         }
-        @media (max-width: 1024px) and (min-width: 640px) { #admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (min-width: 1024px) { #admin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-        .btn-view.active { @apply bg-primary-100 text-primary-600; }
-        .btn-view:not(.active) { @apply bg-white text-gray-400 hover:text-gray-600; }
+        .btn-view.active { background-color: #dbeafe; color: #2563eb; }
+        .btn-view:not(.active) { background-color: white; color: #9ca3af; }
         #admin-variants-container { display: none; }
+        
+        .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; transition: 0.2s; }
+        .btn-primary { background-color: #2563eb; color: white; }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-secondary { background-color: #f3f4f6; color: #374151; }
+        .btn-danger { background-color: #dc2626; color: white; }
+        
+         /* Switch Toggle */
+        .toggle-checkbox:checked { right: 0; border-color: #0ea5e9; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #0ea5e9; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
     <div id="toast-container"></div>
+    
     <div class="min-h-screen flex flex-col">
-        <header class="bg-white shadow-sm sticky top-0 z-20 border-b border-gray-200 transition-all">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+        <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-gray-200 transition-all">
+            <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
                 <div class="flex items-center">
-                    <button id="main-back-btn" class="hidden mr-2 sm:mr-3 p-2 text-gray-500 hover:text-primary-600 hover:bg-gray-100 rounded-full transition" title="Regresar al Inicio"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg></button>
-                    <span class="text-xl sm:text-2xl font-bold text-gray-900 truncate">ToolCrib <span class="text-primary-600">Requisiciones</span></span>
+                    <button id="main-back-btn" class="hidden mr-3 p-2 text-gray-500 hover:bg-gray-100 rounded-full transition" title="Regresar"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
+                    <span class="text-xl font-bold text-gray-900">ToolCrib <span class="text-primary-600">Admin</span></span>
                 </div>
-                <div class="flex items-center space-x-2 sm:space-x-4">
-                    <span id="user-email-display" class="text-sm text-gray-500 hidden md:inline-block font-medium"></span>
-                    <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 transition p-2 rounded-full hover:bg-gray-100" title="Acceso Admin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" /></svg></button>
-                    <button id="btn-logout" class="hidden px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition">Salir</button>
+                <div class="flex items-center gap-3">
+                    <span id="user-email-display" class="text-sm text-gray-500 hidden sm:inline"></span>
+                    <button id="btn-login-icon" class="text-gray-400 hover:text-primary-600 p-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg></button>
+                    <button id="btn-logout" class="hidden btn btn-secondary text-xs">Salir</button>
                 </div>
             </div>
         </header>
 
-        <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        <main class="max-w-7xl mx-auto p-4 sm:p-6">
             
             <div id="home-screen" class="screen-content animate-fade-in">
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100 text-center sm:text-left">
-                    <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Centro de Control</h1>
-                    <p class="mt-2 text-lg text-gray-600">Selecciona una operación para comenzar.</p>
-                    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-                        <button data-navigate-to="registrar-screen" class="p-6 bg-primary-600 rounded-xl shadow-lg text-white hover:bg-primary-700 transition transform hover:-translate-y-1 flex flex-col items-start"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg><span class="text-xl font-bold">Nueva Requisición</span><span class="text-primary-200 text-sm mt-1 text-left">Crear solicitud de material.</span></button>
-                        <button data-navigate-to="consultar-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 1.875 1.875v12.75a1.875 1.875 0 0 1-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V6.375a1.875 1.875 0 0 1 1.875-1.875Z" /></svg><span class="text-xl font-bold text-gray-900">Historial</span><span class="text-gray-500 text-sm mt-1 text-left">Consultar estatus de solicitudes.</span></button>
-                        <button data-navigate-to="catalogo-screen" class="p-6 bg-white rounded-xl shadow-md border border-gray-200 hover:border-primary-500 transition transform hover:-translate-y-1 flex flex-col items-start group"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 text-gray-400 group-hover:text-primary-500 transition"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25-9 5.25m18 0-9 5.25-9-5.25m18 0V21l-9 5.25-9-5.25V7.5m18 0V21l-9 5.25-9-5.25V7.5" /></svg><span class="text-xl font-bold text-gray-900">Catálogo</span><span class="text-gray-500 text-sm mt-1 text-left">Ver productos e imágenes.</span></button>
-                        <button id="btn-admin-home" data-navigate-to="admin-screen" class="hidden p-6 bg-gray-800 rounded-xl shadow-md text-white hover:bg-gray-900 transition transform hover:-translate-y-1 flex flex-col items-start"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10 mb-3 opacity-80"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg><span class="text-xl font-bold">Administración</span><span class="text-gray-300 text-sm mt-1 text-left">Gestionar base de datos.</span></button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-3 bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-8 text-white shadow-lg flex flex-col md:flex-row items-center justify-between">
+                        <div>
+                            <h1 class="text-3xl font-bold mb-2">Panel de Control</h1>
+                            <p class="text-primary-100">Gestiona catálogo, usuarios y estadísticas.</p>
+                        </div>
+                        <button data-navigate-to="admin-screen" class="mt-4 md:mt-0 bg-white text-primary-700 px-6 py-3 rounded-xl font-bold shadow-md hover:bg-gray-50 transition transform hover:-translate-y-1">
+                            Entrar al Sistema
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <div id="registrar-screen" class="screen-content hidden animate-fade-in">
-                <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Crear Nueva Requisición</h1>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="flex flex-col gap-8">
-                        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
-                            <h2 class="text-xl font-bold text-gray-900 mb-6">1. Datos del Solicitante</h2>
-                            <form id="form-registrar" class="space-y-5">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label><input type="text" id="reg-fecha" readonly class="bg-gray-100 w-full rounded-lg border-gray-300 text-gray-500 cursor-not-allowed"></div>
-                                    <div><label class="block text-sm font-medium text-primary-700 mb-1"># Requisición</label><input type="text" id="reg-num-requi" required placeholder="Ej. REQ-001" class="border-primary-300 focus:ring-primary-500 focus:border-primary-500 w-full rounded-lg shadow-sm"></div>
+            <div id="admin-screen" class="screen-content hidden animate-fade-in space-y-8">
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                        <h2 id="art-form-title" class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                            Catálogo Maestro
+                        </h2>
+                        <input type="search" id="admin-art-search" class="w-64 rounded-lg border-gray-300 text-sm focus:ring-primary-500" placeholder="Buscar artículo...">
+                    </div>
+
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1 bg-gray-50 p-5 rounded-xl border border-gray-200 h-fit sticky top-24">
+                            <form id="form-add-articulo" class="space-y-4">
+                                <input type="hidden" id="admin-art-original-num">
+                                <div class="flex gap-3">
+                                    <div class="w-1/3"><label class="text-xs font-bold text-gray-500 uppercase ml-1">No. Parte</label><input type="text" id="admin-art-num" placeholder="Ej. 123-ABC" required class="w-full rounded-lg border-gray-300 focus:ring-primary-500 text-sm"></div>
+                                    <div class="w-2/3"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Descripción</label><input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-full rounded-lg border-gray-300 focus:ring-primary-500 text-sm"></div>
                                 </div>
-                                <div class="relative">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Empleado</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
-                                        <input type="text" id="reg-emp-search" autocomplete="off" placeholder="Buscar..." class="pl-10 focus:ring-primary-500 focus:border-primary-500 w-full rounded-lg border-gray-300 shadow-sm transition-colors">
-                                        <button type="button" id="btn-clear-emp" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-red-500 transition"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg></button>
+                                <div class="flex gap-3">
+                                    <div class="w-1/2"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Categoría</label><select id="admin-art-cat" required class="w-full rounded-lg border-gray-300 text-sm focus:ring-primary-500"><option value="">Selecciona...</option></select></div>
+                                    <div class="w-1/2"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Precio ($)</label><input type="number" id="admin-art-precio" placeholder="0.00" step="0.01" min="0" class="w-full rounded-lg border-gray-300 text-sm"></div>
+                                </div>
+                                <div><label class="text-xs font-bold text-gray-500 uppercase ml-1">Imagen (URL)</label><input type="text" id="admin-art-img" placeholder="https://..." class="w-full rounded-lg border-gray-300 text-sm text-gray-500"></div>
+
+                                <div class="border-t border-gray-200 pt-3 mt-1">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500">
+                                        <label for="admin-art-hasVariants" class="text-sm font-bold text-gray-700">Tiene Variantes (Tallas/Tipos)</label>
                                     </div>
-                                    <div id="reg-emp-results" class="hidden absolute z-20 mt-1 w-full bg-white shadow-xl max-h-60 rounded-lg py-1 border border-gray-100 overflow-auto"></div>
-                                    <input type="hidden" id="reg-selected-emp-id"><input type="hidden" id="reg-selected-emp-name">
+                                    <div id="admin-variants-panel" class="hidden bg-white p-3 rounded-lg border border-gray-300 shadow-inner">
+                                        <div class="flex justify-between text-xs font-bold text-gray-400 mb-2 px-1">
+                                            <span class="w-1/2">Nombre</span><span class="w-1/2">Código</span><span class="w-6"></span>
+                                        </div>
+                                        <div id="variants-list-container" class="space-y-2"></div>
+                                        <button type="button" onclick="window.addVariantRow()" class="mt-3 w-full py-1.5 text-xs font-bold text-primary-600 border border-dashed border-primary-300 rounded hover:bg-primary-50 flex items-center justify-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>Agregar Variante</button>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2"><label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas:</label><div id="admin-art-lists" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-24 overflow-y-auto border rounded-lg p-3 bg-white"></div></div>
+                                <div class="flex gap-2 pt-4">
+                                    <button type="button" id="btn-cancel-art" class="hidden w-1/3 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">Cancelar</button>
+                                    <button type="submit" class="flex-1 px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 font-bold shadow-md">Guardar Artículo</button>
                                 </div>
                             </form>
                         </div>
-                        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
-                             <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold text-gray-900 flex items-center"><svg class="w-5 h-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.868 2.884c.321-.772 1.415-.772 1.736 0l1.681 4.062a.75.75 0 0 0 .564.41l4.47.652c.817.119 1.147 1.114.545 1.695l-3.235 3.152a.75.75 0 0 0-.216.66l.764 4.452c.138.809-.71.1.428-1.09l-3.996-2.1a.75.75 0 0 0-.69 0l-3.996 2.1c-.71.378-1.567-.281-1.428-1.09l.764-4.452a.75.75 0 0 0-.216-.66L.64 9.703c-.602-.581-.272-1.576.545-1.695l4.47-.652a.75.75 0 0 0 .564-.41L9.132 2.884Z" clip-rule="evenodd" /></svg>Listas Rápidas</h2><select id="reg-list-select" class="text-sm rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500"></select></div><div id="lista-diarios" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-2 divide-y divide-gray-200"></div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-8">
-                        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
-                             <h2 class="text-xl font-bold text-gray-900 mb-6">3. Todos los Artículos</h2><div class="relative mb-2"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div><input type="search" id="search-reg-articulo" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar artículo..."></div><div id="filtros-reg-articulo" class="flex flex-wrap gap-2 mb-4 py-2 overflow-x-auto"></div><div id="lista-reg-articulo" class="h-96 overflow-y-auto border rounded-lg bg-gray-50 p-2 divide-y divide-gray-200"></div>
-                        </div>
-                        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100">
-                             <h2 class="text-xl font-bold text-gray-900 mb-3">4. Resumen (<span id="cesta-conteo">0</span>)</h2><div class="h-40 overflow-y-auto border rounded-lg bg-white mb-6"><div id="cesta-placeholder" class="p-4 text-center text-gray-400 italic">Aún no has agregado artículos.</div><div id="cesta-articulos" class="p-2 divide-y divide-gray-100 hidden"></div></div><button id="btn-registrar-submit" class="btn btn-primary w-full py-3 text-base font-bold shadow-lg hover:bg-primary-700 transition-all transform hover:-translate-y-0.5">Registrar Requisición(es)</button>
+
+                        <div class="lg:col-span-2 flex flex-col h-[600px]">
+                            <div id="admin-list-articulos" class="flex-grow overflow-y-auto pr-2 space-y-3"></div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div id="consultar-screen" class="screen-content hidden animate-fade-in">
-                 <div class="bg-white sm:rounded-2xl shadow-sm border-y sm:border border-gray-100 overflow-hidden -mx-4 sm:mx-0"><div class="p-4 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4"><h2 class="text-xl font-bold text-gray-900">Historial de Requisiciones</h2><div class="relative w-full sm:w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div><input type="search" id="search-input" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar..."></div></div><div class="sm:p-0 pt-4"><table class="responsive-table min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"># Requi</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empleado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Artículos</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cobro</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden col-acciones">Acciones</th></tr></thead><tbody id="tbody-requisiciones" class="bg-white sm:divide-y divide-gray-200"></tbody></table></div></div>
-            </div>
-
-             <div id="catalogo-screen" class="screen-content hidden animate-fade-in">
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4"><h2 class="text-2xl font-bold text-gray-900">Catálogo de Productos</h2><div class="flex w-full sm:w-auto items-center gap-4"><div class="flex items-center border border-gray-300 rounded-lg p-0.5 bg-gray-100"><button id="btn-view-grid" class="btn-view active p-2 rounded-md" title="Vista de Galería"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5ZM2 13.25A2.25 2.25 0 0 1 4.25 11h2.5A2.25 2.25 0 0 1 9 13.25v2.5A2.25 2.25 0 0 1 6.75 18h-2.5A2.25 2.25 0 0 1 2 15.75v-2.5ZM13.25 2A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5ZM11 13.25A2.25 2.25 0 0 1 13.25 11h2.5A2.25 2.25 0 0 1 18 13.25v2.5A2.25 2.25 0 0 1 15.75 18h-2.5A2.25 2.25 0 0 1 11 15.75v-2.5Z"/></svg></button><button id="btn-view-list" class="btn-view p-2 rounded-md" title="Vista de Lista"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75ZM2 9.75A.75.75 0 0 1 2.75 9h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 9.75ZM2 14.75A.75.75 0 0 1 2.75 14h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 14.75Z"/></svg></button></div><div class="relative flex-grow sm:w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div><input type="search" id="search-catalogo" class="pl-10 w-full border-gray-300 rounded-lg" placeholder="Buscar..."></div></div></div><div class="mb-4"><label class="text-sm font-medium text-gray-700 mr-2">Filtrar por Lista:</label><div id="catalogo-list-filtros" class="inline-flex flex-wrap gap-2"></div></div><div class="mb-6"><label class="text-sm font-medium text-gray-700 mr-2">Filtrar por Categoría:</label><div id="catalogo-filtros" class="inline-flex flex-wrap gap-2"></div></div><div id="catalogo-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
-            </div>
-
-            <div id="admin-screen" class="screen-content hidden animate-fade-in">
-                <div id="admin-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col relative overflow-hidden group h-96">
-                        <div class="absolute -right-6 -top-6 text-gray-50 opacity-50 group-hover:opacity-100 transition duration-700 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-32 h-32"><path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.035-.84-1.875-1.875-1.875h-.75ZM9.75 8.625c0-1.035.84-1.875 1.875-1.875h.75c1.035 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 0 1-1.875-1.875V8.625ZM3 13.125c0-1.035.84-1.875 1.875-1.875h.75c1.035 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 0 1 3 19.875v-6.75Z" /></svg>
-                        </div>
-                        <div class="text-center z-10 flex-shrink-0">
-                            <h2 class="text-lg font-bold text-gray-900 flex items-center justify-center gap-2 mb-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-primary-600"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605" /></svg>
-                                Rendimiento
-                            </h2>
-                            <div class="text-4xl font-extrabold text-primary-600 tracking-tight" id="stats-total">0</div>
-                            <div class="text-xs text-gray-400 font-medium uppercase tracking-widest mb-3">Visitas Totales</div>
-                            <div class="flex justify-center gap-4 text-xs text-gray-500 mb-4 border-b border-gray-100 pb-3">
-                                <div><span class="font-bold text-gray-800 text-sm" id="stats-qr">0</span> 📱 QR</div>
-                                <div class="border-l border-gray-200 pl-4"><span class="font-bold text-gray-800 text-sm" id="stats-direct">0</span> 💻 Web</div>
-                            </div>
-                        </div>
-                        <div class="flex-grow z-10 overflow-hidden flex flex-col">
-                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 flex justify-between items-center">
-                                <span>Última Actividad</span>
-                                <span class="text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full animate-pulse">Live</span>
-                            </h3>
-                            <div id="stats-recent-logs" class="space-y-2 text-xs overflow-y-auto pr-1 flex-grow scrollbar-thin">
-                                <div class="text-gray-400 italic text-center pt-2">Esperando actividad...</div>
-                            </div>
-                        </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 h-96 flex flex-col">
+                        <h2 class="text-lg font-bold mb-4 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
+                        <div class="flex gap-2 mb-4"><input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden"><button onclick="document.getElementById('file-upload-emp').click()" class="flex-1 px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center justify-center gap-1">📥 Cargar Excel</button></div>
+                        <form id="form-add-empleado" class="flex gap-2 mb-4"><input type="number" id="admin-emp-id" placeholder="ID" class="w-1/3 rounded-lg border-gray-300 text-sm" required><input type="text" id="admin-emp-nombre" placeholder="Nombre" class="w-full rounded-lg border-gray-300 text-sm" required><button type="submit" class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">+</button></form>
+                        <div id="admin-list-empleados" class="flex-grow overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:col-span-2 lg:col-span-2 min-h-[500px]">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                            <h2 id="art-form-title" class="text-lg font-bold flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>Catálogo Artículos</h2>
-                            <div class="relative w-full sm:w-72">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
-                                <input type="search" id="admin-art-search" class="pl-10 w-full border-gray-300 rounded-lg text-sm" placeholder="Buscar para editar...">
-                            </div>
-                        </div>
-
-                        <form id="form-add-articulo" class="flex flex-col gap-3 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <input type="hidden" id="admin-art-original-num">
-                            <div class="flex gap-3">
-                                <div class="w-1/3"><label class="text-xs font-bold text-gray-500 uppercase ml-1">No. Parte</label><input type="text" id="admin-art-num" placeholder="Ej. 123-ABC" required class="w-full rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500"></div>
-                                <div class="w-2/3"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Descripción</label><input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-full rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500"></div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="w-1/2"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Categoría</label><select id="admin-art-cat" required class="w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"><option value="">Seleccione Categoría...</option></select></div>
-                                <div class="w-1/2"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Precio ($)</label><input type="number" id="admin-art-precio" placeholder="0.00" step="0.01" min="0" class="w-full rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500"></div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="w-full"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Imagen (URL)</label><input type="text" id="admin-art-img" placeholder="https://..." class="w-full rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500"></div>
-                            </div>
-
-                            <div class="border-t border-gray-200 pt-3 mt-1">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500">
-                                    <label for="admin-art-hasVariants" class="text-sm font-bold text-gray-700">Tiene Variantes (Tallas/Tipos)</label>
-                                </div>
-                                <div id="admin-variants-panel" class="hidden bg-white p-3 rounded-lg border border-gray-300 shadow-inner">
-                                    <div class="flex justify-between text-xs font-bold text-gray-400 mb-2 px-1">
-                                        <span class="w-1/2">Nombre (Ej. Talla 32)</span>
-                                        <span class="w-1/2">Código (Ej. BTA-T32)</span>
-                                        <span class="w-6"></span>
-                                    </div>
-                                    <div id="variants-list-container" class="space-y-2"></div>
-                                    <button type="button" onclick="window.addVariantRow()" class="mt-3 w-full py-1.5 text-xs font-bold text-primary-600 border border-dashed border-primary-300 rounded hover:bg-primary-50 flex items-center justify-center gap-1 transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>Agregar Variante
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="mt-2"><label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas Rápidas:</label><div id="admin-art-lists" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-24 overflow-y-auto border rounded-lg p-3 bg-white"></div></div>
-                            <div class="flex gap-3 mt-4 border-t border-gray-200 pt-4">
-                                <button type="button" id="btn-cancel-art" class="hidden btn btn-secondary flex-shrink-0" title="Cancelar Edición">Cancelar</button>
-                                <button type="submit" class="btn btn-primary flex-1 font-bold shadow-md" title="Guardar">Guardar Artículo</button>
-                            </div>
-                        </form>
-                        
-                        <div id="admin-list-articulos" class="flex-grow h-64 overflow-y-auto border rounded-lg bg-white p-1"></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 h-96 flex flex-col">
+                        <h2 class="text-lg font-bold mb-4 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" /></svg>Categorías y Listas</h2>
+                        <div class="flex gap-2 mb-2"><input type="text" id="admin-cat-name" placeholder="Nueva Categoría" class="w-full rounded-lg border-gray-300 text-sm"><button id="btn-add-cat-manual" class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">+</button></div>
+                        <div id="admin-list-categorias" class="h-1/2 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y mb-4"></div>
+                        <div class="flex gap-2 mb-2"><input type="text" id="admin-list-name" placeholder="Nueva Lista Rápida" class="w-full rounded-lg border-gray-300 text-sm"><button id="btn-add-list-manual" class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">+</button></div>
+                        <div id="admin-list-lists" class="h-1/2 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
+                        <form id="form-add-categoria" class="hidden"></form>
+                        <form id="form-add-list" class="hidden"></form>
                     </div>
                 </div>
             </div>
 
-            <div id="login-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 transform transition-all scale-95 opacity-0 text-center">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Acceso Admin</h2>
-                    <form id="form-login" class="space-y-4 text-left">
-                        <div><label class="text-sm font-medium text-gray-700">Email</label><input type="email" id="login-email" required class="mt-1 w-full rounded-lg"></div>
-                        <div><label class="text-sm font-medium text-gray-700">Contraseña</label><input type="password" id="login-pass" required class="mt-1 w-full rounded-lg"></div>
-                        <button type="submit" id="btn-login-submit" class="btn btn-primary w-full mt-6 py-3">Entrar</button>
-                    </form>
-                    <button type="button" data-dismiss="modal" class="w-full text-center text-gray-500 text-sm mt-4 hover:text-gray-700">Cancelar</button>
-                </div>
-            </div>
-            <div id="status-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-                <div class="modal-content bg-white rounded-xl p-6 w-full max-w-xs text-center transform transition-all scale-95 opacity-0">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Cambiar Estatus</h3>
-                    <div class="space-y-2">
-                        <button id="btn-status-auth" class="w-full p-3 rounded-lg bg-green-50 text-green-700 font-medium hover:bg-green-100 transition">Autorizada</button>
-                        <button id="btn-status-cob" class="w-full p-3 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition">Cobrada</button>
-                        <button id="btn-status-pen" class="w-full p-3 rounded-lg bg-yellow-50 text-yellow-700 font-medium hover:bg-yellow-100 transition">Pendiente</button>
-                    </div>
-                    <button data-dismiss="modal" class="mt-4 text-gray-400 hover:text-gray-600 text-sm">Cancelar</button>
-                </div>
-            </div>
-            <div id="confirm-modal" class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-                <div class="modal-content bg-white rounded-xl p-6 w-full max-w-sm text-center transform transition-all scale-95 opacity-0">
-                    <h3 id="confirm-title" class="text-lg font-bold text-gray-900">¿Estás seguro?</h3>
-                    <p id="confirm-message" class="text-gray-500 text-sm mt-2 mb-6"></p>
-                    <div class="flex gap-3"><button onclick="closeModal('confirm-modal')" class="btn btn-secondary flex-1">No, cancelar</button><button id="btn-confirm-ok" class="btn btn-danger flex-1">Sí, eliminar</button></div>
-                </div>
-            </div>
-            <div id="item-details-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all scale-95 opacity-0">
-                    <h2 id="item-details-title" class="text-xl font-bold mb-5 text-gray-900">Detalles del Artículo</h2>
-                    <div class="space-y-4">
-                        <div id="variant-container" class="hidden"><label class="block text-sm font-medium text-gray-700 mb-1">Talla / Variante</label><select id="variant-select" class="focus:ring-primary-500 w-full rounded-lg"><option value="">Seleccione...</option></select></div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
-                            <div class="flex items-center gap-2"><button type="button" id="btn-qty-minus" class="btn btn-secondary p-2.5 rounded-lg leading-none flex-shrink-0" aria-label="Restar uno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" /></svg></button><input type="number" id="item-qty" value="1" min="1" class="focus:ring-primary-500 w-full rounded-lg text-center font-bold"><button type="button" id="btn-qty-plus" class="btn btn-secondary p-2.5 rounded-lg leading-none flex-shrink-0" aria-label="Sumar uno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" /></svg></button></div>
-                        </div>
-                        <div class="flex justify-end space-x-3 mt-6"><button type="button" data-dismiss="modal" class="btn btn-secondary">Cancelar</button><button type="button" id="btn-item-details-submit" class="btn btn-primary px-8">Aceptar</button></div>
-                    </div>
-                </div>
-            </div>
-            <div id="req-details-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 transform transition-all scale-95 opacity-0">
-                    <h2 id="req-details-title" class="text-2xl font-bold mb-4 text-gray-900">Detalles de Requisición</h2>
-                    <div class="grid grid-cols-3 gap-4 mb-4 text-sm">
-                        <div><span class="font-medium text-gray-500 block"># Requisición</span><span id="req-details-num" class="font-bold"></span></div>
-                        <div><span class="font-medium text-gray-500 block">Fecha</span><span id="req-details-fecha" class="font-bold"></span></div>
-                        <div><span class="font-medium text-gray-500 block">Empleado</span><span id="req-details-emp" class="font-bold"></span></div>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-3">Artículos</h3>
-                    <div id="req-details-list" class="h-64 overflow-y-auto border rounded-lg bg-gray-50 p-2 divide-y divide-gray-200"></div>
-                    <div class="flex justify-end mt-6"><button type="button" data-dismiss="modal" class="btn btn-secondary">Cerrar</button></div>
-                </div>
-            </div>
-            <div id="qr-modal" class="modal hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
-                <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all scale-95 opacity-0 text-center">
-                    <h2 class="text-xl font-bold mb-2 text-gray-900">Código QR</h2>
-                    <p id="qr-category-name" class="text-primary-600 font-medium mb-4 text-lg"></p>
-                    <div class="bg-white p-4 border-2 border-dashed border-gray-300 rounded-xl inline-block mb-6"><div id="qrcode-container"></div></div>
-                    <div class="flex flex-col gap-3"><button onclick="imprimirQR()" class="btn btn-primary w-full flex items-center justify-center gap-2">Imprimir Etiqueta</button><button onclick="closeModal('qr-modal')" class="btn btn-secondary w-full">Cerrar</button></div>
-                </div>
-            </div>
+            <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm"><h2 class="text-2xl font-bold text-center mb-6">Acceso Admin</h2><form id="form-login" class="space-y-4"><input type="email" id="login-email" required class="w-full rounded-lg" placeholder="Email"><input type="password" id="login-pass" required class="w-full rounded-lg" placeholder="Contraseña"><button type="submit" class="w-full py-3 rounded-lg bg-primary-600 text-white hover:bg-primary-700 font-bold">Entrar</button></form><button type="button" onclick="closeModal('login-modal')" class="w-full text-center text-gray-500 text-sm mt-4">Cancelar</button></div></div>
+            <div id="confirm-modal" class="hidden fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4"><div class="bg-white rounded-xl p-6 w-full max-w-sm text-center"><h3 id="confirm-title" class="text-lg font-bold mb-2">Confirmar</h3><p id="confirm-message" class="text-gray-500 mb-6 text-sm"></p><div class="flex gap-3"><button onclick="closeModal('confirm-modal')" class="btn btn-secondary flex-1">Cancelar</button><button id="btn-confirm-ok" class="btn btn-danger flex-1">Confirmar</button></div></div></div>
+            <div id="qr-modal" class="hidden fixed inset-0 bg-black/60 z-[70] flex items-center justify-center p-4"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center"><h2 class="text-xl font-bold mb-2">Código QR</h2><p id="qr-category-name" class="text-primary-600 mb-4"></p><div class="bg-white p-4 border-2 border-dashed border-gray-300 rounded-xl inline-block mb-6"><div id="qrcode-container"></div></div><div class="flex flex-col gap-3"><button onclick="imprimirQR()" class="btn btn-primary w-full flex items-center justify-center gap-2">Imprimir Etiqueta</button><button onclick="closeModal('qr-modal')" class="btn btn-secondary w-full">Cerrar</button></div></div></div>
         </main>
     </div>
 
@@ -297,21 +199,20 @@
         const colArts = collection(db, 'requi_toolcrib', 'data', 'articles');
         const colCats = collection(db, 'requi_toolcrib', 'data', 'categories');
         const colLists = collection(db, 'requi_toolcrib', 'data', 'lists');
+        const colLogs = collection(db, 'requi_toolcrib', 'data', 'traffic_logs');
 
-        let currentUser = null, currentReqId = null, confirmAction = null, reqsData = [], empsMap = new Map(), artsMap = new Map();
-        let catsMap = new Map(), listsMap = new Map();
-        let currentCategory = 'Todos', currentRegCategory = 'Todos', catalogoViewMode = 'grid', currentListFilterId = 'Todos', currentRegListId = 'Todos';
-        let articulosSeleccionados = [], currentItemForDetails = null, editingEmpId = null, editingArtId = null;
+        let artsMap = new Map(), empsMap = new Map(), catsMap = new Map(), listsMap = new Map(), reqsData = [];
+        let editingArtId = null, editingEmpId = null, confirmAction = null, currentReqId = null;
+        let currentUser = null, currentItemForDetails = null, articulosSeleccionados = [];
+        let currentCategory='Todos', currentRegCategory='Todos', currentRegListId='Todos';
         const PLACEHOLDER_IMG = "https://placehold.co/400x400/f1f5f9/94a3b8?text=Sin+Imagen";
-        const iconAddSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>';
-        const iconEditSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>';
 
-        // --- MANEJO DE VARIANTES DINÁMICAS (NUEVO) ---
+        // --- HELPER VARIANTES ---
         window.addVariantRow = (name = '', code = '') => {
             const container = document.getElementById('variants-list-container');
             const row = document.createElement('div');
             row.className = 'variant-row';
-            row.innerHTML = `<input type="text" placeholder="Talla 32" value="${name}" class="variant-name-input variant-input"><input type="text" placeholder="BTA-T32" value="${code}" class="variant-code-input variant-input"><button type="button" onclick="this.parentElement.remove()" class="variant-btn-del"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></button>`;
+            row.innerHTML = `<input type="text" placeholder="Talla 32" value="${name}" class="variant-name-input variant-input"><input type="text" placeholder="BTA-T32" value="${code}" class="variant-code-input variant-input"><button type="button" onclick="this.parentElement.remove()" class="variant-btn-del text-red-500 font-bold px-2">x</button>`;
             container.appendChild(row);
         };
         const getVariantsData = () => {
@@ -323,112 +224,163 @@
         };
 
         // --- UTILIDADES ---
-        const showToast = (msg, type = 'success') => {
-            const t = document.createElement('div'); t.className = `toast toast-${type}`;
-            t.innerHTML = `<div class="${type==='success'?'text-green-500':type==='error'?'text-red-500':'text-blue-500'} mr-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg></div><div class="text-sm font-medium">${msg}</div>`;
-            document.getElementById('toast-container').appendChild(t);
-            setTimeout(() => { t.classList.add('hiding'); setTimeout(() => t.remove(), 300) }, 3000);
-        };
-        const openModal = (id) => { const m = document.getElementById(id); m.classList.remove('hidden'); setTimeout(() => { m.querySelector('.modal-content').classList.remove('scale-95','opacity-0'); }, 10); };
-        window.closeModal = (id) => { const m = document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95','opacity-0'); setTimeout(() => m.classList.add('hidden'), 200); };
-        const askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
-        
+        const showToast = (msg, type='success') => { const t=document.createElement('div'); t.className=`toast toast-${type}`; t.innerHTML=`<div class="mr-2 font-bold">${type==='error'?'✖':'✔'}</div><div>${msg}</div>`; document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(),3000); };
+        window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+        const openModal = (id) => document.getElementById(id).classList.remove('hidden');
+        const askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText=title; document.getElementById('confirm-message').innerText=msg; confirmAction=action; openModal('confirm-modal'); };
+        const navigateTo = (id) => { document.querySelectorAll('.screen-content').forEach(e=>e.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(id==='registrar-screen') resetRegistro(); };
+
         // --- AUTH ---
         onAuthStateChanged(auth, (u) => {
             currentUser = u;
-            document.getElementById('btn-login-icon').classList.toggle('hidden', !!u);
-            document.getElementById('btn-logout').classList.toggle('hidden', !u);
-            document.getElementById('btn-admin-home').classList.toggle('hidden', !u);
-            if(u) {
-                document.getElementById('user-email-display').innerText = u.email;
-                loadKPIs();
-            } else {
-                if(!document.getElementById('admin-screen').classList.contains('hidden')) navigateTo('home-screen');
-            }
+            const btnLoginIcon = document.getElementById('btn-login-icon');
+            const btnLogout = document.getElementById('btn-logout');
+            const btnAdminHome = document.getElementById('btn-admin-home');
+            
+            if (btnLoginIcon) btnLoginIcon.classList.toggle('hidden', !!u);
+            if (btnLogout) btnLogout.classList.toggle('hidden', !u);
+            if (btnAdminHome) btnAdminHome.classList.toggle('hidden', !u);
             document.querySelectorAll('.col-acciones').forEach(e => e.classList.toggle('hidden', !u));
-            renderReqs(); renderAdmin(); renderCatalogo();
+            if(u) { document.getElementById('user-email-display').innerText = u.email; loadData(); }
+            else { if(!document.getElementById('admin-screen').classList.contains('hidden')) navigateTo('home-screen'); }
         });
 
-        // --- DATA LOAD ---
+        // --- DATA ---
         function loadData() {
-            onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, { ...d.data(), fbId: d.id })); renderArticulos(); renderRegistrarArticulos(); renderRegistrarListArticles(); });
-            onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, { ...d.data(), fbId: d.id })); renderAdmin(); });
-            onSnapshot(colCats, (s) => { catsMap.clear(); const sel = document.getElementById('admin-art-cat'); sel.innerHTML = '<option value="">Selecciona...</option>'; s.forEach(d => { catsMap.set(d.data().name, d.id); sel.innerHTML += `<option value="${d.data().name}">${d.data().name}</option>`; }); renderAdminCategorias(); renderDynamicCategoryUI(); });
-            onSnapshot(colLists, (s) => { listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); renderAdminLists(); renderRegListSelect(); });
-            onSnapshot(colReqs, (s) => { reqsData = []; s.forEach(d => reqsData.push({id: d.id, ...d.data()})); renderReqs(); });
-        }
-        loadData();
-
-        // --- ARTICULOS CRUD (MODIFICADO PARA VARIANTES) ---
-        document.getElementById('admin-art-hasVariants').addEventListener('change', (e) => {
-            const panel = document.getElementById('admin-variants-panel');
-            if (e.target.checked) { panel.classList.remove('hidden'); if (document.getElementById('variants-list-container').children.length === 0) window.addVariantRow(); } else { panel.classList.add('hidden'); }
-        });
-
-        document.getElementById('form-add-articulo').onsubmit = async (e) => {
-            e.preventDefault();
-            const num = document.getElementById('admin-art-num').value.trim();
-            const nom = document.getElementById('admin-art-nom').value.trim();
-            const cat = document.getElementById('admin-art-cat').value;
-            const precio = parseFloat(document.getElementById('admin-art-precio').value) || 0;
-            const img = document.getElementById('admin-art-img').value.trim();
-            const hasVariants = document.getElementById('admin-art-hasVariants').checked;
-            
-            let variantsData = null;
-            if (hasVariants) {
-                variantsData = getVariantsData();
-                if (variantsData.length === 0) return showToast('Agrega al menos una variante con código', 'error');
-            }
-            
-            const assignedLists = []; 
-            document.querySelectorAll('#admin-art-lists input:checked').forEach(cb => assignedLists.push(cb.value));
-
-            const data = { num, nom, cat, precio, img, hasVariants, variants: variantsData, assignedLists };
-
-            try {
-                if (editingArtId) { await updateDoc(doc(colArts, editingArtId), data); showToast('Actualizado'); cancelEditArticulo(); }
-                else { 
-                    if (artsMap.has(num)) return showToast('Código duplicado', 'error');
-                    await addDoc(colArts, data); showToast('Creado'); e.target.reset(); 
-                    document.getElementById('admin-variants-panel').classList.add('hidden');
-                    document.getElementById('variants-list-container').innerHTML = '';
-                    renderArticuloListsCheckboxes();
-                }
-            } catch (err) { console.error(err); showToast('Error', 'error'); }
-        };
-
-        function startEditArticulo(art) {
-            editingArtId = art.fbId;
-            document.getElementById('admin-art-num').value = art.num; document.getElementById('admin-art-original-num').value = art.num;
-            document.getElementById('admin-art-nom').value = art.nom; document.getElementById('admin-art-cat').value = art.cat;
-            document.getElementById('admin-art-precio').value = art.precio; document.getElementById('admin-art-img').value = art.img;
-            
-            const chk = document.getElementById('admin-art-hasVariants');
-            const cont = document.getElementById('variants-list-container');
-            chk.checked = art.hasVariants; cont.innerHTML = '';
-            
-            if (art.hasVariants) {
-                document.getElementById('admin-variants-panel').classList.remove('hidden');
-                if (Array.isArray(art.variants)) art.variants.forEach(v => window.addVariantRow(v.name, v.code));
-                else if (typeof art.variants === 'string') art.variants.split(',').forEach(v => window.addVariantRow(v.trim(), ''));
-            } else document.getElementById('admin-variants-panel').classList.add('hidden');
-
-            renderArticuloListsCheckboxes(art.assignedLists);
-            document.getElementById('btn-cancel-art').classList.remove('hidden');
-            document.querySelector('#form-add-articulo button[type="submit"]').innerText = "Actualizar";
-            document.getElementById('form-add-articulo').scrollIntoView();
+            onSnapshot(colArts, s => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, { ...d.data(), fbId: d.id })); renderArticulos(); renderRegistrarArticulos(); });
+            onSnapshot(colEmps, s => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, { ...d.data(), fbId: d.id })); renderEmpleados(); });
+            onSnapshot(colCats, s => { catsMap.clear(); const sel = document.getElementById('admin-art-cat'); if(sel) { sel.innerHTML='<option value="">Categoría...</option>'; s.forEach(d => { catsMap.set(d.data().name, d.id); sel.innerHTML+=`<option value="${d.data().name}">${d.data().name}</option>`; }); renderCategorias(); renderCatalogoFilters(); }});
+            onSnapshot(colLists, s => { listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); renderAdminLists(); renderRegListSelect(); });
+            onSnapshot(colReqs, s => { reqsData=[]; s.forEach(d=>reqsData.push({id:d.id, ...d.data()})); renderReqs(); });
+            loadKPIs();
         }
 
-        // --- RENDER MODAL AGREGAR (CARRITO) ---
+        // --- KPI ---
+        function loadKPIs() {
+            onSnapshot(doc(db, 'requi_toolcrib', 'stats'), s => { if(s.exists()) { const d=s.data(); const totalEl = document.getElementById('stats-total'); if (totalEl) totalEl.innerText=d.totalVisits||0; const qrEl = document.getElementById('stats-qr'); if(qrEl) qrEl.innerText=d.sources?.qr||0; const dirEl = document.getElementById('stats-direct'); if(dirEl) dirEl.innerText=d.sources?.direct||0; }});
+            onSnapshot(query(colLogs, orderBy('timestamp', 'desc'), limit(5)), s => { const logsContainer = document.getElementById('stats-recent-logs'); if (logsContainer) logsContainer.innerHTML = s.docs.map(d=>`<div class="text-[10px] border-b">${d.data().categoria} - ${d.data().hora}</div>`).join(''); });
+        }
+        async function registrarTrafico(cat) {
+            const now = new Date(); const statsRef = doc(db, 'requi_toolcrib', 'stats');
+            try { await setDoc(statsRef, { lastUpdate: now.toISOString() }, { merge: true }); const up = { totalVisits: increment(1), lastVisit: now.toISOString() }; if(cat) { up[`scans.${cat}`]=increment(1); up['sources.qr']=increment(1); } else { up['sources.direct']=increment(1); } await updateDoc(statsRef, up); await addDoc(colLogs, { timestamp: now, fecha: now.toLocaleDateString('es-MX'), hora: now.toLocaleTimeString('es-MX'), tipo: cat?'QR':'Directo', categoria: cat||'N/A', device: navigator.userAgent }); } catch(e) {}
+        }
+
+        // --- ARTÍCULOS ---
+        const hasVariantsCheck = document.getElementById('admin-art-hasVariants');
+        if (hasVariantsCheck) {
+            hasVariantsCheck.addEventListener('change', e => {
+                const p = document.getElementById('admin-variants-panel');
+                if(e.target.checked) { p.classList.remove('hidden'); if(document.getElementById('variants-list-container').children.length===0) window.addVariantRow(); } else p.classList.add('hidden');
+            });
+        }
+
+        const formAddArticulo = document.getElementById('form-add-articulo');
+        if (formAddArticulo) {
+            formAddArticulo.onsubmit = async (e) => {
+                e.preventDefault();
+                const num = document.getElementById('admin-art-num').value.trim(); const nom = document.getElementById('admin-art-nom').value.trim();
+                const cat = document.getElementById('admin-art-cat').value; const precio = parseFloat(document.getElementById('admin-art-precio').value) || 0;
+                const img = document.getElementById('admin-art-img').value.trim(); const hasVariants = document.getElementById('admin-art-hasVariants').checked;
+                
+                let variantsData = null;
+                if(hasVariants) { variantsData = getVariantsData(); if(variantsData.length===0) return showToast('Agrega variantes','error'); }
+                const assignedLists = []; document.querySelectorAll('#admin-art-lists input:checked').forEach(c => assignedLists.push(c.value));
+                const data = { num, nom, cat, precio, img, hasVariants, variants: variantsData, assignedLists };
+
+                try {
+                    if(editingArtId) { await updateDoc(doc(colArts, editingArtId), data); showToast('Actualizado'); cancelEdit(); }
+                    else { if(artsMap.has(num)) return showToast('Código duplicado','error'); await addDoc(colArts, data); showToast('Creado'); e.target.reset(); document.getElementById('admin-variants-panel').classList.add('hidden'); document.getElementById('variants-list-container').innerHTML=''; renderArtListChecks(); }
+                } catch(x) { showToast('Error','error'); }
+            };
+        }
+
+        function renderArticulos() {
+            const list = document.getElementById('admin-list-articulos'); 
+            if (!list) return;
+            const term = document.getElementById('admin-art-search').value.toLowerCase();
+            let items = Array.from(artsMap.values()).filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
+            items.sort((a,b)=>a.nom.localeCompare(b.nom));
+            if(items.length===0) { list.innerHTML='<div class="text-center p-10 text-gray-400">Sin datos</div>'; return; }
+            list.innerHTML = items.map(a => {
+                const badge = a.hasVariants ? `<span class="bg-blue-100 text-blue-800 text-[10px] px-2 rounded ml-2">${Array.isArray(a.variants)?a.variants.length+' var':'Simple'}</span>`:'';
+                return `<div class="bg-white p-2 rounded border mb-2 flex justify-between items-center group"><div><div class="flex items-center"><span class="font-bold text-sm">${a.nom}</span>${badge}</div><div class="text-xs text-gray-500">${a.num} • $${a.precio}</div></div><div class="flex gap-2 opacity-0 group-hover:opacity-100"><button class="text-blue-500 btn-edit" data-id="${a.fbId}">✏️</button><button class="text-red-500 btn-del-art" data-id="${a.fbId}" data-n="${a.nom}">🗑️</button></div></div>`;
+            }).join('');
+        }
+
         document.addEventListener('click', e => {
-            const btn = e.target.closest('.btn-add-articulo');
+            const btn = e.target.closest('.btn-edit');
+            if(btn) {
+                const art = Array.from(artsMap.values()).find(a => a.fbId === btn.dataset.id); if(!art) return;
+                editingArtId = art.fbId;
+                document.getElementById('admin-art-num').value = art.num; document.getElementById('admin-art-original-num').value = art.num;
+                document.getElementById('admin-art-nom').value = art.nom; document.getElementById('admin-art-cat').value = art.cat;
+                document.getElementById('admin-art-precio').value = art.precio; document.getElementById('admin-art-img').value = art.img;
+                
+                const chk = document.getElementById('admin-art-hasVariants');
+                const cont = document.getElementById('variants-list-container');
+                chk.checked = art.hasVariants; cont.innerHTML = '';
+                
+                if(art.hasVariants) {
+                    document.getElementById('admin-variants-panel').classList.remove('hidden');
+                    if(Array.isArray(art.variants)) art.variants.forEach(v => window.addVariantRow(v.name, v.code));
+                    else if(typeof art.variants === 'string') art.variants.split(',').forEach(v => window.addVariantRow(v.trim(), ''));
+                } else document.getElementById('admin-variants-panel').classList.add('hidden');
+
+                renderArtListChecks(art.assignedLists);
+                document.getElementById('btn-cancel-art').classList.remove('hidden');
+                document.querySelector('#form-add-articulo button[type="submit"]').innerText = 'Actualizar';
+                document.getElementById('form-add-articulo').scrollIntoView();
+            }
+        });
+        function cancelEdit() {
+            editingArtId = null; document.getElementById('form-add-articulo').reset();
+            document.getElementById('btn-cancel-art').classList.add('hidden');
+            document.querySelector('#form-add-articulo button[type="submit"]').innerText = 'Guardar';
+            document.getElementById('admin-variants-panel').classList.add('hidden');
+            document.getElementById('variants-list-container').innerHTML='';
+            renderArtListChecks();
+        }
+        const btnCancelArt = document.getElementById('btn-cancel-art');
+        if (btnCancelArt) btnCancelArt.onclick = cancelEdit;
+
+        // --- PANTALLA REGISTRO ---
+        function resetRegistro() { document.getElementById('form-registrar').reset(); document.getElementById('reg-fecha').value=new Date().toISOString().split('T')[0]; articulosSeleccionados=[]; renderCesta(); renderRegistrarArticulos(); }
+        
+        function renderCesta() {
+            const c = document.getElementById('cesta-articulos'); const p = document.getElementById('cesta-placeholder'); document.getElementById('cesta-conteo').innerText = articulosSeleccionados.length;
+            if(articulosSeleccionados.length===0) { c.classList.add('hidden'); p.classList.remove('hidden'); }
+            else {
+                p.classList.add('hidden'); c.classList.remove('hidden');
+                c.innerHTML = articulosSeleccionados.map((a, i) => `<div class="flex justify-between items-center bg-gray-50 p-2 rounded"><div class="text-sm"><b>${a.nom}</b><br><span class="text-xs text-gray-500">${a.variantCode || a.num} ${a.variant?`(${a.variant})`:''} x${a.qty}</span></div><button onclick="window.removeCartItem(${i})" class="text-red-500">🗑️</button></div>`).join('');
+            }
+            renderRegistrarArticulos();
+        }
+        window.removeCartItem = (i) => { articulosSeleccionados.splice(i,1); renderCesta(); };
+        
+        function renderRegistrarArticulos() {
+            const list = document.getElementById('lista-reg-articulo');
+            if (!list) return;
+            const term = document.getElementById('search-reg-articulo').value.toLowerCase();
+            let items = Array.from(artsMap.values());
+            if(currentRegCategory!=='Todos') items = items.filter(a => a.cat === currentRegCategory);
+            if(term) items = items.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
+            
+            list.innerHTML = items.map(a => {
+                const added = !a.hasVariants && articulosSeleccionados.some(x => x.num === a.num);
+                let img = a.img || PLACEHOLDER_IMG; if(a.img && !a.img.startsWith('http')) img = `./catalogo/${a.img}`;
+                return `<div class="flex items-center p-2 border-b bg-white"><img src="${img}" class="h-10 w-10 object-contain mr-2"><div class="flex-grow text-sm"><div class="font-bold">${a.nom}</div><div class="text-xs text-gray-500">${a.num}</div></div><button class="btn-add p-2 rounded ${added?'bg-gray-200 text-gray-400':'bg-primary-50 text-primary-600'}" data-num="${a.num}" data-nom="${a.nom}" data-has-variants="${a.hasVariants}" data-variants='${JSON.stringify(a.variants||[])}' ${added?'disabled':''}>${added?'✔':'+'}</button></div>`;
+            }).join('');
+        }
+        
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('.btn-add');
             if(btn && !btn.disabled) {
                 const { num, nom, hasVariants, variants } = btn.dataset;
                 currentItemForDetails = { num, nom };
                 const vCont = document.getElementById('variant-container');
                 const vSel = document.getElementById('variant-select');
                 document.getElementById('item-qty').value = 1;
-
+                
                 if(hasVariants === 'true') {
                     vCont.classList.remove('hidden'); vSel.innerHTML = '<option value="">Elige...</option>';
                     const vars = JSON.parse(variants);
@@ -449,94 +401,162 @@
             
             const artData = artsMap.get(currentItemForDetails.num);
             let finalCode = artData.num;
-            if(hasVar) finalCode = vSel.options[vSel.selectedIndex].dataset.code || artData.num;
+            if(hasVar) {
+                const selectedOption = vSel.options[vSel.selectedIndex];
+                finalCode = selectedOption.dataset.code || artData.num;
+            }
             
             articulosSeleccionados.push({
                 ...artData, qty, variant: hasVar?vSel.value:null, variantCode: finalCode
             });
-            renderCestaArticulos(); closeModal('item-details-modal');
+            renderCesta(); closeModal('item-details-modal');
         };
 
-        // --- RESTO DE FUNCIONES VISUALES (Originales restauradas) ---
-        const navigateTo = (id) => { document.querySelectorAll('.screen-content').forEach(e => e.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(id==='registrar-screen') resetRegistro(); };
-        document.addEventListener('click', e => { const n = e.target.closest('[data-navigate-to]'); if(n) navigateTo(n.dataset.navigateTo); if(e.target.closest('[data-dismiss="modal"]')) closeModal(e.target.closest('.modal').id); });
-
-        function resetRegistro() { document.getElementById('form-registrar').reset(); document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0]; articulosSeleccionados = []; renderCestaArticulos(); renderRegistrarArticulos(); }
-        function renderCestaArticulos() {
-            const c = document.getElementById('cesta-articulos'); const p = document.getElementById('cesta-placeholder'); document.getElementById('cesta-conteo').innerText = articulosSeleccionados.length;
-            if(articulosSeleccionados.length===0) { c.classList.add('hidden'); p.classList.remove('hidden'); }
-            else { p.classList.add('hidden'); c.classList.remove('hidden'); c.innerHTML = articulosSeleccionados.map((a,i) => `<div class="flex justify-between items-center bg-gray-50 p-2 rounded text-sm"><div><b>${a.nom}</b><br><span class="text-xs text-gray-500">${a.variantCode || a.num} ${a.variant?`(${a.variant})`:''} x${a.qty}</span></div><button onclick="window.removeCartItem(${i})" class="text-red-500 font-bold">x</button></div>`).join(''); }
-            renderRegistrarArticulos();
-        }
-        window.removeCartItem = (i) => { articulosSeleccionados.splice(i, 1); renderCestaArticulos(); };
-        
-        function renderRegistrarArticulos() {
-            const list = document.getElementById('lista-reg-articulo'); const term = document.getElementById('search-reg-articulo').value.toLowerCase();
-            let items = Array.from(artsMap.values());
-            if(currentRegCategory!=='Todos') items = items.filter(a => a.cat === currentRegCategory);
-            if(term) items = items.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
-            
-            list.innerHTML = items.map(a => {
-                const added = !a.hasVariants && articulosSeleccionados.some(x => x.num === a.num);
-                return `<div class="flex items-center p-2 border-b bg-white"><div class="flex-grow text-sm"><div class="font-bold">${a.nom}</div><div class="text-xs text-gray-500">${a.num}</div></div><button class="btn-add-articulo p-2 rounded ${added?'bg-gray-200 text-gray-400':'bg-primary-50 text-primary-600'}" data-num="${a.num}" data-nom="${a.nom}" data-has-variants="${a.hasVariants}" data-variants='${JSON.stringify(a.variants||[])}' ${added?'disabled':''}>${added?'✔':'+'}</button></div>`;
-            }).join('');
-        }
-        document.getElementById('search-reg-articulo').addEventListener('input', renderRegistrarArticulos);
-
-        // --- SUBMIT REGISTRO ---
+        // --- SUBMIT ---
         document.getElementById('btn-registrar-submit').onclick = async () => {
             const reqNum = document.getElementById('reg-num-requi').value;
             const empId = document.getElementById('reg-selected-emp-id').value;
             const empName = document.getElementById('reg-selected-emp-name').value;
+            
             if(!reqNum || !empId) return showToast('Faltan datos', 'error');
             if(!articulosSeleccionados.length) return showToast('Carrito vacío', 'error');
+            
             const btn = document.getElementById('btn-registrar-submit'); btn.disabled = true; btn.innerText = "Guardando...";
             try {
                 const ps = articulosSeleccionados.map(a => addDoc(colReqs, {
-                    numRequi: reqNum, fecha: document.getElementById('reg-fecha').value, empleadoId: empId, nombre: empName,
+                    numRequi: reqNum,
+                    fecha: document.getElementById('reg-fecha').value,
+                    empleadoId: empId, nombre: empName,
                     articulo: `[${a.variantCode || a.num}] - ${a.nom} ${a.variant?`(${a.variant})`:''} - ${a.qty} pz`,
-                    status: 'Pendiente', timestamp: new Date(), robot_partNumber: a.variantCode || a.num, robot_qty: a.qty, robot_description: a.nom, robot_price: a.precio || 0
+                    status: 'Pendiente', timestamp: new Date(),
+                    robot_partNumber: a.variantCode || a.num,
+                    robot_qty: a.qty,
+                    robot_description: a.nom,
+                    robot_price: a.precio || 0
                 }));
-                await Promise.all(ps); showToast('Guardado'); resetRegistro(); navigateTo('home-screen');
-            } catch(e) { showToast('Error', 'error'); } finally { btn.disabled = false; btn.innerText = "Registrar Requisición"; }
+                await Promise.all(ps);
+                showToast('Guardado con éxito');
+                resetRegistro(); document.getElementById('reg-num-requi').value=''; 
+                document.getElementById('reg-emp-search').value='';
+                navigateTo('home-screen');
+            } catch(e) { console.error(e); showToast('Error', 'error'); } 
+            finally { btn.disabled = false; btn.innerText = "Registrar Requisición"; }
         };
 
-        // --- ADMIN RENDERERS ---
-        function renderArticulos() {
-            const list = document.getElementById('admin-list-articulos'); const term = document.getElementById('admin-art-search').value.toLowerCase();
-            let items = Array.from(artsMap.values()).filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
-            items.sort((a,b)=>a.nom.localeCompare(b.nom));
-            list.innerHTML = items.map(a => `<div class="bg-white p-2 rounded border mb-2 flex justify-between items-center group"><div><div class="font-bold text-sm">${a.nom}${a.hasVariants?' *':''}</div><div class="text-xs text-gray-500">${a.num}</div></div><div class="flex gap-2"><button class="text-blue-500 btn-edit-art" data-id="${a.fbId}">✏️</button><button class="text-red-500 btn-del-art" data-id="${a.fbId}" data-n="${a.nom}">🗑️</button></div></div>`).join('');
+        // --- OTROS (Admin, Historial, etc.) ---
+        const formAddEmpleado = document.getElementById('form-add-empleado');
+        if (formAddEmpleado) {
+            formAddEmpleado.onsubmit = async (e) => { e.preventDefault(); await addDoc(colEmps, { id: document.getElementById('admin-emp-id').value, nombre: document.getElementById('admin-emp-nombre').value }); e.target.reset(); };
         }
-        document.getElementById('admin-art-search').addEventListener('input', renderArticulos);
-        
-        document.addEventListener('click', e => {
-            if(e.target.closest('.btn-edit-art')) { const a = Array.from(artsMap.values()).find(x => x.fbId === e.target.closest('.btn-edit-art').dataset.id); if(a) startEditArticulo(a); }
-            if(e.target.closest('.btn-del-art')) { if(confirm('¿Borrar?')) deleteDoc(doc(colArts, e.target.closest('.btn-del-art').dataset.id)); }
-        });
+        const formAddCategoria = document.getElementById('form-add-categoria');
+        if (formAddCategoria) {
+            formAddCategoria.onsubmit = async (e) => { e.preventDefault(); await addDoc(colCats, { name: document.getElementById('admin-cat-name').value }); e.target.reset(); };
+        }
+        const btnAddCatManual = document.getElementById('btn-add-cat-manual');
+        if (btnAddCatManual) {
+            btnAddCatManual.onclick = () => document.getElementById('form-add-categoria').dispatchEvent(new Event('submit'));
+        }
+        const formAddList = document.getElementById('form-add-list');
+        if (formAddList) {
+            formAddList.onsubmit = async (e) => { e.preventDefault(); await addDoc(colLists, { name: document.getElementById('admin-list-name').value }); e.target.reset(); };
+        }
+        const btnAddListManual = document.getElementById('btn-add-list-manual');
+        if (btnAddListManual) {
+            btnAddListManual.onclick = () => document.getElementById('form-add-list').dispatchEvent(new Event('submit'));
+        }
+        const adminArtSearch = document.getElementById('admin-art-search');
+        if (adminArtSearch) {
+            adminArtSearch.addEventListener('input', renderArticulos);
+        }
 
-        function cancelEditArticulo() { editingArtId=null; document.getElementById('form-add-articulo').reset(); document.getElementById('btn-cancel-art').classList.add('hidden'); document.getElementById('admin-variants-panel').classList.add('hidden'); document.getElementById('variants-list-container').innerHTML=''; renderArticuloListsCheckboxes(); }
-        document.getElementById('btn-cancel-art').onclick = cancelEditArticulo;
-
-        // --- PLACEHOLDERS Y HELPERS VIEJOS ---
-        function renderAdminCategorias() { document.getElementById('admin-list-categorias').innerHTML = Array.from(catsMap.keys()).sort().map(n => `<div class="p-2 border-b text-sm">${n}</div>`).join(''); }
-        function renderAdminLists() { document.getElementById('admin-list-lists').innerHTML = Array.from(listsMap.values()).map(l => `<div class="p-2 border-b text-sm">${l.name}</div>`).join(''); }
-        function renderArticuloListsCheckboxes(assigned=[]) { document.getElementById('admin-art-lists').innerHTML = Array.from(listsMap.values()).map(l => `<label class="flex items-center text-xs"><input type="checkbox" value="${l.fbId}" ${assigned.includes(l.fbId)?'checked':''} class="mr-1">${l.name}</label>`).join(''); }
-        function renderRegListSelect() { const sel = document.getElementById('reg-list-select'); sel.innerHTML='<option value="Todos">Todas</option>'; Array.from(listsMap.values()).forEach(l => sel.innerHTML+=`<option value="${l.fbId}">${l.name}</option>`); sel.onchange=(e)=>{currentRegListId=e.target.value; renderRegistrarListArticles();}; }
+        function renderEmpleados() { 
+            const el = document.getElementById('admin-list-empleados');
+            if(el) el.innerHTML = Array.from(empsMap.values()).map(e => `<div class="flex justify-between p-2 text-sm hover:bg-gray-50 border-b"><div><b>${e.id}</b> - ${e.nombre}</div><button class="text-red-500 btn-del-emp" data-id="${e.fbId}">×</button></div>`).join(''); 
+        }
+        function renderCategorias() { 
+            const el = document.getElementById('admin-list-categorias');
+            if(el) el.innerHTML = Array.from(catsMap.entries()).map(([name, id]) => `<div class="flex justify-between p-2 border-b"><span>${name}</span><div><button class="mr-2" onclick="window.mostrarQR('${name}')">📱</button><button class="text-red-500 btn-del-cat" data-id="${id}">×</button></div></div>`).join(''); 
+        }
+        function renderAdminLists() { 
+            const el = document.getElementById('admin-list-lists');
+            if(el) el.innerHTML = Array.from(listsMap.values()).map(l => `<div class="flex justify-between p-2 border-b"><span>${l.name}</span><button class="text-red-500 btn-del-list" data-id="${l.fbId}">×</button></div>`).join(''); 
+        }
+        function renderArticuloListsCheckboxes(assigned = []) { 
+            const el = document.getElementById('admin-art-lists');
+            if(el) el.innerHTML = Array.from(listsMap.values()).map(l => `<div class="flex items-center"><input type="checkbox" value="${l.fbId}" ${assigned.includes(l.fbId)?'checked':''} class="mr-2"><span>${l.name}</span></div>`).join(''); 
+        }
+        function renderRegListSelect() { 
+            const sel = document.getElementById('reg-list-select'); 
+            if(sel) {
+                sel.innerHTML='<option value="Todos">Todas</option>'; 
+                Array.from(listsMap.values()).forEach(l => sel.innerHTML+=`<option value="${l.fbId}">${l.name}</option>`); 
+                sel.onchange=(e)=>{currentRegListId=e.target.value; renderRegistrarListArticles();}; 
+            }
+        }
         function renderRegistrarListArticles() {
              const list = document.getElementById('lista-diarios'); if(!list) return;
              let items = Array.from(artsMap.values()); if(currentRegListId!=='Todos') items = items.filter(a=>a.assignedLists?.includes(currentRegListId));
              list.innerHTML = items.map(a => `<div class="p-2 border-b bg-white text-sm">${a.nom}</div>`).join('');
         }
         function renderDynamicCategoryUI() { renderCatalogoFiltros('catalogo-filtros', currentCategory, 'btn-cat-filter'); renderCatalogoFiltros('filtros-reg-articulo', currentRegCategory, 'btn-reg-cat-filter'); renderCatalogoListFiltros(); }
-        function renderCatalogoFiltros(id, active, cls) { const c=document.getElementById(id); c.innerHTML = ['Todos', ...Array.from(catsMap.keys()).sort()].map(n => `<button class="${cls} px-2 py-1 rounded border text-xs ${active===n?'bg-blue-600 text-white':''}" data-category="${n}">${n}</button>`).join(''); }
+        function renderCatalogoFiltros(id, active, cls) { 
+            const c=document.getElementById(id); 
+            if(c) c.innerHTML = ['Todos', ...Array.from(catsMap.keys()).sort()].map(n => `<button class="${cls} px-2 py-1 rounded border text-xs ${active===n?'bg-blue-600 text-white':''}" data-category="${n}">${n}</button>`).join(''); 
+        }
+        function renderCatalogoListFiltros() { 
+            const c = document.getElementById('catalogo-list-filtros'); 
+            if (c) c.innerHTML = Array.from(listsMap.values()).map(l => `<button class="px-2 border rounded" onclick="window.setList('${l.fbId}')">${l.name}</button>`).join(''); 
+        }
+        window.setCat=(c)=>{currentCategory=c; renderCatalogoFilters();}; window.setList=(l)=>{currentListFilterId=l; renderCatalogoGrid();};
+        function renderCatalogoGrid() { 
+            const grid = document.getElementById('catalogo-grid');
+            if (grid) grid.innerHTML = Array.from(artsMap.values()).filter(a => (currentCategory==='Todos'||a.cat===currentCategory)).map(a => `<div class="border p-2 rounded"><img src="${a.img||PLACEHOLDER_IMG}" class="h-20 w-full object-contain"><b>${a.nom}</b></div>`).join(''); 
+        }
         
-        // --- KPI & LOGS ---
-        function loadKPIs() { onSnapshot(doc(db, 'requi_toolcrib', 'stats'), s=>{if(s.exists()){const d=s.data();document.getElementById('stats-total').innerText=d.totalVisits||0;}}); }
+        document.addEventListener('click', async e => {
+            if(e.target.closest('.btn-del-req') && confirm('¿Borrar?')) await deleteDoc(doc(colReqs, e.target.closest('.btn-del-req').dataset.id));
+            if(e.target.closest('.btn-del-art') && confirm('¿Borrar?')) await deleteDoc(doc(colArts, e.target.closest('.btn-del-art').dataset.id));
+            if(e.target.closest('.btn-del-emp') && confirm('¿Borrar?')) await deleteDoc(doc(colEmps, e.target.closest('.btn-del-emp').dataset.id));
+            if(e.target.closest('.btn-del-cat') && confirm('¿Borrar?')) await deleteDoc(doc(colCats, e.target.closest('.btn-del-cat').dataset.id));
+            if(e.target.closest('.btn-del-list') && confirm('¿Borrar?')) await deleteDoc(doc(colLists, e.target.closest('.btn-del-list').dataset.id));
+            if(e.target.closest('.status-badge-modal') && currentUser) { currentReqId = e.target.closest('.status-badge-modal').dataset.docId; openModal('status-modal'); }
+            
+            const btn = e.target.closest('.btn-view');
+            if (btn) {
+                if (btn.id === 'btn-view-grid') { catalogoViewMode = 'grid'; document.getElementById('btn-view-grid').classList.add('active'); document.getElementById('btn-view-list').classList.remove('active'); }
+                else if (btn.id === 'btn-view-list') { catalogoViewMode = 'list'; document.getElementById('btn-view-list').classList.add('active'); document.getElementById('btn-view-grid').classList.remove('active'); }
+                renderCatalogo();
+            }
+        });
+        
+        document.getElementById('btn-status-auth').onclick = () => setStatus('Autorizada');
+        document.getElementById('btn-status-cob').onclick = () => setStatus('Cobrada');
+        document.getElementById('btn-status-pen').onclick = () => setStatus('Pendiente');
 
+        async function setStatus(s) { if(!currentReqId) return; await updateDoc(doc(colReqs, currentReqId), { status: s, fechaCobro: s==='Cobrada'?new Date().toISOString().split('T')[0]:null }); closeModal('status-modal'); }
+
+        // --- EXCEL & QR & LOGIN ---
+        document.getElementById('file-upload-emp').onchange = async (e) => {
+            const f = e.target.files[0]; if(!f) return; const r = new FileReader();
+            r.onload = async (evt) => {
+                const wb = XLSX.read(evt.target.result,{type:'binary'}); const d = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1});
+                let c = 0; for(let i=0; i<d.length; i++) { if(d[i][0] && d[i][1] && !empsMap.has(d[i][0].toString())) { await addDoc(colEmps,{id:d[i][0].toString(),nombre:d[i][1].toString()}); c++; } }
+                showToast(`Cargados ${c}`);
+            }; r.readAsBinaryString(f);
+        };
+        window.mostrarQR = (n) => { document.getElementById('qr-category-name').innerText=n; document.getElementById('qrcode-container').innerHTML=''; new QRCode(document.getElementById('qrcode-container'),{text:window.location.href.split('?')[0]+'?cat='+encodeURIComponent(n),width:150,height:150}); openModal('qr-modal'); }
+        window.imprimirQR = () => { const w=window.open('','','height=400,width=400'); w.document.write('<html><body style="text-align:center"><h2>'+document.getElementById('qr-category-name').innerText+'</h2>'+document.getElementById('qrcode-container').innerHTML+'</body></html>'); w.document.close(); w.focus(); setTimeout(()=>w.print(),500); }
+        
+        document.getElementById('form-login').onsubmit = async(e)=>{e.preventDefault(); try{await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal');}catch{showToast('Error','error');}};
+        document.getElementById('btn-login-icon').onclick=()=>openModal('login-modal');
+        document.getElementById('btn-logout').onclick=()=>signOut(auth);
+        document.getElementById('btn-confirm-ok').onclick=()=>{if(confirmAction)confirmAction(); closeModal('confirm-modal');};
+        
         // --- ARRANQUE ---
+        function checkQR() { const p = new URLSearchParams(window.location.search); const c = p.get('cat'); if(c) { currentCategory=c; navigateTo('catalogo-screen'); renderCatalogoFilters(); registrarTrafico(c); } else registrarTrafico(null); }
         function setInitialIcons() { const empIcon = document.getElementById('emp-submit-icon'); if (empIcon) empIcon.innerHTML = iconAddSVG; }
-        setInitialIcons(); 
+        
+        setInitialIcons(); checkQR();
     </script>
 </body>
 </html>
