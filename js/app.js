@@ -18,6 +18,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
         let articulosSeleccionados = []; let currentItemForDetails = null;
         const PLACEHOLDER_IMG = "https://placehold.co/400x400/f1f5f9/94a3b8?text=Sin+Imagen";
         let editingEmpId = null, editingArtId = null; 
+        let currentVariantList = [];
         const iconAddSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>';
         const iconEditSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>';
 
@@ -323,6 +324,62 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
                 }).join('');
             }
         }
+
+// --- NUEVAS FUNCIONES: GESTIÓN DE VARIANTES ---
+function renderVariantTable() {
+    const container = document.getElementById('variants-list-display');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    if (currentVariantList.length === 0) {
+        container.innerHTML = '<div class="text-xs text-gray-400 italic text-center py-2">Sin variantes asignadas</div>';
+        return;
+    }
+
+    currentVariantList.forEach((item, index) => {
+        container.innerHTML += `
+            <div class="flex justify-between items-center bg-white p-2 rounded border border-gray-200 shadow-sm text-sm mb-1">
+                <div class="flex flex-col">
+                    <span class="font-bold text-gray-800 text-xs">${item.name}</span>
+                    <span class="font-mono text-[10px] text-primary-600">${item.code}</span>
+                </div>
+                <button type="button" class="text-gray-400 hover:text-red-500 transition p-1" onclick="window.removeVariant(${index})">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4z" clip-rule="evenodd" /></svg>
+                </button>
+            </div>
+        `;
+    });
+}
+
+// Hacerla global para que funcione el onclick del HTML string
+window.removeVariant = (index) => {
+    currentVariantList.splice(index, 1);
+    renderVariantTable();
+};
+
+// Listener para el botón "+"
+document.getElementById('btn-add-variant-item').onclick = () => {
+    const nameInput = document.getElementById('new-var-name');
+    const codeInput = document.getElementById('new-var-code');
+    const name = nameInput.value.trim();
+    const code = codeInput.value.trim();
+
+    if (!name || !code) return showToast('Ingresa nombre y código', 'error');
+
+    // Evitar duplicados exactos de nombre
+    if (currentVariantList.some(v => v.name.toLowerCase() === name.toLowerCase())) return showToast('Esa variante ya existe', 'error');
+
+    currentVariantList.push({ name, code });
+    renderVariantTable();
+    
+    // Limpiar inputs y enfocar nombre
+    nameInput.value = '';
+    codeInput.value = '';
+    nameInput.focus();
+};
+
+
+
         function renderAdmin() {
     // 1. Render Empleados (Igual que antes)
     document.getElementById('admin-list-empleados').innerHTML = empsMap.size ? Array.from(empsMap.values()).sort((a, b) => a.id - b.id).map(e => `<div class="flex justify-between items-center p-3 hover:bg-white transition"><div><span class="font-bold">${e.id}</span> <span class="text-gray-600 ml-2">${e.nombre}</span></div><div class="flex gap-3"><button class="btn-edit-emp text-gray-400 hover:text-blue-600 transition" data-id="${e.fbId}" data-emp-id="${e.id}" data-n="${e.nombre}" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg></button><button class="btn-del-emp text-gray-400 hover:text-red-600 transition" data-id="${e.fbId}" data-n="${e.nombre}" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button></div></div>`).join('') : '<div class="p-4 text-center text-gray-400 italic">Vacío</div>';
@@ -829,8 +886,7 @@ function renderAdminCategorias() {
         });
 
         // --- FUNCIONES DE CRUD (ARTÍCULOS) ---
-       // --- FUNCIONES DE CRUD (ARTÍCULOS) ---
-function startEditArticulo(art) {
+       function startEditArticulo(art) {
     editingArtId = art.fbId; 
     
     // Llenar campos existentes
@@ -839,30 +895,37 @@ function startEditArticulo(art) {
     document.getElementById('admin-art-num').readOnly = false; 
     document.getElementById('admin-art-nom').value = art.nom;
     document.getElementById('admin-art-cat').value = art.cat || ''; 
-    
-    // --- NUEVO: Cargar Precio ---
     document.getElementById('admin-art-precio').value = art.precio || ''; 
-    // ----------------------------
-
     document.getElementById('admin-art-img').value = art.img || '';
-    
+
+    // --- LOGICA DE VARIANTES ACTUALIZADA ---
     const hasVariantsCheck = document.getElementById('admin-art-hasVariants');
     const variantsContainer = document.getElementById('admin-variants-container');
-    const variantsInput = document.getElementById('admin-art-variants');
     
-    if (art.hasVariants) { 
-        hasVariantsCheck.checked = true; 
-        variantsInput.value = art.variants || ''; 
-        variantsContainer.style.display = 'block'; 
-    } else { 
-        hasVariantsCheck.checked = false; 
-        variantsInput.value = ''; 
-        variantsContainer.style.display = 'none'; 
+    hasVariantsCheck.checked = art.hasVariants;
+    variantsContainer.style.display = art.hasVariants ? 'block' : 'none';
+
+    // Limpiar lista actual en memoria
+    currentVariantList = [];
+
+    if (art.hasVariants) {
+        if (Array.isArray(art.variants)) {
+            // NUEVO SISTEMA: Es un array de objetos, lo cargamos directo
+            currentVariantList = [...art.variants];
+        } else if (typeof art.variants === 'string') {
+            // SISTEMA VIEJO MIGRACION: Es un string "30, 32". Lo convertimos al vuelo.
+            const oldVars = art.variants.split(',');
+            oldVars.forEach(v => {
+                const val = v.trim();
+                if(val) currentVariantList.push({ name: val, code: `${art.num}-${val}` }); 
+            });
+        }
     }
+    renderVariantTable(); // Renderizar tabla visual
     
     renderArticuloListsCheckboxes(art.assignedLists);
     
-    // Cambios visuales
+    // Cambios visuales de botones y títulos
     const title = document.getElementById('art-form-title');
     title.innerText = "Editar Artículo";
     title.classList.add('text-primary-600'); 
@@ -880,19 +943,20 @@ function cancelEditArticulo() {
     editingArtId = null; 
     document.getElementById('form-add-articulo').reset();
     document.getElementById('admin-art-original-num').value = ""; 
-    
-    // --- NUEVO: Asegurar que el precio se limpie visualmente (aunque el reset lo hace, reforzamos) ---
     document.getElementById('admin-art-precio').value = "";
-    // ------------------------------------------------------------------------------------------------
-
     document.getElementById('admin-art-num').readOnly = false;
+    
+    // --- RESET DE VARIANTES ---
     document.getElementById('admin-variants-container').style.display = 'none';
     document.getElementById('admin-art-hasVariants').checked = false;
+    currentVariantList = []; // Vaciamos la memoria
+    renderVariantTable();    // Limpiamos la tabla visual
+    
     renderArticuloListsCheckboxes();
     
     const title = document.getElementById('art-form-title');
     title.innerText = "Catálogo Artículos";
-    title.classList.remove('text-primary-600');
+    title.classList.remove('text-primary-600'); 
     
     const submitBtn = document.querySelector('#form-add-articulo button[type="submit"]');
     submitBtn.innerHTML = `${iconAddSVG}`; 
@@ -900,7 +964,6 @@ function cancelEditArticulo() {
     
     document.getElementById('btn-cancel-art').classList.add('hidden');
 }
-
         // --- LISTENERS DE EVENTOS DE FORMULARIO Y OTROS ---
         document.getElementById('main-back-btn').onclick = () => navigateTo('home-screen');
         document.getElementById('btn-login-icon').onclick = () => openModal('login-modal');
@@ -1027,31 +1090,38 @@ function cancelEditArticulo() {
         };
         
         // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (ACTUALIZADO) ---
-        // --- FORMULARIO AÑADIR/EDITAR ARTÍCULO (ACTUALIZADO CON PRECIO) ---
-document.getElementById('form-add-articulo').onsubmit = async (e) => { 
+       document.getElementById('form-add-articulo').onsubmit = async (e) => { 
     e.preventDefault(); 
     const num = e.target['admin-art-num'].value.trim();
     const originalNum = document.getElementById('admin-art-original-num').value;
     const nom = e.target['admin-art-nom'].value.trim();
     const cat = e.target['admin-art-cat'].value;
     
-    // --- NUEVO: Capturar Precio ---
     const precioRaw = e.target['admin-art-precio'].value;
     const precio = precioRaw ? parseFloat(precioRaw) : 0;
-    // ------------------------------
-
+    
     const img = e.target['admin-art-img'].value.trim();
     const hasVariants = e.target['admin-art-hasVariants'].checked;
-    const variants = e.target['admin-art-variants'].value.trim();
 
-    if(!cat) return showToast('Debes seleccionar una categoría', 'error');
-    if(hasVariants && !variants) return showToast('Debes escribir las variantes separadas por coma', 'error');
+    // VALIDACION IMPORTANTE: Si dice que tiene variantes, debe haber agregado al menos una a la lista
+    if (hasVariants && currentVariantList.length === 0) {
+        return showToast('Marcaste que tiene variantes, pero no has agregado ninguna.', 'error');
+    }
     
     const assignedLists = []; 
     document.querySelectorAll('#admin-art-lists input[type="checkbox"]:checked').forEach(cb => assignedLists.push(cb.value));
     
-    // Agregamos precio al objeto
-    const artData = { num, nom, cat, precio, img, hasVariants, variants: hasVariants ? variants : null, assignedLists };
+    // OBJETO A GUARDAR (Ahora variants es el array completo)
+    const artData = { 
+        num, 
+        nom, 
+        cat, 
+        precio, 
+        img, 
+        hasVariants, 
+        variants: hasVariants ? currentVariantList : null, 
+        assignedLists 
+    };
     
     if (editingArtId) { 
         if (num !== originalNum) {
@@ -1070,9 +1140,12 @@ document.getElementById('form-add-articulo').onsubmit = async (e) => {
         try { 
             await addDoc(colArts, artData); 
             showToast('Artículo agregado'); 
+            // Limpiezas post-guardado
             document.getElementById('admin-art-num').value = "";
             document.getElementById('admin-art-nom').value = "";
-            document.getElementById('admin-art-precio').value = ""; // Limpiar precio
+            document.getElementById('admin-art-precio').value = ""; 
+            currentVariantList = []; // Reset variantes memoria
+            renderVariantTable();    // Reset tabla visual
             document.getElementById('admin-art-num').focus();
         } catch(err){ 
             showToast('Error al crear', 'error'); 
