@@ -3,78 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolCrib Requisiciones Pro</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
+    <title>ToolCrib Requisiciones</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: { primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' } },
-                    animation: { 'fade-in': 'fadeIn 0.3s ease-out', 'slide-in': 'slideIn 0.3s ease-out forwards', 'slide-out': 'slideOut 0.3s ease-in forwards' },
+                    animation: { 'fade-in': 'fadeIn 0.3s ease-out' },
                     keyframes: {
-                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        slideIn: { '0%': { transform: 'translateX(100%)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
-                        slideOut: { '0%': { transform: 'translateX(0)', opacity: '1' }, '100%': { transform: 'translateX(100%)', opacity: '0' } }
+                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
                     }
                 }
             }
         }
     </script>
-
     <style>
-        /* Toast Notifications */
         #toast-container { position: fixed !important; bottom: 1.5rem !important; right: 1.5rem !important; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; }
-        .toast { display: flex; align-items: center; padding: 1rem; width: 20rem; bg-white; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-left: 4px solid; background: white; animation: slideIn 0.3s ease-out forwards; }
-        .toast-success { border-color: #22c55e; } 
-        .toast-error { border-color: #ef4444; } 
-        .toast-info { border-color: #3b82f6; } 
-        .toast.hiding { animation: slideOut 0.3s ease-in forwards; }
-
-        /* Helpers */
-        input:read-only { background-color: #f3f4f6; color: #6b7280; cursor: not-allowed; }
-        .aspect-w-1 { position: relative; padding-bottom: 100%; } 
-        .aspect-w-1 > * { position: absolute; height: 100%; width: 100%; top: 0; right: 0; bottom: 0; left: 0; }
+        .toast { display: flex; align-items: center; padding: 1rem; width: 20rem; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-left: 4px solid; animation: fadeIn 0.3s ease-out; }
+        .toast-success { border-color: #22c55e; } .toast-error { border-color: #ef4444; } .toast-info { border-color: #3b82f6; }
         
-        /* Variantes Tabla */
-        .variant-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; animation: fadeIn 0.3s; }
+        .btn { @apply px-4 py-2 rounded-lg font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2; }
+        .btn-primary { @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500; }
+        .btn-secondary { @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-300; }
+        .btn-danger { @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500; }
+        
+        /* Estilos Variantes */
+        .variant-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
         .variant-input { width: 50%; border-radius: 0.5rem; border: 1px solid #d1d5db; font-size: 0.75rem; padding: 0.25rem 0.5rem; }
-        .variant-btn-del { color: #f87171; padding: 0.25rem; transition: 0.2s; }
-        .variant-btn-del:hover { color: #dc2626; background-color: #fef2f2; border-radius: 0.25rem; }
-
-        /* Responsive Table */
+        
+        /* Tablas responsivas */
         @media (max-width: 640px) {
             .responsive-table thead { display: none; }
-            .responsive-table tbody tr { display: flex; flex-direction: column; margin-bottom: 1rem; background-color: white; border-radius: 0.75rem; border: 1px solid #e5e7eb; padding: 1.25rem; margin-left: 1rem; margin-right: 1rem; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
-            .responsive-table td { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f3f4f6; }
-            .responsive-table td::before { content: attr(data-label); font-weight: 500; color: #6b7280; font-size: 0.875rem; width: 33%; text-align: left; }
-            .responsive-table td > * { text-align: right; width: 100%; }
-            .responsive-table td.col-acciones { justify-content: flex-end; border-top: 1px solid #f3f4f6; }
-            .responsive-table td.col-acciones::before { display: none; }
+            .responsive-table tbody tr { display: flex; flex-direction: column; margin-bottom: 1rem; background-color: white; border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; }
+            .responsive-table td { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; }
+            .responsive-table td::before { content: attr(data-label); font-weight: 500; color: #6b7280; font-size: 0.875rem; }
         }
-        @media (max-width: 1024px) and (min-width: 640px) { #admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        
+        /* Grid de Admin */
         @media (min-width: 1024px) { #admin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        
         .btn-view.active { background-color: #dbeafe; color: #2563eb; }
         .btn-view:not(.active) { background-color: white; color: #9ca3af; }
-        #admin-variants-container { display: none; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
     <div id="toast-container"></div>
     
     <div class="min-h-screen flex flex-col">
-        <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-gray-200 transition-all">
+        <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-gray-200">
             <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
                 <div class="flex items-center">
-                    <button id="main-back-btn" class="hidden mr-3 p-2 text-gray-500 hover:bg-gray-100 rounded-full transition" title="Regresar"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
-                    <span class="text-xl font-bold text-gray-900">ToolCrib <span class="text-primary-600">Admin</span></span>
+                    <button id="main-back-btn" class="hidden mr-3 p-2 text-gray-500 hover:bg-gray-100 rounded-full" title="Regresar"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
+                    <span class="text-xl font-bold text-gray-900">ToolCrib <span class="text-primary-600">App</span></span>
                 </div>
                 <div class="flex items-center gap-3">
                     <span id="user-email-display" class="text-sm text-gray-500 hidden sm:inline"></span>
@@ -84,97 +69,177 @@
             </div>
         </header>
 
-        <main class="max-w-7xl mx-auto p-4 sm:p-6">
+        <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
             
             <div id="home-screen" class="screen-content animate-fade-in">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-3 bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-8 text-white shadow-lg flex flex-col md:flex-row items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold mb-2">Panel de Control</h1>
-                            <p class="text-primary-100">Gestiona catálogo, usuarios y estadísticas.</p>
-                        </div>
-                        <button data-navigate-to="admin-screen" class="mt-4 md:mt-0 bg-white text-primary-700 px-6 py-3 rounded-xl font-bold shadow-md hover:bg-gray-50 transition transform hover:-translate-y-1">
-                            Entrar al Sistema
-                        </button>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center sm:text-left">
+                    <h1 class="text-3xl font-extrabold text-gray-900">Centro de Control</h1>
+                    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <button data-navigate-to="registrar-screen" class="p-6 bg-primary-600 rounded-xl shadow-lg text-white hover:bg-primary-700 transition flex flex-col items-start"><span class="text-xl font-bold">Nueva Requisición</span><span class="text-primary-200 text-sm mt-1">Solicitar material</span></button>
+                        <button data-navigate-to="consultar-screen" class="p-6 bg-white rounded-xl shadow border border-gray-200 hover:border-primary-500 transition flex flex-col items-start"><span class="text-xl font-bold text-gray-900">Historial</span><span class="text-gray-500 text-sm mt-1">Ver estatus</span></button>
+                        <button data-navigate-to="catalogo-screen" class="p-6 bg-white rounded-xl shadow border border-gray-200 hover:border-primary-500 transition flex flex-col items-start"><span class="text-xl font-bold text-gray-900">Catálogo</span><span class="text-gray-500 text-sm mt-1">Ver productos</span></button>
+                        <button id="btn-admin-home" data-navigate-to="admin-screen" class="hidden p-6 bg-gray-800 rounded-xl shadow text-white hover:bg-gray-900 transition flex flex-col items-start"><span class="text-xl font-bold">Admin</span><span class="text-gray-300 text-sm mt-1">Gestionar todo</span></button>
                     </div>
                 </div>
             </div>
 
-            <div id="admin-screen" class="screen-content hidden animate-fade-in space-y-8">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                        <h2 id="art-form-title" class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-                            Catálogo Maestro
-                        </h2>
-                        <input type="search" id="admin-art-search" class="w-64 rounded-lg border-gray-300 text-sm focus:ring-primary-500" placeholder="Buscar artículo...">
-                    </div>
-
-                    <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-1 bg-gray-50 p-5 rounded-xl border border-gray-200 h-fit sticky top-24">
-                            <form id="form-add-articulo" class="space-y-4">
-                                <input type="hidden" id="admin-art-original-num">
-                                <div class="flex gap-3">
-                                    <div class="w-1/3"><label class="text-xs font-bold text-gray-500 uppercase ml-1">No. Parte</label><input type="text" id="admin-art-num" placeholder="Ej. 123-ABC" required class="w-full rounded-lg border-gray-300 focus:ring-primary-500 text-sm"></div>
-                                    <div class="w-2/3"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Descripción</label><input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-full rounded-lg border-gray-300 focus:ring-primary-500 text-sm"></div>
+            <div id="registrar-screen" class="screen-content hidden animate-fade-in">
+                <h1 class="text-3xl font-bold text-gray-900 mb-6">Nueva Requisición</h1>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <h2 class="font-bold text-lg mb-4">1. Datos Solicitante</h2>
+                            <form id="form-registrar" class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-xs font-bold text-gray-500">Fecha</label><input type="text" id="reg-fecha" readonly class="w-full rounded border-gray-300 bg-gray-100"></div>
+                                    <div><label class="text-xs font-bold text-primary-600"># Requisición</label><input type="text" id="reg-num-requi" required class="w-full rounded border-primary-300"></div>
                                 </div>
-                                <div class="flex gap-3">
-                                    <div class="w-1/2"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Categoría</label><select id="admin-art-cat" required class="w-full rounded-lg border-gray-300 text-sm focus:ring-primary-500"><option value="">Selecciona...</option></select></div>
-                                    <div class="w-1/2"><label class="text-xs font-bold text-gray-500 uppercase ml-1">Precio ($)</label><input type="number" id="admin-art-precio" placeholder="0.00" step="0.01" min="0" class="w-full rounded-lg border-gray-300 text-sm"></div>
-                                </div>
-                                <div><label class="text-xs font-bold text-gray-500 uppercase ml-1">Imagen (URL)</label><input type="text" id="admin-art-img" placeholder="https://..." class="w-full rounded-lg border-gray-300 text-sm text-gray-500"></div>
-
-                                <div class="border-t border-gray-200 pt-3 mt-1">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <input type="checkbox" id="admin-art-hasVariants" class="h-4 w-4 rounded text-primary-600 focus:ring-primary-500">
-                                        <label for="admin-art-hasVariants" class="text-sm font-bold text-gray-700">Tiene Variantes (Tallas/Tipos)</label>
+                                <div>
+                                    <label class="text-xs font-bold text-gray-500">Empleado</label>
+                                    <div class="relative">
+                                        <input type="text" id="reg-emp-search" placeholder="Buscar empleado..." class="w-full rounded border-gray-300 pl-8">
+                                        <div class="absolute top-2.5 left-2.5 text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></div>
+                                        <button type="button" id="btn-clear-emp" class="hidden absolute top-2.5 right-2 text-gray-400 hover:text-red-500">✕</button>
                                     </div>
-                                    <div id="admin-variants-panel" class="hidden bg-white p-3 rounded-lg border border-gray-300 shadow-inner">
-                                        <div class="flex justify-between text-xs font-bold text-gray-400 mb-2 px-1">
-                                            <span class="w-1/2">Nombre</span><span class="w-1/2">Código</span><span class="w-6"></span>
-                                        </div>
-                                        <div id="variants-list-container" class="space-y-2"></div>
-                                        <button type="button" onclick="window.addVariantRow()" class="mt-3 w-full py-1.5 text-xs font-bold text-primary-600 border border-dashed border-primary-300 rounded hover:bg-primary-50 flex items-center justify-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>Agregar Variante</button>
-                                    </div>
-                                </div>
-
-                                <div class="mt-2"><label class="block text-sm font-medium text-gray-700 mb-2">Asignar a Listas:</label><div id="admin-art-lists" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-24 overflow-y-auto border rounded-lg p-3 bg-white"></div></div>
-                                <div class="flex gap-2 pt-4">
-                                    <button type="button" id="btn-cancel-art" class="hidden w-1/3 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">Cancelar</button>
-                                    <button type="submit" class="flex-1 px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 font-bold shadow-md">Guardar Artículo</button>
+                                    <div id="reg-emp-results" class="hidden absolute z-10 w-full bg-white shadow-lg border border-gray-200 max-h-40 overflow-y-auto mt-1 rounded"></div>
+                                    <input type="hidden" id="reg-selected-emp-id"><input type="hidden" id="reg-selected-emp-name">
                                 </div>
                             </form>
                         </div>
-
-                        <div class="lg:col-span-2 flex flex-col h-[600px]">
-                            <div id="admin-list-articulos" class="flex-grow overflow-y-auto pr-2 space-y-3"></div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <div class="flex justify-between items-center mb-4"><h2 class="font-bold text-lg">Listas Rápidas</h2><select id="reg-list-select" class="text-sm border-gray-300 rounded"></select></div>
+                            <div id="lista-diarios" class="h-64 overflow-y-auto border rounded bg-gray-50 p-2"></div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 h-96 flex flex-col">
-                        <h2 class="text-lg font-bold mb-4 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Empleados</h2>
-                        <div class="flex gap-2 mb-4"><input type="file" id="file-upload-emp" accept=".xlsx, .csv" class="hidden"><button onclick="document.getElementById('file-upload-emp').click()" class="flex-1 px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition flex items-center justify-center gap-1">📥 Cargar Excel</button></div>
-                        <form id="form-add-empleado" class="flex gap-2 mb-4"><input type="number" id="admin-emp-id" placeholder="ID" class="w-1/3 rounded-lg border-gray-300 text-sm" required><input type="text" id="admin-emp-nombre" placeholder="Nombre" class="w-full rounded-lg border-gray-300 text-sm" required><button type="submit" class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">+</button></form>
-                        <div id="admin-list-empleados" class="flex-grow overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 h-96 flex flex-col">
-                        <h2 class="text-lg font-bold mb-4 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" /></svg>Categorías y Listas</h2>
-                        <div class="flex gap-2 mb-2"><input type="text" id="admin-cat-name" placeholder="Nueva Categoría" class="w-full rounded-lg border-gray-300 text-sm"><button id="btn-add-cat-manual" class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">+</button></div>
-                        <div id="admin-list-categorias" class="h-1/2 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y mb-4"></div>
-                        <div class="flex gap-2 mb-2"><input type="text" id="admin-list-name" placeholder="Nueva Lista Rápida" class="w-full rounded-lg border-gray-300 text-sm"><button id="btn-add-list-manual" class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">+</button></div>
-                        <div id="admin-list-lists" class="h-1/2 overflow-y-auto border rounded-lg bg-gray-50 p-1 divide-y"></div>
-                        <form id="form-add-categoria" class="hidden"></form>
-                        <form id="form-add-list" class="hidden"></form>
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <h2 class="font-bold text-lg mb-4">3. Artículos</h2>
+                            <div class="flex gap-2 mb-2">
+                                <input type="search" id="search-reg-articulo" placeholder="Buscar artículo..." class="w-full rounded border-gray-300">
+                            </div>
+                            <div id="filtros-reg-articulo" class="flex flex-wrap gap-2 mb-2"></div>
+                            <div id="lista-reg-articulo" class="h-64 overflow-y-auto border rounded bg-gray-50 p-2"></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <h2 class="font-bold text-lg mb-2">4. Resumen (<span id="cesta-conteo">0</span>)</h2>
+                            <div class="h-32 overflow-y-auto border rounded bg-white mb-4 p-2">
+                                <div id="cesta-placeholder" class="text-gray-400 text-center py-4">Vacío</div>
+                                <div id="cesta-articulos" class="hidden space-y-2"></div>
+                            </div>
+                            <button id="btn-registrar-submit" class="btn btn-primary w-full font-bold">Registrar Requisición</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm"><h2 class="text-2xl font-bold text-center mb-6">Acceso Admin</h2><form id="form-login" class="space-y-4"><input type="email" id="login-email" required class="w-full rounded-lg" placeholder="Email"><input type="password" id="login-pass" required class="w-full rounded-lg" placeholder="Contraseña"><button type="submit" class="w-full py-3 rounded-lg bg-primary-600 text-white hover:bg-primary-700 font-bold">Entrar</button></form><button type="button" onclick="closeModal('login-modal')" class="w-full text-center text-gray-500 text-sm mt-4">Cancelar</button></div></div>
-            <div id="confirm-modal" class="hidden fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4"><div class="bg-white rounded-xl p-6 w-full max-w-sm text-center"><h3 id="confirm-title" class="text-lg font-bold mb-2">Confirmar</h3><p id="confirm-message" class="text-gray-500 mb-6 text-sm"></p><div class="flex gap-3"><button onclick="closeModal('confirm-modal')" class="flex-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">Cancelar</button><button id="btn-confirm-ok" class="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">Confirmar</button></div></div></div>
-            <div id="qr-modal" class="hidden fixed inset-0 bg-black/60 z-[70] flex items-center justify-center p-4"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center"><h2 class="text-xl font-bold mb-2">Código QR</h2><p id="qr-category-name" class="text-primary-600 mb-4"></p><div class="bg-white p-4 border-2 border-dashed border-gray-300 rounded-xl inline-block mb-6"><div id="qrcode-container"></div></div><div class="flex flex-col gap-3"><button onclick="imprimirQR()" class="w-full py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">Imprimir</button><button onclick="closeModal('qr-modal')" class="w-full py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">Cerrar</button></div></div></div>
+            <div id="consultar-screen" class="screen-content hidden animate-fade-in">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
+                        <h2 class="text-xl font-bold">Historial</h2>
+                        <input type="search" id="search-input" placeholder="Buscar..." class="rounded border-gray-300">
+                    </div>
+                    <table class="responsive-table w-full">
+                        <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
+                            <tr><th class="p-3 text-left"># Requi</th><th class="p-3 text-left">Fecha</th><th class="p-3 text-left">Empleado</th><th class="p-3 text-left">Artículos</th><th class="p-3 text-center">Estatus</th><th class="p-3 text-left">Cobro</th><th class="p-3 text-center col-acciones hidden">Acciones</th></tr>
+                        </thead>
+                        <tbody id="tbody-requisiciones" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="catalogo-screen" class="screen-content hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold">Catálogo</h2>
+                    <div class="flex gap-2">
+                        <div class="border rounded flex"><button id="btn-view-grid" class="btn-view active p-2">▦</button><button id="btn-view-list" class="btn-view p-2">☰</button></div>
+                        <input type="search" id="search-catalogo" placeholder="Buscar..." class="rounded border-gray-300">
+                    </div>
+                </div>
+                <div class="mb-4"><span class="font-bold text-sm mr-2">Filtros:</span><div id="catalogo-filtros" class="inline-flex gap-2"></div></div>
+                <div class="mb-4"><span class="font-bold text-sm mr-2">Listas:</span><div id="catalogo-list-filtros" class="inline-flex gap-2"></div></div>
+                <div id="catalogo-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+            </div>
+
+            <div id="admin-screen" class="screen-content hidden animate-fade-in">
+                <div id="admin-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-96 flex flex-col">
+                        <h2 class="font-bold text-lg mb-2">Rendimiento</h2>
+                        <div class="text-center mb-4">
+                            <div class="text-4xl font-extrabold text-primary-600" id="stats-total">0</div>
+                            <div class="text-xs text-gray-400">Visitas Totales</div>
+                        </div>
+                        <div class="flex justify-center gap-4 text-xs mb-4">
+                            <div><b id="stats-qr">0</b> QR</div>
+                            <div><b id="stats-direct">0</b> Web</div>
+                        </div>
+                        <div class="flex-grow overflow-hidden flex flex-col">
+                            <h3 class="text-xs font-bold mb-2">Última Actividad</h3>
+                            <div id="stats-recent-logs" class="overflow-y-auto text-xs space-y-1"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 md:col-span-2 flex flex-col min-h-[500px]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="font-bold text-lg">Catálogo Maestro</h2>
+                            <input type="search" id="admin-art-search" placeholder="Buscar..." class="rounded border-gray-300 text-sm">
+                        </div>
+                        
+                        <form id="form-add-articulo" class="bg-gray-50 p-4 rounded-lg mb-4 border border-gray-200">
+                            <input type="hidden" id="admin-art-original-num">
+                            <div class="flex gap-2 mb-2">
+                                <input type="text" id="admin-art-num" placeholder="No. Parte" required class="w-1/3 rounded border-gray-300 text-sm">
+                                <input type="text" id="admin-art-nom" placeholder="Descripción" required class="w-2/3 rounded border-gray-300 text-sm">
+                            </div>
+                            <div class="flex gap-2 mb-2">
+                                <select id="admin-art-cat" required class="w-1/2 rounded border-gray-300 text-sm"><option value="">Categoría...</option></select>
+                                <input type="number" id="admin-art-precio" placeholder="Precio $" step="0.01" class="w-1/2 rounded border-gray-300 text-sm">
+                            </div>
+                            <input type="text" id="admin-art-img" placeholder="URL Imagen" class="w-full rounded border-gray-300 text-sm mb-2">
+                            
+                            <div class="border-t pt-2 mt-2">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <input type="checkbox" id="admin-art-hasVariants" class="rounded text-primary-600">
+                                    <label for="admin-art-hasVariants" class="text-sm font-bold">Tiene Variantes</label>
+                                </div>
+                                <div id="admin-variants-panel" class="hidden bg-white p-2 rounded border border-gray-200">
+                                    <div id="variants-list-container" class="space-y-2 mb-2"></div>
+                                    <button type="button" onclick="window.addVariantRow()" class="w-full py-1 text-xs border border-dashed border-primary-300 text-primary-600 rounded hover:bg-primary-50">+ Agregar Variante</button>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs font-bold text-gray-500">Listas:</div>
+                            <div id="admin-art-lists" class="grid grid-cols-3 gap-1 mb-3"></div>
+
+                            <div class="flex gap-2">
+                                <button type="button" id="btn-cancel-art" class="hidden btn btn-secondary w-1/3">Cancelar</button>
+                                <button type="submit" class="btn btn-primary flex-1">Guardar</button>
+                            </div>
+                        </form>
+                        <div id="admin-list-articulos" class="flex-grow overflow-y-auto border rounded bg-white p-2 space-y-2"></div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-96 flex flex-col">
+                        <h2 class="font-bold text-lg mb-2">Empleados</h2>
+                        <div class="flex gap-2 mb-2"><input type="file" id="file-upload-emp" class="hidden"><button onclick="document.getElementById('file-upload-emp').click()" class="w-full bg-green-100 text-green-700 py-1 rounded text-sm">Cargar Excel</button></div>
+                        <form id="form-add-empleado" class="flex gap-2 mb-2"><input type="number" id="admin-emp-id" placeholder="ID" class="w-1/3 rounded border-gray-300 text-sm"><input type="text" id="admin-emp-nombre" placeholder="Nombre" class="w-full rounded border-gray-300 text-sm"><button class="btn btn-primary p-1">+</button></form>
+                        <div id="admin-list-empleados" class="flex-grow overflow-y-auto border rounded p-1"></div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-96 flex flex-col">
+                        <h2 class="font-bold text-lg mb-2">Configuración</h2>
+                        <form id="form-add-categoria" class="flex gap-2 mb-2"><input type="text" id="admin-cat-name" placeholder="Nueva Categoría" class="w-full rounded border-gray-300 text-sm"><button class="btn btn-primary p-1">+</button></form>
+                        <div id="admin-list-categorias" class="h-1/3 overflow-y-auto border rounded p-1 mb-4"></div>
+                        <form id="form-add-list" class="flex gap-2 mb-2"><input type="text" id="admin-list-name" placeholder="Nueva Lista" class="w-full rounded border-gray-300 text-sm"><button class="btn btn-primary p-1">+</button></form>
+                        <div id="admin-list-lists" class="h-1/3 overflow-y-auto border rounded p-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded p-6 w-full max-w-sm"><h2 class="text-xl font-bold mb-4">Acceso</h2><form id="form-login" class="space-y-4"><input type="email" id="login-email" placeholder="Email" class="w-full rounded border-gray-300"><input type="password" id="login-pass" placeholder="Pass" class="w-full rounded border-gray-300"><button class="btn btn-primary w-full">Entrar</button></form><button onclick="closeModal('login-modal')" class="w-full mt-2 text-sm text-gray-500">Cancelar</button></div></div>
+            <div id="confirm-modal" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4"><div class="bg-white rounded p-6 w-full max-w-sm text-center"><h3 id="confirm-title" class="font-bold text-lg">Confirmar</h3><p id="confirm-message" class="text-gray-500 my-4"></p><div class="flex gap-2"><button onclick="closeModal('confirm-modal')" class="btn btn-secondary flex-1">No</button><button id="btn-confirm-ok" class="btn btn-danger flex-1">Sí</button></div></div></div>
+            <div id="item-details-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded p-6 w-full max-w-sm"><h2 id="item-details-title" class="font-bold text-lg mb-4">Detalles</h2><div id="variant-container" class="hidden mb-4"><label class="text-sm font-bold">Variante</label><select id="variant-select" class="w-full rounded border-gray-300"></select></div><div class="mb-4"><label class="text-sm font-bold">Cantidad</label><div class="flex gap-2"><button id="btn-qty-minus" class="btn btn-secondary">-</button><input type="number" id="item-qty" value="1" class="w-full text-center rounded border-gray-300"><button id="btn-qty-plus" class="btn btn-secondary">+</button></div></div><div class="flex gap-2 justify-end"><button onclick="closeModal('item-details-modal')" class="btn btn-secondary">Cancelar</button><button id="btn-item-details-submit" class="btn btn-primary">Agregar</button></div></div></div>
+            <div id="req-details-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"><div class="bg-white rounded p-6 w-full max-w-lg"><h2 class="font-bold text-lg mb-4">Requisición</h2><div class="grid grid-cols-3 gap-2 text-sm mb-4"><div><b>#</b> <span id="req-details-num"></span></div><div><b>Fecha</b> <span id="req-details-fecha"></span></div><div><b>Emp</b> <span id="req-details-emp"></span></div></div><div id="req-details-list" class="h-48 overflow-y-auto border rounded p-2"></div><div class="mt-4 text-right"><button onclick="closeModal('req-details-modal')" class="btn btn-secondary">Cerrar</button></div></div></div>
+            <div id="qr-modal" class="hidden fixed inset-0 bg-black/60 z-[70] flex items-center justify-center p-4"><div class="bg-white rounded p-6 text-center"><h2 class="font-bold text-lg">QR</h2><p id="qr-category-name" class="mb-4"></p><div id="qrcode-container" class="mb-4 flex justify-center"></div><button onclick="imprimirQR()" class="btn btn-primary w-full mb-2">Imprimir</button><button onclick="closeModal('qr-modal')" class="btn btn-secondary w-full">Cerrar</button></div></div>
         </main>
     </div>
 
@@ -183,7 +248,6 @@
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection, setDoc, increment, getDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONFIGURACIÓN ---
         const app = initializeApp({ apiKey: "AIzaSyDahnSPvBNTYot00JCn5CBjggAYFVGhbjE", authDomain: "panel-logistica-simple.firebaseapp.com", projectId: "panel-logistica-simple", storageBucket: "panel-logistica-simple.firebasestorage.app", messagingSenderId: "528779971851", appId: "1:528779971851:web:29ed933e7c7fd997a4e60e" });
         const auth = getAuth(app); const db = getFirestore(app);
         
@@ -192,92 +256,93 @@
         const colCats = collection(db, 'requi_toolcrib', 'data', 'categories');
         const colLists = collection(db, 'requi_toolcrib', 'data', 'lists');
         const colLogs = collection(db, 'requi_toolcrib', 'data', 'traffic_logs');
+        const colReqs = collection(db, 'requi_toolcrib', 'data', 'requisitions');
 
-        let artsMap = new Map(), empsMap = new Map(), catsMap = new Map(), listsMap = new Map();
-        let editingArtId = null, confirmAction = null;
-        let currentUser = null;
+        let artsMap = new Map(), empsMap = new Map(), catsMap = new Map(), listsMap = new Map(), reqsData = [];
+        let editingArtId = null, editingEmpId = null, confirmAction = null;
+        let currentUser = null, currentItemForDetails = null, articulosSeleccionados = [];
+        let currentCategory='Todos', currentRegCategory='Todos', currentRegListId='Todos';
 
-        // --- FUNCIONES NUEVAS PARA VARIANTES ---
+        const PLACEHOLDER_IMG = "https://placehold.co/400x400/f1f5f9/94a3b8?text=Sin+Imagen";
+
+        // --- HELPER VARIANTES ---
         window.addVariantRow = (name = '', code = '') => {
             const container = document.getElementById('variants-list-container');
             const row = document.createElement('div');
             row.className = 'variant-row';
-            row.innerHTML = `<input type="text" placeholder="Talla 32" value="${name}" class="variant-name-input variant-input"><input type="text" placeholder="BTA-T32" value="${code}" class="variant-code-input variant-input"><button type="button" onclick="this.parentElement.remove()" class="variant-btn-del">🗑️</button>`;
+            row.innerHTML = `<input type="text" placeholder="Talla" value="${name}" class="variant-name-input variant-input"><input type="text" placeholder="Código" value="${code}" class="variant-code-input variant-input"><button type="button" onclick="this.parentElement.remove()" class="variant-btn-del text-red-500 font-bold px-2">x</button>`;
             container.appendChild(row);
         };
         const getVariantsData = () => {
-            const variants = [];
-            document.querySelectorAll('.variant-row').forEach(row => {
-                const name = row.querySelector('.variant-name-input').value.trim();
-                const code = row.querySelector('.variant-code-input').value.trim();
-                if (name && code) variants.push({ name, code });
-            });
-            return variants;
+            const arr = []; document.querySelectorAll('.variant-row').forEach(row => {
+                const n = row.querySelector('.variant-name-input').value.trim();
+                const c = row.querySelector('.variant-code-input').value.trim();
+                if(n && c) arr.push({name:n, code:c});
+            }); return arr;
         };
 
         // --- UTILIDADES ---
         const showToast = (msg, type = 'success') => {
             const t = document.createElement('div'); t.className = `toast toast-${type}`;
-            t.innerHTML = `<div class="mr-3 font-bold">${type === 'error' ? '❌' : '✅'}</div><div class="text-sm font-medium">${msg}</div>`;
+            t.innerHTML = `<div class="mr-2 font-bold">${type==='error'?'✖':'✔'}</div><div>${msg}</div>`;
             document.getElementById('toast-container').appendChild(t);
             setTimeout(() => { t.classList.add('hiding'); setTimeout(() => t.remove(), 300) }, 3000);
         };
         window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
         const openModal = (id) => document.getElementById(id).classList.remove('hidden');
-        const askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = msg; confirmAction = action; openModal('confirm-modal'); };
-        const navigateTo = (id) => { document.querySelectorAll('.screen-content').forEach(el => el.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); };
+        const askConfirm = (title, msg, action) => { document.getElementById('confirm-title').innerText=title; document.getElementById('confirm-message').innerText=msg; confirmAction=action; openModal('confirm-modal'); };
+        const navigateTo = (id) => { document.querySelectorAll('.screen-content').forEach(e=>e.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(id==='registrar-screen') resetRegistro(); };
 
-        // --- AUTH & DATA ---
+        // --- AUTH ---
         onAuthStateChanged(auth, (u) => {
             currentUser = u;
+            document.getElementById('btn-login-icon').classList.toggle('hidden', !!u);
+            document.getElementById('btn-logout').classList.toggle('hidden', !u);
+            document.getElementById('btn-admin-home').classList.toggle('hidden', !u);
+            document.querySelectorAll('.col-acciones').forEach(e => e.classList.toggle('hidden', !u));
+            
             if(u) {
                 document.getElementById('user-email-display').innerText = u.email;
-                document.getElementById('btn-login-icon').classList.add('hidden');
-                document.getElementById('btn-logout').classList.remove('hidden');
-                navigateTo('admin-screen');
                 loadData();
             } else {
-                navigateTo('home-screen');
-                document.getElementById('btn-login-icon').classList.remove('hidden');
-                document.getElementById('btn-logout').classList.add('hidden');
+                if(!document.getElementById('admin-screen').classList.contains('hidden')) navigateTo('home-screen');
             }
         });
 
+        // --- DATA ---
         function loadData() {
-            onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, { ...d.data(), fbId: d.id })); renderArticulos(); });
+            onSnapshot(colArts, (s) => { artsMap.clear(); s.forEach(d => artsMap.set(d.data().num, { ...d.data(), fbId: d.id })); renderArticulos(); renderRegistrarArticulos(); });
             onSnapshot(colEmps, (s) => { empsMap.clear(); s.forEach(d => empsMap.set(d.data().id, { ...d.data(), fbId: d.id })); renderEmpleados(); });
-            onSnapshot(colCats, (s) => { catsMap.clear(); const sel = document.getElementById('admin-art-cat'); sel.innerHTML='<option value="">Selecciona...</option>'; s.forEach(d => { catsMap.set(d.data().name, d.id); sel.innerHTML+=`<option value="${d.data().name}">${d.data().name}</option>` }); renderCategorias(); });
-            onSnapshot(colLists, (s) => { listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); renderAdminLists(); });
+            onSnapshot(colCats, (s) => { 
+                catsMap.clear(); const sel = document.getElementById('admin-art-cat'); sel.innerHTML='<option value="">Categoría...</option>';
+                s.forEach(d => { catsMap.set(d.data().name, d.id); sel.innerHTML += `<option value="${d.data().name}">${d.data().name}</option>`; });
+                renderCategorias(); renderCatalogoFilters();
+            });
+            onSnapshot(colLists, (s) => { listsMap.clear(); s.forEach(d => listsMap.set(d.id, { name: d.data().name, fbId: d.id })); renderAdminLists(); renderRegListSelect(); });
+            onSnapshot(colReqs, (s) => { reqsData=[]; s.forEach(d=>reqsData.push({id:d.id, ...d.data()})); renderReqs(); });
             loadKPIs();
         }
 
-        // --- KPI LOGIC ---
-        function loadKPIs() {
-             onSnapshot(doc(db, 'requi_toolcrib', 'stats'), (s) => { if(s.exists()) { const d=s.data(); document.getElementById('stats-total').innerText = (d.totalVisits||0).toLocaleString(); document.getElementById('stats-qr').innerText=(d.sources?.qr||0).toLocaleString(); document.getElementById('stats-direct').innerText=(d.sources?.direct||0).toLocaleString(); } });
-             onSnapshot(query(colLogs, orderBy('timestamp', 'desc'), limit(10)), (s) => {
-                 const c = document.getElementById('stats-recent-logs');
-                 if(s.empty) c.innerHTML = '<div class="text-gray-400 italic text-center pt-2">Sin actividad.</div>';
-                 else c.innerHTML = s.docs.map(d => { const l=d.data(); const icon=l.tipo==='QR'?'📱':'💻'; return `<div class="flex justify-between border-b pb-1 text-[10px] items-center"><div class="flex gap-2"><span>${icon}</span><span class="font-bold text-gray-700">${l.categoria}</span></div><span class="text-gray-400">${l.hora}</span></div>`}).join('');
-             });
+        // --- RENDER ADMIN ---
+        function renderArticulos() {
+            const list = document.getElementById('admin-list-articulos'); const term = document.getElementById('admin-art-search').value.toLowerCase();
+            let items = Array.from(artsMap.values()).filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
+            items.sort((a,b) => a.nom.localeCompare(b.nom));
+            list.innerHTML = items.length ? items.map(a => {
+                const variantsBadge = a.hasVariants ? `<span class="bg-blue-100 text-blue-800 text-xs px-1 rounded ml-1">${Array.isArray(a.variants)?a.variants.length+' var':'Simple'}</span>`:'';
+                return `<div class="bg-white p-2 rounded border mb-2 flex justify-between items-center group"><div><div class="font-bold text-sm">${a.nom}${variantsBadge}</div><div class="text-xs text-gray-500">${a.num} • $${a.precio}</div></div><div class="flex gap-2 opacity-0 group-hover:opacity-100"><button class="text-blue-500 btn-edit" data-id="${a.fbId}">✏️</button><button class="text-red-500 btn-del-art" data-id="${a.fbId}" data-n="${a.nom}">🗑️</button></div></div>`;
+            }).join('') : '<div class="text-gray-400 text-center text-sm p-4">Sin resultados</div>';
         }
-        
-        async function registrarTrafico(cat) {
-            const now = new Date();
-            const statsRef = doc(db, 'requi_toolcrib', 'stats');
-            try {
-                await setDoc(statsRef, { lastUpdate: now.toISOString() }, { merge: true });
-                const up = { totalVisits: increment(1), lastVisit: now.toISOString() };
-                if(cat) { up[`scans.${cat}`]=increment(1); up['sources.qr']=increment(1); } else { up['sources.direct']=increment(1); }
-                await updateDoc(statsRef, up);
-                await addDoc(colLogs, { timestamp: now, fecha: now.toLocaleDateString('es-MX'), hora: now.toLocaleTimeString('es-MX'), tipo: cat?'QR':'Directo', categoria: cat||'N/A', device: navigator.userAgent });
-            } catch(e) { console.error(e); }
-        }
+        function renderEmpleados() { document.getElementById('admin-list-empleados').innerHTML = Array.from(empsMap.values()).map(e => `<div class="flex justify-between p-2 text-sm hover:bg-gray-50 border-b"><div><b>${e.id}</b> - ${e.nombre}</div><button class="text-red-500 btn-del-emp" data-id="${e.fbId}">×</button></div>`).join(''); }
+        function renderCategorias() { document.getElementById('admin-list-categorias').innerHTML = Array.from(catsMap.entries()).map(([n, i]) => `<div class="flex justify-between p-2 text-sm border-b"><span>${n}</span><div><button onclick="window.mostrarQR('${n}')" class="mr-2">📱</button><button class="text-red-500 btn-del-cat" data-id="${i}">×</button></div></div>`).join(''); }
+        function renderAdminLists() { document.getElementById('admin-list-lists').innerHTML = Array.from(listsMap.values()).map(l => `<div class="flex justify-between p-2 text-sm border-b"><span>${l.name}</span><button class="text-red-500 btn-del-list" data-id="${l.fbId}">×</button></div>`).join(''); }
+        function renderArtListChecks(assigned=[]) { document.getElementById('admin-art-lists').innerHTML = Array.from(listsMap.values()).map(l => `<label class="flex items-center text-xs"><input type="checkbox" value="${l.fbId}" ${assigned.includes(l.fbId)?'checked':''} class="mr-1">${l.name}</label>`).join(''); }
 
-        // --- ARTÍCULOS ---
-        document.getElementById('admin-art-hasVariants').addEventListener('change', (e) => {
+        // --- FORM ARTICULO ---
+        document.getElementById('admin-art-hasVariants').addEventListener('change', e => {
             const panel = document.getElementById('admin-variants-panel');
-            if (e.target.checked) { panel.classList.remove('hidden'); if (document.getElementById('variants-list-container').children.length === 0) window.addVariantRow(); } 
-            else { panel.classList.add('hidden'); }
+            if(e.target.checked) { panel.classList.remove('hidden'); if(document.getElementById('variants-list-container').children.length===0) window.addVariantRow(); }
+            else panel.classList.add('hidden');
         });
 
         document.getElementById('form-add-articulo').onsubmit = async (e) => {
@@ -290,32 +355,27 @@
             const hasVariants = document.getElementById('admin-art-hasVariants').checked;
             
             let variantsData = null;
-            if (hasVariants) {
+            if(hasVariants) {
                 variantsData = getVariantsData();
-                if (variantsData.length === 0) return showToast('Agrega al menos una variante con código', 'error');
+                if(variantsData.length===0) return showToast('Agrega variantes', 'error');
             }
-            const assignedLists = []; document.querySelectorAll('#admin-art-lists input:checked').forEach(cb => assignedLists.push(cb.value));
+
+            const assignedLists = []; document.querySelectorAll('#admin-art-lists input:checked').forEach(c => assignedLists.push(c.value));
             const data = { num, nom, cat, precio, img, hasVariants, variants: variantsData, assignedLists };
 
             try {
-                if (editingArtId) { await updateDoc(doc(colArts, editingArtId), data); showToast('Actualizado'); cancelEditArticulo(); }
-                else { if (artsMap.has(num)) return showToast('Código existe', 'error'); await addDoc(colArts, data); showToast('Creado'); e.target.reset(); document.getElementById('admin-variants-panel').classList.add('hidden'); document.getElementById('variants-list-container').innerHTML=''; renderArticuloListsCheckboxes(); }
-            } catch(err) { showToast('Error', 'error'); console.error(err); }
+                if(editingArtId) { await updateDoc(doc(colArts, editingArtId), data); showToast('Actualizado'); cancelEdit(); }
+                else { 
+                    if(artsMap.has(num)) return showToast('Código duplicado', 'error');
+                    await addDoc(colArts, data); showToast('Creado'); e.target.reset(); 
+                    document.getElementById('admin-variants-panel').classList.add('hidden');
+                    document.getElementById('variants-list-container').innerHTML = '';
+                    renderArtListChecks();
+                }
+            } catch(x) { console.error(x); showToast('Error', 'error'); }
         };
 
-        // --- RENDERS ---
-        function renderArticulos() {
-            const list = document.getElementById('admin-list-articulos'); const term = document.getElementById('admin-art-search').value.toLowerCase();
-            let items = Array.from(artsMap.values()).filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
-            items.sort((a,b) => a.nom.localeCompare(b.nom));
-            if(items.length===0) { list.innerHTML='<div class="text-center p-10 text-gray-400">Sin datos</div>'; return; }
-            list.innerHTML = items.map(a => {
-                const badge = a.hasVariants ? `<span class="bg-blue-100 text-blue-800 text-[10px] px-2 rounded ml-2">${Array.isArray(a.variants)?a.variants.length+' var':'Simple'}</span>` : '';
-                return `<div class="bg-white p-3 rounded-lg border hover:border-blue-300 flex justify-between items-center group"><div><div class="flex items-center"><span class="font-bold text-gray-800">${a.nom}</span>${badge}</div><div class="text-xs text-gray-500 font-mono">${a.num} • $${a.precio}</div></div><div class="flex gap-2 opacity-0 group-hover:opacity-100"><button class="text-blue-500 btn-edit" data-id="${a.fbId}">✏️</button><button class="text-red-500 btn-del" data-id="${a.fbId}" data-n="${a.nom}">🗑️</button></div></div>`;
-            }).join('');
-        }
-
-        // --- EDITAR ---
+        // --- EDICIÓN ---
         document.addEventListener('click', e => {
             const btn = e.target.closest('.btn-edit');
             if(btn) {
@@ -326,70 +386,250 @@
                 document.getElementById('admin-art-nom').value = art.nom; document.getElementById('admin-art-cat').value = art.cat;
                 document.getElementById('admin-art-precio').value = art.precio; document.getElementById('admin-art-img').value = art.img;
                 
-                const hasVarCheck = document.getElementById('admin-art-hasVariants');
-                const varContainer = document.getElementById('variants-list-container');
-                hasVarCheck.checked = art.hasVariants; varContainer.innerHTML = '';
+                const chk = document.getElementById('admin-art-hasVariants');
+                const cont = document.getElementById('variants-list-container');
+                chk.checked = art.hasVariants; cont.innerHTML = '';
                 
-                if (art.hasVariants) {
+                if(art.hasVariants) {
                     document.getElementById('admin-variants-panel').classList.remove('hidden');
-                    if (Array.isArray(art.variants)) art.variants.forEach(v => window.addVariantRow(v.name, v.code));
-                    else if (typeof art.variants === 'string') art.variants.split(',').forEach(v => window.addVariantRow(v.trim(), ''));
-                } else { document.getElementById('admin-variants-panel').classList.add('hidden'); }
+                    if(Array.isArray(art.variants)) art.variants.forEach(v => window.addVariantRow(v.name, v.code));
+                    else if(typeof art.variants === 'string') art.variants.split(',').forEach(v => window.addVariantRow(v.trim(), ''));
+                } else document.getElementById('admin-variants-panel').classList.add('hidden');
 
-                renderArticuloListsCheckboxes(art.assignedLists);
+                renderArtListChecks(art.assignedLists);
                 document.getElementById('btn-cancel-art').classList.remove('hidden');
-                document.getElementById('form-add-articulo').scrollIntoView({ behavior: 'smooth' });
+                document.querySelector('#form-add-articulo button[type="submit"]').innerText = 'Actualizar';
+                document.getElementById('form-add-articulo').scrollIntoView();
+            }
+        });
+        function cancelEdit() {
+            editingArtId = null; document.getElementById('form-add-articulo').reset();
+            document.getElementById('btn-cancel-art').classList.add('hidden');
+            document.querySelector('#form-add-articulo button[type="submit"]').innerText = 'Guardar Artículo';
+            document.getElementById('admin-variants-panel').classList.add('hidden');
+            document.getElementById('variants-list-container').innerHTML='';
+            renderArtListChecks();
+        }
+        document.getElementById('btn-cancel-art').onclick = cancelEdit;
+
+        // --- PANTALLA REGISTRAR ---
+        function resetRegistro() {
+            document.getElementById('form-registrar').reset();
+            document.getElementById('reg-fecha').value = new Date().toISOString().split('T')[0];
+            articulosSeleccionados = []; renderCesta(); renderRegistrarArticulos();
+        }
+        function renderCesta() {
+            const c = document.getElementById('cesta-articulos'); const p = document.getElementById('cesta-placeholder');
+            document.getElementById('cesta-conteo').innerText = articulosSeleccionados.length;
+            if(articulosSeleccionados.length===0) { c.classList.add('hidden'); p.classList.remove('hidden'); }
+            else {
+                p.classList.add('hidden'); c.classList.remove('hidden');
+                c.innerHTML = articulosSeleccionados.map((a, i) => `
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                        <div class="text-sm"><b>${a.nom}</b><br><span class="text-xs text-gray-500">${a.variantCode || a.num} ${a.variant?`(${a.variant})`:''} x${a.qty}</span></div>
+                        <button onclick="window.removeCartItem(${i})" class="text-red-500">🗑️</button>
+                    </div>
+                `).join('');
+            }
+            renderRegistrarArticulos(); // Actualizar botones
+        }
+        window.removeCartItem = (i) => { articulosSeleccionados.splice(i,1); renderCesta(); };
+        
+        function renderRegistrarArticulos() {
+            const list = document.getElementById('lista-reg-articulo');
+            const term = document.getElementById('search-reg-articulo').value.toLowerCase();
+            let items = Array.from(artsMap.values());
+            if(currentRegCategory!=='Todos') items = items.filter(a => a.cat === currentRegCategory);
+            if(term) items = items.filter(a => a.num.toLowerCase().includes(term) || a.nom.toLowerCase().includes(term));
+            
+            list.innerHTML = items.map(a => {
+                const added = !a.hasVariants && articulosSeleccionados.some(x => x.num === a.num);
+                let img = a.img || PLACEHOLDER_IMG; if(a.img && !a.img.startsWith('http')) img = `./catalogo/${a.img}`;
+                return `
+                <div class="flex items-center p-2 border-b bg-white">
+                    <img src="${img}" class="h-10 w-10 object-contain mr-2">
+                    <div class="flex-grow text-sm">
+                        <div class="font-bold">${a.nom}</div>
+                        <div class="text-xs text-gray-500">${a.num}</div>
+                    </div>
+                    <button class="btn-add p-2 rounded ${added?'bg-gray-200 text-gray-400':'bg-primary-50 text-primary-600'}" 
+                        data-num="${a.num}" data-nom="${a.nom}" data-has-variants="${a.hasVariants}" 
+                        data-variants='${JSON.stringify(a.variants||[])}' ${added?'disabled':''}>
+                        ${added?'✔':'+'}
+                    </button>
+                </div>`;
+            }).join('');
+        }
+        
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('.btn-add');
+            if(btn && !btn.disabled) {
+                const { num, nom, hasVariants, variants } = btn.dataset;
+                currentItemForDetails = { num, nom };
+                const vCont = document.getElementById('variant-container');
+                const vSel = document.getElementById('variant-select');
+                document.getElementById('item-qty').value = 1;
+                
+                if(hasVariants === 'true') {
+                    vCont.classList.remove('hidden'); vSel.innerHTML = '<option value="">Elige...</option>';
+                    const vars = JSON.parse(variants);
+                    if(Array.isArray(vars)) vars.forEach(v => vSel.innerHTML += `<option value="${v.name}" data-code="${v.code}">${v.name}</option>`);
+                    else if(typeof vars === 'string') vars.split(',').forEach(v => vSel.innerHTML += `<option value="${v.trim()}" data-code="${num}">${v.trim()}</option>`);
+                } else vCont.classList.add('hidden');
+                
+                openModal('item-details-modal');
             }
         });
 
-        function cancelEditArticulo() {
-            editingArtId = null; document.getElementById('form-add-articulo').reset();
-            document.getElementById('btn-cancel-art').classList.add('hidden');
-            document.getElementById('admin-variants-panel').classList.add('hidden');
-            document.getElementById('variants-list-container').innerHTML = '';
-            renderArticuloListsCheckboxes();
+        document.getElementById('btn-item-details-submit').onclick = () => {
+            const qty = parseInt(document.getElementById('item-qty').value);
+            const vSel = document.getElementById('variant-select');
+            const hasVar = !document.getElementById('variant-container').classList.contains('hidden');
+            
+            if(hasVar && !vSel.value) return showToast('Elige una opción', 'error');
+            
+            const artData = artsMap.get(currentItemForDetails.num);
+            let finalCode = artData.num;
+            if(hasVar) finalCode = vSel.options[vSel.selectedIndex].dataset.code || artData.num;
+            
+            articulosSeleccionados.push({
+                ...artData, qty, variant: hasVar?vSel.value:null, variantCode: finalCode
+            });
+            renderCesta(); closeModal('item-details-modal');
+        };
+
+        // --- CATALOGO VIEW ---
+        function renderCatalogoFilters() {
+            const c = document.getElementById('catalogo-filtros');
+            const cats = Array.from(catsMap.keys()).sort();
+            c.innerHTML = `<button class="px-3 py-1 rounded-full text-xs font-bold ${currentCategory==='Todos'?'bg-primary-600 text-white':'bg-gray-100'}" onclick="window.setCat('Todos')">Todos</button>` + 
+            cats.map(cat => `<button class="px-3 py-1 rounded-full text-xs font-bold ${currentCategory===cat?'bg-primary-600 text-white':'bg-gray-100'}" onclick="window.setCat('${cat}')">${cat}</button>`).join('');
+            renderCatalogoGrid();
         }
-        document.getElementById('btn-cancel-art').onclick = cancelEditArticulo;
+        window.setCat = (c) => { currentCategory = c; renderCatalogoFilters(); };
+        
+        function renderCatalogoGrid() {
+            const grid = document.getElementById('catalogo-grid');
+            let items = Array.from(artsMap.values());
+            if(currentCategory!=='Todos') items = items.filter(a => a.cat === currentCategory);
+            // Search filter
+            const t = document.getElementById('search-catalogo').value.toLowerCase();
+            if(t) items = items.filter(a => a.nom.toLowerCase().includes(t));
+            
+            grid.innerHTML = items.map(a => {
+                let img = a.img || PLACEHOLDER_IMG; if(a.img && !a.img.startsWith('http')) img = `./catalogo/${a.img}`;
+                return `
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
+                    <div class="aspect-w-1"><img src="${img}" class="object-contain p-4" onerror="this.src='${PLACEHOLDER_IMG}'"></div>
+                    <div class="p-3">
+                        <div class="text-[10px] text-gray-400 uppercase">${a.cat||'Gen'}</div>
+                        <div class="font-bold text-sm truncate">${a.nom}</div>
+                        <div class="flex justify-between mt-2">
+                             <div class="text-xs bg-gray-100 px-1 rounded">${a.num}</div>
+                             <div class="text-sm font-bold text-green-600">$${a.precio||0}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        document.getElementById('search-catalogo').addEventListener('input', renderCatalogoGrid);
 
-        // --- OTRAS FUNCIONES ---
-        document.getElementById('form-add-empleado').onsubmit = async (e) => { e.preventDefault(); await addDoc(colEmps, { id: document.getElementById('admin-emp-id').value, nombre: document.getElementById('admin-emp-nombre').value }); e.target.reset(); };
-        document.getElementById('form-add-categoria').onsubmit = async (e) => { e.preventDefault(); await addDoc(colCats, { name: document.getElementById('admin-cat-name').value }); e.target.reset(); };
-        document.getElementById('btn-add-cat-manual').onclick = () => document.getElementById('form-add-categoria').dispatchEvent(new Event('submit'));
-        document.getElementById('form-add-list').onsubmit = async (e) => { e.preventDefault(); await addDoc(colLists, { name: document.getElementById('admin-list-name').value }); e.target.reset(); };
-        document.getElementById('btn-add-list-manual').onclick = () => document.getElementById('form-add-list').dispatchEvent(new Event('submit'));
+        // --- SUBMIT ---
+        document.getElementById('btn-registrar-submit').onclick = async () => {
+            const reqNum = document.getElementById('reg-num-requi').value;
+            const empId = document.getElementById('reg-selected-emp-id').value;
+            const empName = document.getElementById('reg-selected-emp-name').value;
+            
+            if(!reqNum || !empId) return showToast('Faltan datos', 'error');
+            if(!articulosSeleccionados.length) return showToast('Carrito vacío', 'error');
+            
+            const btn = document.getElementById('btn-registrar-submit'); btn.disabled = true; btn.innerText = "Guardando...";
+            try {
+                const ps = articulosSeleccionados.map(a => addDoc(colReqs, {
+                    numRequi: reqNum,
+                    fecha: document.getElementById('reg-fecha').value,
+                    empleadoId: empId, nombre: empName,
+                    articulo: `[${a.variantCode || a.num}] - ${a.nom} ${a.variant?`(${a.variant})`:''} - ${a.qty} pz`,
+                    status: 'Pendiente', timestamp: new Date(),
+                    robot_partNumber: a.variantCode || a.num,
+                    robot_qty: a.qty,
+                    robot_description: a.nom,
+                    robot_price: a.precio || 0
+                }));
+                await Promise.all(ps);
+                showToast('Guardado con éxito');
+                resetRegistro(); document.getElementById('reg-num-requi').value=''; 
+                document.getElementById('reg-emp-search').value='';
+                navigateTo('home-screen');
+            } catch(e) { console.error(e); showToast('Error', 'error'); } 
+            finally { btn.disabled = false; btn.innerText = "Registrar Requisición"; }
+        };
+        
+        // --- AUTOCOMPLETE EMPLEADO ---
+        const empIn = document.getElementById('reg-emp-search'); const empRes = document.getElementById('reg-emp-results');
+        empIn.addEventListener('input', e => {
+            const v = e.target.value.toLowerCase();
+            if(!v) { empRes.classList.add('hidden'); return; }
+            const m = Array.from(empsMap.values()).filter(x => x.nombre.toLowerCase().includes(v) || x.id.toString().includes(v));
+            empRes.innerHTML = m.length ? m.map(x => `<div class="p-2 hover:bg-gray-100 cursor-pointer text-sm" onclick="window.selEmp('${x.id}','${x.nombre}')"><b>${x.nombre}</b> (${x.id})</div>`).join('') : '<div class="p-2 text-gray-400 text-sm">No encontrado</div>';
+            empRes.classList.remove('hidden');
+        });
+        window.selEmp = (id, n) => {
+            document.getElementById('reg-selected-emp-id').value = id;
+            document.getElementById('reg-selected-emp-name').value = n;
+            empIn.value = `${n} (${id})`;
+            empRes.classList.add('hidden');
+        };
+
+        // --- RENDER HISTORIAL ---
+        function renderReqs() {
+            const tb = document.getElementById('tbody-requisiciones');
+            if(!reqsData.length) { tb.innerHTML='<tr><td colspan="6" class="p-4 text-center">Vacío</td></tr>'; return; }
+            // Agrupación simple para visualización
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = reqsData.filter(r => JSON.stringify(r).toLowerCase().includes(term)).sort((a,b) => b.timestamp - a.timestamp);
+            
+            tb.innerHTML = filtered.map(r => {
+                const statusColor = r.status==='Autorizada'?'text-green-600 bg-green-50':r.status==='Cobrada'?'text-blue-600 bg-blue-50':'text-yellow-600 bg-yellow-50';
+                return `<tr class="border-b"><td class="p-3 font-mono text-sm">${r.numRequi}</td><td class="p-3 text-sm">${r.fecha}</td><td class="p-3 text-sm">${r.nombre}</td><td class="p-3 text-sm truncate max-w-xs">${r.articulo}</td><td class="p-3 text-center"><span class="px-2 py-1 rounded text-xs font-bold ${statusColor}">${r.status}</span></td><td class="p-3 text-sm">${r.fechaCobro||'-'}</td></tr>`;
+            }).join('');
+        }
+        document.getElementById('search-input').addEventListener('input', renderReqs);
+
+        // --- OTROS ---
         document.getElementById('admin-art-search').addEventListener('input', renderArticulos);
-
-        function renderEmpleados() { document.getElementById('admin-list-empleados').innerHTML = Array.from(empsMap.values()).map(e => `<div class="flex justify-between p-2 text-sm hover:bg-gray-50"><div><b>${e.id}</b> - ${e.nombre}</div><button class="text-red-500 btn-del-emp" data-id="${e.fbId}">×</button></div>`).join(''); }
-        function renderCategorias() { document.getElementById('admin-list-categorias').innerHTML = Array.from(catsMap.entries()).map(([name, id]) => `<div class="flex justify-between p-2 border-b"><span>${name}</span><div><button class="mr-2" onclick="window.mostrarQR('${name}')">📱</button><button class="text-red-500 btn-del-cat" data-id="${id}">×</button></div></div>`).join(''); }
-        function renderAdminLists() { document.getElementById('admin-list-lists').innerHTML = Array.from(listsMap.values()).map(l => `<div class="flex justify-between p-2 border-b"><span>${l.name}</span><button class="text-red-500 btn-del-list" data-id="${l.fbId}">×</button></div>`).join(''); }
-        function renderArticuloListsCheckboxes(assigned = []) { document.getElementById('admin-art-lists').innerHTML = Array.from(listsMap.values()).map(l => `<div class="flex items-center"><input type="checkbox" value="${l.fbId}" ${assigned.includes(l.fbId)?'checked':''} class="mr-2"><span>${l.name}</span></div>`).join(''); }
-
+        document.getElementById('form-add-categoria').onsubmit = async(e)=>{e.preventDefault(); await addDoc(colCats, {name:document.getElementById('admin-cat-name').value}); e.target.reset();}
+        document.getElementById('form-add-list').onsubmit = async(e)=>{e.preventDefault(); await addDoc(colLists, {name:document.getElementById('admin-list-name').value}); e.target.reset();}
+        document.getElementById('form-add-empleado').onsubmit = async(e)=>{e.preventDefault(); await addDoc(colEmps, {id:document.getElementById('admin-emp-id').value, nombre:document.getElementById('admin-emp-nombre').value}); e.target.reset();}
+        
         document.addEventListener('click', async e => {
-            if(e.target.closest('.btn-del')) { if(confirm('¿Borrar?')) await deleteDoc(doc(colArts, e.target.closest('.btn-del').dataset.id)); }
+            if(e.target.closest('.btn-del-art') && confirm('¿Borrar?')) await deleteDoc(doc(colArts, e.target.closest('.btn-del-art').dataset.id));
+            if(e.target.closest('.btn-del-emp') && confirm('¿Borrar?')) await deleteDoc(doc(colEmps, e.target.closest('.btn-del-emp').dataset.id));
             if(e.target.closest('.btn-del-cat')) await deleteDoc(doc(colCats, e.target.closest('.btn-del-cat').dataset.id));
-            if(e.target.closest('.btn-del-emp')) await deleteDoc(doc(colEmps, e.target.closest('.btn-del-emp').dataset.id));
             if(e.target.closest('.btn-del-list')) await deleteDoc(doc(colLists, e.target.closest('.btn-del-list').dataset.id));
         });
 
-        // --- EXCEL & QR & LOGIN ---
+        // --- LOGIC EXCEL & QR (Restaurado) ---
         document.getElementById('file-upload-emp').onchange = async (e) => {
             const f = e.target.files[0]; if(!f) return; const r = new FileReader();
-            r.onload = async (evt) => {
-                const wb = XLSX.read(evt.target.result, {type: 'binary'}); const d = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1});
-                let c = 0; for(let i=0; i<d.length; i++) { if(d[i][0] && d[i][1] && !empsMap.has(d[i][0].toString())) { await addDoc(colEmps, {id: d[i][0].toString(), nombre: d[i][1].toString()}); c++; } }
-                showToast(`Cargados ${c}`);
-            }; r.readAsBinaryString(f);
+            r.onload = async (evt) => { const wb = XLSX.read(evt.target.result,{type:'binary'}); const d = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1}); d.forEach(async r=>{if(r[0]&&r[1]&&!empsMap.has(r[0].toString())) await addDoc(colEmps,{id:r[0].toString(),nombre:r[1].toString()})}); showToast('Cargando...'); };
+            r.readAsBinaryString(f);
         };
-        window.mostrarQR = (cat) => { document.getElementById('qr-category-name').innerText = cat; document.getElementById('qrcode-container').innerHTML = ''; new QRCode(document.getElementById('qrcode-container'), { text: window.location.href.split('?')[0] + '?categoria=' + encodeURIComponent(cat), width: 150, height: 150 }); openModal('qr-modal'); };
-        window.imprimirQR = () => { const w = window.open('', '', 'height=500,width=500'); w.document.write(`<html><body style="text-align:center"><h2>${document.getElementById('qr-category-name').innerText}</h2>${document.getElementById('qrcode-container').innerHTML}</body></html>`); w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); };
-        
-        document.getElementById('btn-login-icon').onclick = () => openModal('login-modal');
-        document.getElementById('form-login').onsubmit = async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal'); } catch { showToast('Error', 'error'); } };
-        document.getElementById('btn-logout').onclick = () => signOut(auth);
-        document.getElementById('btn-confirm-ok').onclick = () => { if(confirmAction) confirmAction(); closeModal('confirm-modal'); };
-        
+        window.mostrarQR = (n) => { document.getElementById('qr-category-name').innerText=n; document.getElementById('qrcode-container').innerHTML=''; new QRCode(document.getElementById('qrcode-container'),{text:window.location.href.split('?')[0]+'?cat='+encodeURIComponent(n),width:150,height:150}); openModal('qr-modal'); }
+        window.imprimirQR = () => { const w=window.open('','','height=400,width=400'); w.document.write('<html><body style="text-align:center"><h2>'+document.getElementById('qr-category-name').innerText+'</h2>'+document.getElementById('qrcode-container').innerHTML+'</body></html>'); w.document.close(); w.focus(); setTimeout(()=>w.print(),500); }
+
         // --- ARRANQUE ---
-        const params = new URLSearchParams(window.location.search); const cat = params.get('categoria'); if(cat) { registrarTrafico(cat); showToast(`QR: ${cat}`); } else { registrarTrafico(null); }
+        function checkQR() { const p = new URLSearchParams(window.location.search); const c = p.get('cat'); if(c) { currentCategory=c; navigateTo('catalogo-screen'); renderCatalogoFilters(); } }
+        function loadKPIs() {
+            onSnapshot(doc(db, 'requi_toolcrib', 'stats'), s=>{ if(s.exists()) { const d=s.data(); document.getElementById('stats-total').innerText=d.totalVisits||0; document.getElementById('stats-qr').innerText=d.sources?.qr||0; document.getElementById('stats-direct').innerText=d.sources?.direct||0; }});
+            onSnapshot(query(colLogs, orderBy('timestamp', 'desc'), limit(5)), s=>{ document.getElementById('stats-recent-logs').innerHTML = s.docs.map(d=>`<div class="text-[10px] border-b">${d.data().categoria} - ${d.data().hora}</div>`).join(''); });
+        }
+        
+        document.getElementById('form-login').onsubmit = async(e)=>{e.preventDefault(); try{await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); closeModal('login-modal');}catch{showToast('Error','error');}};
+        document.getElementById('btn-login-icon').onclick=()=>openModal('login-modal');
+        document.getElementById('btn-logout').onclick=()=>signOut(auth);
+
+        checkQR();
     </script>
 </body>
 </html>
